@@ -1,2 +1,2 @@
-# PAQMAN - Parameter Querier Manual
+# PAQMAN - Parameter Query Manual
 
