@@ -9,7 +9,8 @@ import (
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	HostAddress string `json:"host_address"`
+	BindAddress    string `json:"host_address"`
+	MongoDBAddress string `json:"mongodb_address"`
 }
 
 // Defaults returns an instance of Config
@@ -17,7 +18,8 @@ type Config struct {
 func Defaults() *Config {
 	return &Config{
 		// DEFINE DEFAULTS HERE
-		HostAddress: "0.0.0.0:3002",
+		BindAddress:    "0.0.0.0:3002",
+		MongoDBAddress: "127.0.0.1:27017",
 	}
 }
 

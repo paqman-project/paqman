@@ -13,7 +13,7 @@ func main() {
 	}
 
 	fmt.Println(
-		config.Defaults().HostAddress,
+		config.Defaults().BindAddress,
 	)
 
 	server.Start()
