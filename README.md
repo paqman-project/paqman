@@ -38,9 +38,9 @@ _There is also a pre-built docker image at `registry.git.leon.wtf/paqman/paqman:
 ### Dev environment
 - Install dependencies _(see [Manual Build](#manual-build))_
 - Start the mongodb database with `$ docker-compose up [-d]` within `dev_environment/`
-    - Database listens at `0.0.0.0:27017`
+    - Database listens on `0.0.0.0:27017`
     - DB web frontend available at http://localhost:8081
 - Start the backend with `$ go run .` within `server/` &rarr; listens on `0.0.0.0:3002`
-- Start the frontend with `$ npm run start` within `frontend/` &rarr; available at http://localhost:5000 with hot-reloading
+- Start the frontend with `$ npm run start` within `frontend/` &rarr; available at http://localhost:3000 with hot-reloading
 
 _In production, the frontend is served by the Go backend, but it doesn't support Reacts hot-reloading feature as it only serves the `build/` folder. Therefore the frontend is served on it's own port in development._
