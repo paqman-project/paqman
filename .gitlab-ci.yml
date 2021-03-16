@@ -2,7 +2,7 @@ stages:
   - test
 # - stage
 
-prettyfied:
+code_quality:
   stage: test
   #only:
   #  - master
