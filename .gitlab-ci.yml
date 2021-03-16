@@ -4,8 +4,8 @@ stages:
 
 code_quality:
   stage: test
-  #only:
-  #  - master
+  only:
+    - master
   image: node:15-alpine
   script:
     - cd frontend/ && npx prettier --check .
