@@ -1,10 +1,12 @@
 stages:
   - test
-#  - stage
+# - stage
 
 prettyfied:
   stage: test
-  image: node:15
+  #only:
+  #  - master
+  image: node:15-alpine
   script:
     - cd frontend/ && npx prettier --check .
 
