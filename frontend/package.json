@@ -22,7 +22,8 @@
         "start": "craco start",
         "build": "craco build",
         "test": "craco test",
-        "eject-DO_NOT_USE_THIS": "react-scripts eject"
+        "eject-DO_NOT_USE_THIS": "react-scripts eject",
+        "prettify": "prettier --write ."
     },
     "proxy": "http://localhost:3002",
     "eslintConfig": {
