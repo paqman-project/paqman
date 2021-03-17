@@ -16,11 +16,11 @@ func TestPingHandler(t *testing.T) {
 
 	// test server that uses the handler that will be tested
 	rec := httptest.NewRecorder()
-	handler := http.HandlerFunc(pingHandler) // <-- handler
+	handler := http.HandlerFunc(pingHandler)
 	handler.ServeHTTP(rec, req)
 
 	// check status code
-	expectedSC := 201
+	expectedSC := 200
 	if sc := rec.Code; sc != expectedSC {
 		t.Errorf("handler returned wrong status code: got %v want %v", sc, expectedSC)
 	}
