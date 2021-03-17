@@ -8,6 +8,12 @@ code_quality:
   script:
     - cd frontend/ && npx prettier --check .
 
+backend_tests:
+  stage: test
+  image: golang:1.16
+  script:
+    - cd server/ && go test -v ./...
+
 #create_docker_image:
 #  stage: stage
 #  only:
