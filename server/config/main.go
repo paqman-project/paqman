@@ -6,21 +6,20 @@ import (
 	"os"
 )
 
+type DefaultableString string
+
+func (d DefaultableString) ConfiguredOr(def string) string {
+	if d != "" {
+		return string(d)
+	}
+	return def
+}
+
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	BindAddress    string `json:"host_address"`
-	MongoDBAddress string `json:"mongodb_address"`
-}
-
-// Defaults returns an instance of Config
-// initialized with the default values
-func Defaults() *Config {
-	return &Config{
-		// DEFINE DEFAULTS HERE
-		BindAddress:    "0.0.0.0:3002",
-		MongoDBAddress: "127.0.0.1:27017",
-	}
+	BindAddress    DefaultableString `json:"bind_address"`    // Default 0.0.0.0:3002
+	MongoDBAddress DefaultableString `json:"mongodb_address"` // Default 127.0.0.1:27017
 }
 
 // Current holds an instance of the lastest loaded

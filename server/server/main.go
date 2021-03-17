@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	"paqman-backend/config"
 )
 
 // Start starts the API and frontend server.
@@ -20,7 +22,7 @@ func Start() error {
 
 	// start server
 	server := &http.Server{
-		Addr:    "0.0.0.0:3002",
+		Addr:    config.Current.BindAddress.ConfiguredOr("0.0.0.0:3002"),
 		Handler: router,
 	}
 	log.Println("Starting server...")

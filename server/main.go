@@ -12,9 +12,8 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(
-		config.Defaults().BindAddress,
-	)
+	fmt.Println(config.Current.BindAddress)
+	fmt.Println(config.Current.MongoDBAddress.ConfiguredOr("172.0.0.1:27017"))
 
 	server.Start()
 
