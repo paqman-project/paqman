@@ -22,7 +22,7 @@ func Start() error {
 
 	// start server
 	server := &http.Server{
-		Addr:    config.Current.BindAddress.ConfiguredOr("0.0.0.0:3002"),
+		Addr:    config.Current.BindAddress,
 		Handler: router,
 	}
 	log.Println("Starting server...")

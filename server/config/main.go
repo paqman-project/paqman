@@ -6,20 +6,22 @@ import (
 	"os"
 )
 
-type DefaultableString string
-
-func (d DefaultableString) ConfiguredOr(def string) string {
-	if d != "" {
-		return string(d)
-	}
-	return def
-}
-
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	BindAddress    DefaultableString `json:"bind_address"`    // Default 0.0.0.0:3002
-	MongoDBAddress DefaultableString `json:"mongodb_address"` // Default 127.0.0.1:27017
+	BindAddress    string `json:"bind_address"`    // Default 0.0.0.0:3002
+	MongoDBAddress string `json:"mongodb_address"` // Default 127.0.0.1:27017
+}
+
+// setDefaults sets all uninitialized fields
+// to their default values
+func (c *Config) setDefaults() {
+	if c.BindAddress == "" {
+		c.BindAddress = "0.0.0.0:3002"
+	}
+	if c.MongoDBAddress == "" {
+		c.MongoDBAddress = "127.0.0.1:27017"
+	}
 }
 
 // Current holds an instance of the lastest loaded
@@ -48,6 +50,7 @@ func LoadFrom(path string) error {
 		return err
 	}
 
+	c.setDefaults()
 	Current = c
 	return nil
 
