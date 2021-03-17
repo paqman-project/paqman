@@ -20,7 +20,7 @@ func TestPingHandler(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 
 	// check status code
-	expectedSC := 200
+	expectedSC := 201
 	if sc := rec.Code; sc != expectedSC {
 		t.Errorf("handler returned wrong status code: got %v want %v", sc, expectedSC)
 	}
