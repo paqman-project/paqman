@@ -8,26 +8,27 @@ import (
 
 func TestPingHandler(t *testing.T) {
 
-	// request to test
+	// request that will be tested
 	req, err := http.NewRequest("GET", "/api/ping", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// test http server that uses the handler that will be tested
+	// test server that uses the handler that will be tested
 	rec := httptest.NewRecorder()
-	handler := http.HandlerFunc(pingHandler)
+	handler := http.HandlerFunc(pingHandler) // <-- handler
 	handler.ServeHTTP(rec, req)
 
 	// check status code
-	if sc := rec.Code; sc != 200 {
-		t.Errorf("handler returned wrong status code: got %v want %v", sc, 200)
+	expectedSC := 200
+	if sc := rec.Code; sc != expectedSC {
+		t.Errorf("handler returned wrong status code: got %v want %v", sc, expectedSC)
 	}
 
 	// check body
-	expected := `{"response": "pong"}`
-	if body := rec.Body.String(); body != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v", body, expected)
+	expectedBody := `{"response": "pong"}`
+	if body := rec.Body.String(); body != expectedBody {
+		t.Errorf("handler returned unexpected body: got %v want %v", body, expectedBody)
 	}
 
 }
