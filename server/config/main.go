@@ -9,17 +9,18 @@ import (
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	BindAddress    string `json:"host_address"`
-	MongoDBAddress string `json:"mongodb_address"`
+	BindAddress    string `json:"bind_address"`    // Default 0.0.0.0:3002
+	MongoDBAddress string `json:"mongodb_address"` // Default 127.0.0.1:27017
 }
 
-// Defaults returns an instance of Config
-// initialized with the default values
-func Defaults() *Config {
-	return &Config{
-		// DEFINE DEFAULTS HERE
-		BindAddress:    "0.0.0.0:3002",
-		MongoDBAddress: "127.0.0.1:27017",
+// setDefaults sets all uninitialized fields
+// to their default values
+func (c *Config) setDefaults() {
+	if c.BindAddress == "" {
+		c.BindAddress = "0.0.0.0:3002"
+	}
+	if c.MongoDBAddress == "" {
+		c.MongoDBAddress = "127.0.0.1:27017"
 	}
 }
 
@@ -49,6 +50,7 @@ func LoadFrom(path string) error {
 		return err
 	}
 
+	c.setDefaults()
 	Current = c
 	return nil
 
