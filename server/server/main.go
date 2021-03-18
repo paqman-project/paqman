@@ -17,6 +17,10 @@ func Start() error {
 	// API routes
 	apiRouter := router.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/ping", pingHandler).Methods("GET")
+
+	// Get test value
+	apiRouter.HandleFunc("/show", showHandler).Methods("GET")
+
 	// Frontend route
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("../frontend/build")))
 

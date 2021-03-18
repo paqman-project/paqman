@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"paqman-backend/config"
 	"paqman-backend/db"
@@ -22,18 +21,20 @@ func main() {
 	}
 	defer db.Disconnect()
 
-	type mongo struct {
-		Name  string `json:"name"`
-		Alter int    `json:"alter"`
-	}
-	m := mongo{"Leon", 2}
+	/*
+		type mongo struct {
+			Name  string `json:"name"`
+			Alter int    `json:"alter"`
+		}
 
-	res, err := db.Client.Database("Test").Collection("Mongo").InsertOne(context.TODO(), m)
-	if err != nil {
-		panic(err)
-	}
+		m := mongo{"Leon", 2}
+		res, err := db.Client.Database("Test").Collection("Mongo").InsertOne(context.TODO(), m)
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Println(res.InsertedID)
+		fmt.Println(res.InsertedID)
+	*/
 
 	server.Start()
 }
