@@ -1,6 +1,7 @@
 stages:
   - test
-# - stage
+  - docker-build
+#  - staging
 
 code_quality:
   stage: test
@@ -9,18 +10,31 @@ code_quality:
   script:
     - cd frontend/ && npx prettier --check .
 
+#frontend_tests:
+#  stage: test
+#  image: node:15-alpine
+#  script:
+#    - echo "done"
+
 backend_tests:
   stage: test
   image: golang:1.16
   script:
     - cd server/ && go test -v ./...
 
-#create_docker_image:
-#  stage: stage
+build_and_push_image:
+  stage: docker-build
+  only:
+    - master
+  image: docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --pull -t $CI_REGISTRY_IMAGE:dev .
+    - docker push $CI_REGISTRY_IMAGE:dev
+
+#stage_on_webserver:
+#  stage: staging
 #  only:
 #    - master
-#  image: docker:dind
-#  script:
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:dev .
-#    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:dev
+#  image: 
