@@ -28,12 +28,13 @@ Paqman is being developed as part of a project at the Offenburg University of Ap
 
 ### Docker build
 - Build image: `$ docker build -t <your-tag> .`
-- Start a container: `$ docker-compose up [-d]` or `$ docker run --name paqman -p "<external-port>:3002" -v "<your-config>:/config.json:ro" -v "<your-db>:/db.sqlite" <your-tag> [<options>]`
+- Start a container: `$ docker run --name paqman -p "<external-port>:3002" [-v "<your-config>:/config.json:ro"] <your-tag> [<options>]`
     - Make sure, your `"bind_address"` is set to `0.0.0.0:3002` or omitted - otherwise, the service would not be reachable from outside the docker container!
-- Stop and delete the container: `$ docker-compose down` or `$ docker stop paqman && docker rm paqman`
+    - Make sure to have a mongo db container running with a hostname of `mongo` on port `27017` (a docker-compose file makes this easy)!
+- Stop and delete the container: `$ docker stop paqman && docker rm paqman`
 - Frontend: http://localhost:3002; API: http://localhost:3002/api
 
-_There is also a pre-built docker image at `registry.git.leon.wtf/paqman/paqman:latest`_
+_There is also a pre-built docker image at `registry.git.leon.wtf/paqman/paqman:dev`! There is also a prewritten `docker-compose.yml` file in the repositories root directory._
 
 ### Dev environment
 - Install dependencies _(see [Manual Build](#manual-build))_
