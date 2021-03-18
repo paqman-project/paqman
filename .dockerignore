@@ -1,0 +1,8 @@
+.gitlab-ci.yml
+
+frontend/node_modules
+frontend/build
+
+server/paqman-backend
+
+**/README.md

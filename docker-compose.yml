@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+  mongo:
+    image: mongo:latest
+    container_name: paqman-db
+    #volumes:
+    #  - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+
+  paqman:
+    image: lol
+    container_name: paqman
+    ports:
+      - 3002:3002
+    #volumes:
+    #  - ./config.json:/config.json:ro
