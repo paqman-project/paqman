@@ -4,7 +4,7 @@ import AttackListView from "./AttackListView"
 import AttackByParameterView from "./AttackByParameterView"
 
 export default function AttackView(){
-    const [ view, setView ] = useState("List")
+    const [view, setView] = useState("List")
 
     function selectView(){
         switch (view) {
