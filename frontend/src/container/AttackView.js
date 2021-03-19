@@ -1,15 +1,29 @@
-import React from "react"
-import Panel from "./Panel"
+import React, { useState } from "react"
+import SubSectionButtons from "./SubSectionButtons"
+import AttackListView from "./AttackListView"
+import AttackByParameterView from "./AttackByParameterView"
 
 export default function AttackView(){
-    return(
+    const [ view, setView ] = useState("List")
+
+    function selectView(){
+        switch (view) {
+            case "List":
+                return <AttackListView />
+            case "By Parameter":
+                return <AttackByParameterView />
+            default:
+                break;
+        }
+    }
+
+    return (
         <>
-            <div className="h-full w-full flex justify-items">
-                <h1>AttackView</h1>
-                <Panel />
-                <Panel />
-                <Panel />
+            <div className="w-full">
+                <SubSectionButtons titles={["List", "By Parameter"]} setView={setView} />
+                {selectView()}
             </div>
+
         </>
     )
 }

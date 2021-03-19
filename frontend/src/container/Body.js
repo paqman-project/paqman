@@ -1,16 +1,16 @@
-import React, {useState} from "react"
+import React, { useState } from "react"
 import Sidebar from "./Sidebar"
 import AttackView from "./AttackView"
 import CommandView from "./CommandView"
 
 export default function Body(){
-    const [view, setView] = useState("attack")
+    const [ view, setView ] = useState("Attacks")
 
     function selectView(){
         switch (view) {
-            case "attack":
+            case "Attacks":
                 return <AttackView />
-            case "command":
+            case "Commands":
                 return <CommandView />
             default:
                 break;
@@ -20,7 +20,7 @@ export default function Body(){
     return(
         <>
             <div className="h-full flex">
-                <Sidebar setView={setView}/>
+                <Sidebar setView={setView} />
                 {selectView()}
             </div>
         </>
