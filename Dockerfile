@@ -26,7 +26,7 @@ COPY --from=go-builder /go/bin/paqman-backend /paqman-backend
 # Copy static frontend files
 COPY --from=react-builder /tmp/build /frontend/build
 # Copy example config
-COPY server/config.json /config.json
+COPY server/config.docker.json /config.json
 
 
 #VOLUME /config.json
