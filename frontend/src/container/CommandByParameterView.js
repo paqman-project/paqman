@@ -4,7 +4,7 @@ export default function CommandByParameterView(){
     return(
         <>
             <div className="w-full h-32">
-                <h1>CommandByParameterView</h1>
+                <h1 className="text-center">CommandByParameterView</h1>
             </div>
         </>
     )
