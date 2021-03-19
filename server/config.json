@@ -1,3 +1,6 @@
 {
-    "bind_address": "0.0.0.0:3002"
+    "bind_address": "0.0.0.0:3002",
+    "db_address": "localhost:27017",
+    "db_username": "root",
+    "db_password": "toor"
 }

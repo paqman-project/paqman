@@ -9,8 +9,10 @@ import (
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	BindAddress    string `json:"bind_address"`    // Default 0.0.0.0:3002
-	MongoDBAddress string `json:"mongodb_address"` // Default 127.0.0.1:27017
+	BindAddress    string `json:"bind_address"` // Default 0.0.0.0:3002
+	MongoDBAddress string `json:"db_address"`   // Default 127.0.0.1:27017
+	MongoDBUser    string `json:"db_username"`
+	MongoDBPass    string `json:"db_password"`
 }
 
 // setDefaults sets all uninitialized fields
