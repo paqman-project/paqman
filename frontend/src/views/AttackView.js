@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import SubSectionButtons from "./SubSectionButtons"
+import SubSectionButtons from "../container/SubSectionButtons"
 import AttackListView from "./AttackListView"
 import AttackByParameterView from "./AttackByParameterView"
 

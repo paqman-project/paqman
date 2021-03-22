@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import Sidebar from "./Sidebar"
-import AttackView from "./AttackView"
-import CommandView from "./CommandView"
-import AboutView from "./AboutView"
+import AttackView from "../views/AttackView"
+import CommandView from "../views/CommandView"
+import AboutView from "../views/AboutView"
 
 export default function Body(){
     const [ view, setView ] = useState("Attacks")
