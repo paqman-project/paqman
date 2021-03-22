@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar"
 import AttackView from "../views/AttackView"
 import CommandView from "../views/CommandView"
 import AboutView from "../views/AboutView"
+import ViewWrapper from "./ViewWrapper"
 
 export default function Body(){
     const [ view, setView ] = useState("Attacks")
@@ -24,7 +25,9 @@ export default function Body(){
         <>
             <div className="h-full flex">
                 <Sidebar setView={setView} />
-                {selectView()}
+                <ViewWrapper>
+                    {selectView()}
+                </ViewWrapper>
             </div>
         </>
     )
