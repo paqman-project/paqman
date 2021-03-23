@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"paqman-backend/command"
 	"paqman-backend/config"
 	"time"
 
@@ -13,6 +14,11 @@ import (
 
 var Client *mongo.Client
 
+// Connect creates a database connection
+// and assignes it to the Client variable.
+//
+// MongoDB URI uses values from config.json
+// so make sure config.LoadFrom() is called before Connect().
 func Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -31,6 +37,8 @@ func Connect() error {
 	return nil
 }
 
+// Disconnect closes the db connection.
+// Applies to the client obeject.
 func Disconnect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -39,4 +47,10 @@ func Disconnect() error {
 	}
 	log.Println("Connection closed!")
 	return nil
+}
+
+// Store stores command structs in the TODO DB.
+// Multiple commands can be passed.
+func Store(collection string, command ...command.Command) {
+	// TODO
 }
