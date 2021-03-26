@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: toor
 
   paqman:
-    image: lol
+    image: registry.git.leon.wtf/paqman/paqman:dev
     container_name: paqman
     ports:
       - 3002:3002
