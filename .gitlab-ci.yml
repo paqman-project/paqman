@@ -1,7 +1,10 @@
 stages:
   - test
   - docker-build
-#  - staging
+  - staging
+
+variables:
+  STAGING_SERVER: "staging.paqman.leon.wtf"
 
 code_quality:
   stage: test
@@ -33,8 +36,22 @@ build_and_push_image:
     - docker build --pull -t $CI_REGISTRY_IMAGE:dev .
     - docker push $CI_REGISTRY_IMAGE:dev
 
-#stage_on_webserver:
-#  stage: staging
-#  only:
-#    - master
-#  image: 
+stage_on_webserver:
+  stage: staging
+  only:
+    - master
+  image: docker:dind
+  before_script:
+    # import SSH private key from Gitlab variable
+    - eval $(ssh-agent -s)
+    - echo "$STAGING_SERVER_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    # scan target server and add keys to known_hosts
+    - ssh-keyscan $STAGING_SERVER >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    # push docker-compose.yml in repository root to server and execute it
+    - scp ./docker-compose.yml paqman@$STAGING_SERVER:~/docker-compose.yml
+    - ssh paqman@$STAGING_SERVER "docker-compose pull && docker-compose up -d && docker-compose ps"
+
