@@ -2,12 +2,12 @@ import React from "react"
 
 export default function SubSectionButton({ setView, title, active }){
 
-    let selectedStyle = " border-green-500"
+    let selectedStyle = " border-gray-500"
 
     return(
         <div 
             className={
-                "bg-white border w-full h-8 mx-2 my-2 hover:border-gray-500 cursor-pointer content-center rounded-lg" +
+                "bg-white border w-full h-full py-1 m-2 hover:border-gray-300 cursor-pointer rounded-lg" +
                 (active ? selectedStyle : "")
             }
             onClick={() => {
