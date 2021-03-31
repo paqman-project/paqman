@@ -24,7 +24,8 @@ export default function Body(){
     return(
         <>
             <div className="h-full flex">
-                <Sidebar setView={setView} />
+            
+                <Sidebar currentView={view} setView={setView} />
                 <ViewWrapper>
                     {selectView()}
                 </ViewWrapper>

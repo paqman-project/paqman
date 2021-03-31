@@ -3,7 +3,8 @@ import SubSectionButtons from "../container/SubSectionButtons"
 import AttackListView from "./AttackListView"
 import AttackByParameterView from "./AttackByParameterView"
 
-export default function AttackView(){
+export default function AttackView() {
+
     const [view, setView] = useState("List")
 
     function selectView(){
@@ -18,12 +19,13 @@ export default function AttackView(){
     }
 
     return (
-        <>
-            <div className="w-full">
-                <SubSectionButtons titles={["List", "By Parameter"]} setView={setView} />
-                {selectView()}
-            </div>
-
-        </>
+        <div className="w-full">
+            <SubSectionButtons 
+                titles={["List", "By Parameter"]} 
+                currentView={view} 
+                setView={setView}
+            />
+            {selectView()}
+        </div>
     )
 }

@@ -4,6 +4,7 @@ import CommandListView from "./CommandListView"
 import CommandByParameterView from "./CommandByParameterView"
 
 export default function CommandView(){
+
     const [ view, setView ] = useState("List")
 
     function selectView(){
@@ -20,7 +21,11 @@ export default function CommandView(){
     return (
         <>
             <div className="w-full">
-                <SubSectionButtons titles={["List", "By Parameter"]} setView={setView} />
+                <SubSectionButtons 
+                    titles={["List", "By Parameter"]} 
+                    currentView={view} 
+                    setView={setView}
+                />
                 {selectView()}
             </div>
 
