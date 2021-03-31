@@ -26,27 +26,43 @@ func main() {
 	defer db.Disconnect()
 
 	// example command
-	Command := command.New()
-	Command.Description = "Leon stinkt hart nach MAGGI!"
-	Command.Name = "NewTest"
-	Command.RequiresRoot = true
-	Command.TemplateValues["penis"] = command.CommandTemplateValue{
-		Type:        "penis",
-		Description: "whatever",
+	c := command.New()
+	c.Description = "Example Description"
+	c.Name = "NewTest"
+	c.RequiresRoot = true
+	c.TemplateValues["testtemplate"] = command.CommandTemplateValue{
+		Type:        "testtype",
+		Description: "testdescription",
 	}
 
-	sum, err := bson.Marshal(Command)
+	// example command
+	c1 := command.New()
+	c1.Description = "Example Description"
+	c1.Name = "NewTest1"
+	c1.RequiresRoot = true
+	c1.TemplateValues["testtemplate"] = command.CommandTemplateValue{
+		Type:        "testtype",
+		Description: "testdescription",
+	}
+
+	//sum, err := bson.Marshal(Command)
+	//if err != nil {
+	//	panic(err)
+	//}
+
+	ids, err := db.Store("Mongo", c, c1)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(ids)
 
 	// creates a Command entry at DB Test, Collection Mongo
-	res, err := db.Client.Database("Test").Collection("Mongo").InsertOne(context.TODO(), sum)
-	if err != nil {
-		panic(err)
-	}
+	//res, err := db.Client.Database("Test").Collection("Mongo").InsertOne(context.TODO(), sum)
+	//if err != nil {
+	//	panic(err)
+	//}
 
-	fmt.Println(res.InsertedID)
+	//fmt.Println(res.InsertedID)
 
 	// example get one DB entry as struct
 	var out command.Command

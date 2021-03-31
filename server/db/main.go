@@ -2,12 +2,14 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
-	"paqman-backend/command"
 	"paqman-backend/config"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -49,8 +51,30 @@ func Disconnect() error {
 	return nil
 }
 
-// Store stores command structs in the TODO DB.
+// Store stores command structs in the DB.
 // Multiple commands can be passed.
-func Store(collection string, command ...command.Command) {
-	// TODO
+func Store(collection string, v ...interface{}) ([]string, error) {
+	var bsonElements []interface{}
+	for _, e := range v {
+		bsonElement, err := bson.Marshal(e)
+		if err != nil {
+			return nil, err
+		}
+		bsonElements = append(bsonElements, bsonElement)
+	}
+	res, err := Client.Database("Test").Collection(collection).InsertMany(context.TODO(), bsonElements)
+	if err != nil {
+		return nil, err
+	}
+
+	var output []string
+	for _, e := range res.InsertedIDs {
+
+		if tmp, ok := e.(primitive.ObjectID); !ok {
+			return nil, errors.New("type assertion was not successful")
+		} else {
+			output = append(output, tmp.String())
+		}
+	}
+	return output, nil
 }
