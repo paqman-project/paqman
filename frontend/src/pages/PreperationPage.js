@@ -8,15 +8,14 @@ import CommandByParameterView from "../views/preparation/CommandByParameterView"
 import AboutView from "../views/preparation/AboutView"
 
 export default function PreperationPage() {
-    
-    const { path }  = useRouteMatch()
+    const { path } = useRouteMatch()
 
     return (
         <div className="flex h-full">
             <Sidebar />
             <div className="w-full h-full p-4">
                 <Switch>
-                    <Route path={path} exact >
+                    <Route path={path} exact>
                         <Redirect to={`${path}/attack/list`} />
                     </Route>
                     <Route path={`${path}/attack/list`}>
@@ -32,7 +31,7 @@ export default function PreperationPage() {
                         <CommandByParameterView />
                     </Route>
                     <Route path={`${path}/about`}>
-                        <AboutView />    
+                        <AboutView />
                     </Route>
                 </Switch>
             </div>

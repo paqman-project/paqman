@@ -1,5 +1,10 @@
 import React from "react"
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Redirect,
+} from "react-router-dom"
 import Header from "./container/Header"
 import PreperationPage from "./pages/PreperationPage"
 import CommandViewPage from "./pages/CommandViewPage"
@@ -14,10 +19,10 @@ export default function App() {
             <div className="flex-1 h-full">
                 <Router>
                     <Switch>
-                        <Route path="/" exact >
+                        <Route path="/" exact>
                             <Redirect to="/prepare" />
                         </Route>
-                        <Route path="/prepare" >
+                        <Route path="/prepare">
                             <PreperationPage />
                         </Route>
                         <Route path="/perform/:attackID">
