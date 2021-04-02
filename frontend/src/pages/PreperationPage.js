@@ -14,26 +14,28 @@ export default function PreperationPage() {
     return (
         <div className="flex h-full">
             <Sidebar />
-            <Switch>
-                <Route path={path} exact >
-                    <Redirect to={`${path}/attack/list`} />
-                </Route>
-                <Route path={`${path}/attack/list`}>
-                    <AttackListView />
-                </Route>
-                <Route path={`${path}/attack/by-parameter`}>
-                    <AttackByParameterView />
-                </Route>
-                <Route path={`${path}/command/list`}>
-                    <CommandListView />
-                </Route>
-                <Route path={`${path}/command/by-parameter`}>
-                    <CommandByParameterView />
-                </Route>
-                <Route path={`${path}/about`}>
-                    <AboutView />    
-                </Route>
-            </Switch>
+            <div className="w-full h-full p-4">
+                <Switch>
+                    <Route path={path} exact >
+                        <Redirect to={`${path}/attack/list`} />
+                    </Route>
+                    <Route path={`${path}/attack/list`}>
+                        <AttackListView />
+                    </Route>
+                    <Route path={`${path}/attack/by-parameter`}>
+                        <AttackByParameterView />
+                    </Route>
+                    <Route path={`${path}/command/list`}>
+                        <CommandListView />
+                    </Route>
+                    <Route path={`${path}/command/by-parameter`}>
+                        <CommandByParameterView />
+                    </Route>
+                    <Route path={`${path}/about`}>
+                        <AboutView />    
+                    </Route>
+                </Switch>
+            </div>
         </div>
     )
 }

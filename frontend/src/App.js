@@ -5,6 +5,7 @@ import PreperationPage from "./pages/PreperationPage"
 import CommandViewPage from "./pages/CommandViewPage"
 import AttackViewPage from "./pages/AttackViewPage"
 import PerformAttackPage from "./pages/PerformAttackPage"
+import NotImplemented from "./components/NotImplemented"
 
 export default function App() {
     return (
@@ -27,6 +28,9 @@ export default function App() {
                         </Route>
                         <Route path="/command/:commandID">
                             <CommandViewPage />
+                        </Route>
+                        <Route path="/editor">
+                            <NotImplemented />
                         </Route>
                     </Switch>
                 </Router>
