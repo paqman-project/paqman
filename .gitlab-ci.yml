@@ -8,7 +8,6 @@ variables:
 
 code_quality:
   stage: test
-  allow_failure: true
   image: node:15-alpine
   script:
     - cd frontend/ && npx prettier --check .

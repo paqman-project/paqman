@@ -5,7 +5,7 @@ import Body from "./container/Body"
 export default function App() {
     return (
         <div className="h-full w-full absolute top-0">
-            <Header/>         
+            <Header />
             <Body />
         </div>
     )

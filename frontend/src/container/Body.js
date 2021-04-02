@@ -5,10 +5,10 @@ import CommandView from "../views/CommandView"
 import AboutView from "../views/AboutView"
 import ViewWrapper from "./ViewWrapper"
 
-export default function Body(){
-    const [ view, setView ] = useState("Attacks")
+export default function Body() {
+    const [view, setView] = useState("Attacks")
 
-    function selectView(){
+    function selectView() {
         switch (view) {
             case "Attacks":
                 return <AttackView />
@@ -17,18 +17,15 @@ export default function Body(){
             case "About":
                 return <AboutView />
             default:
-                break;
+                break
         }
     }
 
-    return(
+    return (
         <>
             <div className="h-full flex">
-            
                 <Sidebar currentView={view} setView={setView} />
-                <ViewWrapper>
-                    {selectView()}
-                </ViewWrapper>
+                <ViewWrapper>{selectView()}</ViewWrapper>
             </div>
         </>
     )
