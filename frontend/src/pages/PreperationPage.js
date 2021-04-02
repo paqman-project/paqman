@@ -1,5 +1,5 @@
 import React from "react"
-import { useRouteMatch, Switch, Route } from "react-router-dom"
+import { useRouteMatch, Switch, Route, Redirect } from "react-router-dom"
 import Sidebar from "../container/Sidebar"
 import AttackListView from "../views/preparation/AttackListView"
 import AttackByParameterView from "../views/preparation/AttackByParameterView"
@@ -12,9 +12,12 @@ export default function PreperationPage() {
     const { path }  = useRouteMatch()
 
     return (
-        <div className="h-full flex">
+        <div className="flex h-full">
             <Sidebar />
             <Switch>
+                <Route path={path} exact >
+                    <Redirect to={`${path}/attack/list`} />
+                </Route>
                 <Route path={`${path}/attack/list`}>
                     <AttackListView />
                 </Route>

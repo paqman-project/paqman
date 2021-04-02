@@ -8,27 +8,29 @@ import PerformAttackPage from "./pages/PerformAttackPage"
 
 export default function App() {
     return (
-        <div className="h-full w-full absolute top-0">
+        <div className="flex flex-col h-screen w-full">
             <Header />
-            <Router>
-                <Switch>
-                    <Route path="/" exact >
-                        <Redirect to="/prepare" />
-                    </Route>
-                    <Route path="/prepare" >
-                        <PreperationPage />
-                    </Route>
-                    <Route path="/perform/:attackID">
-                        <PerformAttackPage />
-                    </Route>
-                    <Route path="/attack/:attackID">
-                        <AttackViewPage />
-                    </Route>
-                    <Route path="/command/:commandID">
-                        <CommandViewPage />
-                    </Route>
-                </Switch>
-            </Router>
+            <div className="flex-1 h-full">
+                <Router>
+                    <Switch>
+                        <Route path="/" exact >
+                            <Redirect to="/prepare" />
+                        </Route>
+                        <Route path="/prepare" >
+                            <PreperationPage />
+                        </Route>
+                        <Route path="/perform/:attackID">
+                            <PerformAttackPage />
+                        </Route>
+                        <Route path="/attack/:attackID">
+                            <AttackViewPage />
+                        </Route>
+                        <Route path="/command/:commandID">
+                            <CommandViewPage />
+                        </Route>
+                    </Switch>
+                </Router>
+            </div>
         </div>
     )
 }
