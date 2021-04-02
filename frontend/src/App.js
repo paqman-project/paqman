@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import Header from "./container/Header"
 import PreperationPage from "./pages/PreperationPage"
 import CommandViewPage from "./pages/CommandViewPage"
@@ -12,10 +12,21 @@ export default function App() {
             <Header />
             <Router>
                 <Switch>
-                    <Route path="/prepare" component={PreperationPage} />
-                    <Route path="/command/:commandID" component={CommandViewPage} />
-                    <Route path="/attack/:attackID" component={AttackViewPage} />
-                    <Route path="/perform/:attackID" component={PerformAttackPage} />
+                    <Route path="/" exact >
+                        <Redirect to="/prepare" />
+                    </Route>
+                    <Route path="/prepare" >
+                        <PreperationPage />
+                    </Route>
+                    <Route path="/perform/:attackID">
+                        <PerformAttackPage />
+                    </Route>
+                    <Route path="/attack/:attackID">
+                        <AttackViewPage />
+                    </Route>
+                    <Route path="/command/:commandID">
+                        <CommandViewPage />
+                    </Route>
                 </Switch>
             </Router>
         </div>

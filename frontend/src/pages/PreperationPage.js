@@ -15,11 +15,21 @@ export default function PreperationPage() {
         <div className="h-full flex">
             <Sidebar />
             <Switch>
-                <Route path={`${path}/attack/list`} component={AttackListView}/>
-                <Route path={`${path}/attack/by-parameter`} component={AttackByParameterView} />
-                <Route path={`${path}/command/list`} component={CommandListView}/>
-                <Route path={`${path}/command/by-parameter`} component={CommandByParameterView} />
-                <Route path={`${path}/about`} component={AboutView}/>
+                <Route path={`${path}/attack/list`}>
+                    <AttackListView />
+                </Route>
+                <Route path={`${path}/attack/by-parameter`}>
+                    <AttackByParameterView />
+                </Route>
+                <Route path={`${path}/command/list`}>
+                    <CommandListView />
+                </Route>
+                <Route path={`${path}/command/by-parameter`}>
+                    <CommandByParameterView />
+                </Route>
+                <Route path={`${path}/about`}>
+                    <AboutView />    
+                </Route>
             </Switch>
         </div>
     )
