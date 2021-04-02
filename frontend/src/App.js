@@ -12,7 +12,7 @@ export default function App() {
             <Header />
             <Router>
                 <Switch>
-                    <Route path="/" exact component={PreperationPage} />
+                    <Route path="/prepare" component={PreperationPage} />
                     <Route path="/command/:commandID" component={CommandViewPage} />
                     <Route path="/attack/:attackID" component={AttackViewPage} />
                     <Route path="/perform/:attackID" component={PerformAttackPage} />
