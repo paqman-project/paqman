@@ -1,11 +1,11 @@
 import React from "react"
 import { useRouteMatch, Switch, Route } from "react-router-dom"
 import Sidebar from "../container/Sidebar"
-import AttackListView from "../views/AttackListView"
-import AttackByParameterView from "../views/AttackByParameterView"
-import CommandListView from "../views/CommandListView"
-import CommandByParameterView from "../views/CommandByParameterView"
-import AboutView from "../views/AboutView"
+import AttackListView from "../views/preparation/AttackListView"
+import AttackByParameterView from "../views/preparation/AttackByParameterView"
+import CommandListView from "../views/preparation/CommandListView"
+import CommandByParameterView from "../views/preparation/CommandByParameterView"
+import AboutView from "../views/preparation/AboutView"
 
 export default function PreperationPage() {
     
