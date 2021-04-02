@@ -1,8 +1,10 @@
 import React from "react"
-import Header from "./container/Header"
-import Body from "./container/Body"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import AboutView from "./views/AboutView"
+import Header from "./container/Header"
+import PreperationPage from "./pages/PreperationPage"
+import CommandViewPage from "./pages/CommandViewPage"
+import AttackViewPage from "./pages/AttackViewPage"
+import PerformAttackPage from "./pages/PerformAttackPage"
 
 export default function App() {
     return (
@@ -10,8 +12,10 @@ export default function App() {
             <Header />
             <Router>
                 <Switch>
-                    <Route path="/" exact component={Body} />
-                    <Route path="/test" component={AboutView} />
+                    <Route path="/" exact component={PreperationPage} />
+                    <Route path="/command/:commandID" component={CommandViewPage} />
+                    <Route path="/attack/:attackID" component={AttackViewPage} />
+                    <Route path="/perform/:attackID" component={PerformAttackPage} />
                 </Switch>
             </Router>
         </div>

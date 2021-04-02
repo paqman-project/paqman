@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import Sidebar from "./Sidebar"
+import Sidebar from "../container/Sidebar"
 import AttackView from "../views/AttackView"
 import CommandView from "../views/CommandView"
 import AboutView from "../views/AboutView"
-import ViewWrapper from "./ViewWrapper"
+import ViewWrapper from "../container/ViewWrapper"
 
-export default function Body() {
+export default function PreperationPage() {
     const [view, setView] = useState("Attacks")
 
     function selectView() {
