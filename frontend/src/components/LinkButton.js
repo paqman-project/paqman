@@ -1,7 +1,7 @@
 import React from "react"
 import { Link, useLocation } from "react-router-dom"
 
-export default function SectionButton({ title, to }) {
+export default function LinkButton({ title, to }) {
     const selectedStyle = " border-yellow-400"
     const { pathname } = useLocation() // gets the current path
 
