@@ -21,7 +21,7 @@ export default function App() {
                 <Router>
                     <Switch>
                         <Route path="/" exact>
-                            <Redirect to="/prepare" />
+                            <Redirect to="/prepare/" />
                         </Route>
                         <Route path="/prepare">
                             <PreperationPage />

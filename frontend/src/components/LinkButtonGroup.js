@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function SectionButtonGroup({ title, children }) {
+export default function LinkButtonGroup({ title, children }) {
     return (
         <div className="mt-4">
             <h1 className="text-center">{title}</h1>
