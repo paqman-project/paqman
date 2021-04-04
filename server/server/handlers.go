@@ -7,7 +7,9 @@ import (
 	"paqman-backend/command"
 	"paqman-backend/db"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,28 +31,32 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	respondString(&w, "Command added as "+ids[0], 200)
 }
 
-func showHandler(w http.ResponseWriter, r *http.Request) {
-	cursor, err := db.Client.Database("Test").Collection("Mongo").Find(context.TODO(), struct{}{})
-	if err != nil {
-		respondError(&w, err, 500)
-		return
+func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
+	commandID := mux.Vars(r)
+	type commandWithID struct {
+		ID              primitive.ObjectID `bson:"_id" json:"_id"`
+		command.Command `bson:",inline"`
 	}
-
-	var results []bson.M
-
-	for cursor.Next(context.TODO()) {
-		var result bson.M
-		if err := cursor.Decode(&result); err != nil {
+	var c commandWithID
+	if id, ok := commandID["id"]; ok {
+		objectID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
 			respondError(&w, err, 500)
 			return
 		}
-		results = append(results, result)
-	}
-
-	response, err := json.Marshal(results)
-	if err != nil {
-		respondError(&w, err, 500)
+		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+			"_id": objectID,
+		}).Decode(&c)
+		if err != nil {
+			w.WriteHeader(404)
+			w.Write(nil)
+			return
+		}
+	} else {
+		w.WriteHeader(400)
+		w.Write(nil)
 		return
 	}
-	respondJSON(&w, response, 200)
+
+	respondObject(&w, c, 200)
 }
