@@ -4,10 +4,10 @@ import { Link, useLocation } from "react-router-dom"
 /**
  * A LinkButton uses the react-router Link component to redirect a user to a
  * ressource, routed via browser router.
- * 
+ *
  * IMPORTANT: Always append a trailing slash at the end of the path in the "to"
  * prop, as the backend served the static frontend files in strict slash mode.
- * 
+ *
  * @param props
  * @param props.title The text displayed in the button
  * @param props.to The internal URL to redirect to, when the button is clicked
