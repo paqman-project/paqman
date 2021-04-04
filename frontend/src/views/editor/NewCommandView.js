@@ -10,6 +10,8 @@ export default function NewCommandView() {
         template_values: "{}"
     })
 
+    const [ response, setResponse ] = useState(null)
+
     const handleSubmit = async (event) => {
 
         event.preventDefault()
@@ -18,10 +20,12 @@ export default function NewCommandView() {
         v["template_values"] = JSON.parse(v.template_values)
 
         alert(`Commiting command:\n${JSON.stringify(v, null, 4)}`)
-        await fetch("/api/command", {
+        let r = await fetch("/api/command", {
             method: "POST",
             body: JSON.stringify(v)
         }).catch(e => console.log(e))
+
+        setResponse(await r.text())
 
     }
 
@@ -38,7 +42,7 @@ export default function NewCommandView() {
                 onSubmit={handleSubmit} 
                 className="flex flex-col w-1/3 m-auto"
             >
-                <lable>Name</lable>
+                <label>Name</label>
                 <input 
                     type="text" 
                     name="name" 
@@ -47,7 +51,7 @@ export default function NewCommandView() {
                     className="border mb-4"
                 />
 
-                <lable>Description</lable>
+                <label>Description</label>
                 <input 
                     type="text" 
                     name="description" 
@@ -56,7 +60,7 @@ export default function NewCommandView() {
                     className="border mb-4"
                 />
 
-                <lable>Template</lable>
+                <label>Template</label>
                 <input 
                     type="text" 
                     name="template" 
@@ -65,7 +69,7 @@ export default function NewCommandView() {
                     className="border mb-4"
                 />
 
-                <lable>Template Values</lable>
+                <label>Template Values</label>
                 <textarea
                     rows="10"
                     name="template_values" 
@@ -79,6 +83,12 @@ export default function NewCommandView() {
                     value="Submit"
                     className="mt-4"
                 />
+
+                { response && 
+                    <div className="my-8 text-center text-green-700">
+                        <p>{response}</p>
+                    </div>
+                }
 
             </form>
         </div>

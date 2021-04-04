@@ -25,7 +25,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondString(&w, "Command added with id: "+ids[0], 200)
+	respondString(&w, "Command added as "+ids[0], 200)
 }
 
 func showHandler(w http.ResponseWriter, r *http.Request) {
