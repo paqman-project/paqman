@@ -1,5 +1,9 @@
 import React from "react"
 
+/**
+ * This component can be used to signal, that a feature
+ * has not been implemented yet.
+ */
 export default function NotImplemented() {
     return (
         <div className="mt-10 mx-auto text-center animate-bounce">

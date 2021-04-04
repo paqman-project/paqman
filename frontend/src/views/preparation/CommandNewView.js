@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import ViewHeading from "../../components/ViewHeading"
 
+/**
+ * This view is used to create new commands by template.
+ * WORK IN PROGRESS!
+ */
 export default function CommandNewView() {
 
     const [ formValues, setFormValues ] = useState({

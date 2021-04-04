@@ -9,6 +9,13 @@ import CommandByParameterView from "../views/preparation/CommandByParameterView"
 import AboutView from "../views/preparation/AboutView"
 import CommandNewView from "../views/preparation/CommandNewView"
 
+/**
+ * This page is used to prepare for an attack. Here you choose
+ * which attack you want to perform before beeing redirected to
+ * the "perform attack" page.
+ * Also, things like the about page and the views for adding commands,
+ * attacks and parameters reside here.
+ */
 export default function PreperationPage() {
     const { path } = useRouteMatch()
 
