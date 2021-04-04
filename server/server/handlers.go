@@ -15,6 +15,7 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func newCommandHandler(w http.ResponseWriter, r *http.Request) {
+
 	var c command.Command
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 		respondError(&w, err, 400)

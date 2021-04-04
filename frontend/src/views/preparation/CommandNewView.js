@@ -26,6 +26,9 @@ export default function CommandNewView() {
         alert(`Commiting command:\n${JSON.stringify(v, null, 4)}`)
         let r = await fetch("/api/command", {
             method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(v)
         }).catch(e => console.log(e))
 
