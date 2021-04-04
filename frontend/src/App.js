@@ -7,10 +7,9 @@ import {
 } from "react-router-dom"
 import Header from "./container/Header"
 import PreperationPage from "./pages/PreperationPage"
-import CommandViewPage from "./pages/CommandViewPage"
-import AttackViewPage from "./pages/AttackViewPage"
+import CommandViewerPage from "./pages/CommandViewerPage"
+import AttackViewerPage from "./pages/AttackViewerPage"
 import PerformAttackPage from "./pages/PerformAttackPage"
-import NotImplemented from "./components/NotImplemented"
 import NotFound from "./components/NotFound"
 
 export default function App() {
@@ -30,13 +29,10 @@ export default function App() {
                             <PerformAttackPage />
                         </Route>
                         <Route path="/attack/:attackID">
-                            <AttackViewPage />
+                            <AttackViewerPage />
                         </Route>
                         <Route path="/command/:commandID">
-                            <CommandViewPage />
-                        </Route>
-                        <Route path="/editor">
-                            <NotImplemented />
+                            <CommandViewerPage />
                         </Route>
                         {/* Fallback (404 page) */}
                         <Route path="/">

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"paqman-backend/command"
 	"paqman-backend/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,6 +12,21 @@ import (
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, []byte(`{"response": "pong"}`), 200)
+}
+
+func newCommandHandler(w http.ResponseWriter, r *http.Request) {
+
+	var c command.Command
+	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+	ids, err := db.Store("commands", c)
+	if err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+	respondString(&w, "Command added as "+ids[0], 200)
 }
 
 func showHandler(w http.ResponseWriter, r *http.Request) {

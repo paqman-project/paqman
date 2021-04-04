@@ -29,6 +29,7 @@ func Start() error {
 	apiRouter.HandleFunc("/ping", pingHandler).Methods("GET")
 	// TEMP get test value
 	apiRouter.HandleFunc("/show", showHandler).Methods("GET")
+	apiRouter.HandleFunc("/command", newCommandHandler).Methods("POST")
 	apiRouter.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		respondString(&rw, "Endpoint not found", 404)
 	})

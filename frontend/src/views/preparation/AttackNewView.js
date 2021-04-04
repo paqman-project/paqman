@@ -3,12 +3,12 @@ import NotImplemented from "../../components/NotImplemented"
 import ViewHeading from "../../components/ViewHeading"
 
 /**
- * This view provides a list of all commands for the preparation page
+ * This view is used to create new attacks
  */
-export default function CommandListView() {
+export default function AttackNewView() {
     return (
         <div>
-            <ViewHeading title="Command list" />
+            <ViewHeading title="Add a new attack" />
             <NotImplemented />
         </div>
     )
