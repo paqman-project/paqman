@@ -1,6 +1,6 @@
 import React from "react"
 import NotImplemented from "../components/NotImplemented"
 
-export default function AttackViewPage({ match }) {
+export default function AttackViewerPage({ match }) {
     return <NotImplemented />
 }
