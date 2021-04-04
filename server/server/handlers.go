@@ -31,6 +31,39 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	respondString(&w, "Command added as "+ids[0], 200)
 }
 
+func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
+
+	type smallCommand struct {
+		ID          primitive.ObjectID `bson:"_id" json:"_id"`
+		Name        string             `bson:"name" json:"name"`
+		Description string             `bson:"description" json:"description"`
+	}
+
+	cursor, err := db.Client.Database("Test").Collection("commands").Find(context.TODO(), bson.M{})
+	if err != nil {
+		respondError(&w, err, 500)
+		return
+	}
+
+	var results []smallCommand
+
+	for cursor.Next(context.TODO()) {
+		var result smallCommand
+		if err := cursor.Decode(&result); err != nil {
+			respondError(&w, err, 500)
+			return
+		}
+		results = append(results, result)
+	}
+
+	response, err := json.Marshal(results)
+	if err != nil {
+		respondError(&w, err, 500)
+		return
+	}
+	respondJSON(&w, response, 200)
+}
+
 func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 	commandID := mux.Vars(r)
 	type commandWithID struct {
