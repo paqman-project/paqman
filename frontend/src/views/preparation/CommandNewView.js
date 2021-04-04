@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import ViewHeading from "../../components/ViewHeading"
 
-export default function NewCommandView() {
+export default function CommandNewView() {
 
     const [ formValues, setFormValues ] = useState({
         name: "",
@@ -17,7 +17,7 @@ export default function NewCommandView() {
         event.preventDefault()
 
         let v = {...formValues}
-        v["template_values"] = JSON.parse(v.template_values)
+        v["template_values"] = JSON.parse(v.template_values) // transform json string to JS object
 
         alert(`Commiting command:\n${JSON.stringify(v, null, 4)}`)
         let r = await fetch("/api/command", {

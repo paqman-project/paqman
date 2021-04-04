@@ -1,5 +1,12 @@
 import React from "react"
+import NotImplemented from "../../components/NotImplemented"
+import ViewHeading from "../../components/ViewHeading"
 
 export default function AttackListView() {
-    return <h1 className="text-center">AttackListView</h1>
+    return (
+        <div>
+            <ViewHeading title="Attack list" />
+            <NotImplemented />
+        </div>
+    )
 }

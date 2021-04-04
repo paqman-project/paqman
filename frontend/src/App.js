@@ -11,7 +11,6 @@ import CommandViewerPage from "./pages/CommandViewerPage"
 import AttackViewerPage from "./pages/AttackViewerPage"
 import PerformAttackPage from "./pages/PerformAttackPage"
 import NotFound from "./components/NotFound"
-import EditorPage from "./pages/EditorPage"
 
 export default function App() {
     return (
@@ -34,9 +33,6 @@ export default function App() {
                         </Route>
                         <Route path="/command/:commandID">
                             <CommandViewerPage />
-                        </Route>
-                        <Route path="/editor">
-                            <EditorPage />
                         </Route>
                         {/* Fallback (404 page) */}
                         <Route path="/">

@@ -1,5 +1,12 @@
 import React from "react"
+import NotImplemented from "../../components/NotImplemented"
+import ViewHeading from "../../components/ViewHeading"
 
 export default function CommandListView() {
-    return <h1 className="text-center">CommandListView</h1>
+    return (
+        <div>
+            <ViewHeading title="Command list" />
+            <NotImplemented />
+        </div>
+    )
 }

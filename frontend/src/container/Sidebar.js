@@ -13,7 +13,7 @@ export default function Sidebar() {
                         title="By Parameter"
                         to="/prepare/attack/by-parameter/"
                     />
-                    <LinkButton title="Add" to="/editor/attack/new/" />
+                    <LinkButton title="Add" to="/prepare/attack/new/" />
                 </LinkButtonGroup>
                 <hr className="mt-6 border-0 bg-gray-200 h-px w-5/6 m-auto" />
                 <LinkButtonGroup title="Commands">
@@ -22,7 +22,7 @@ export default function Sidebar() {
                         title="By Parameter"
                         to="/prepare/command/by-parameter/"
                     />
-                    <LinkButton title="Add" to="/editor/command/new/" />
+                    <LinkButton title="Add" to="/prepare/command/new/" />
                 </LinkButtonGroup>
             </div>
             {/* lower buttons */}
