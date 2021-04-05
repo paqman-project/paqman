@@ -77,12 +77,12 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
+
 	commandID := mux.Vars(r)
-	type commandWithID struct {
+	var c struct {
 		ID              primitive.ObjectID `bson:"_id" json:"_id"`
 		command.Command `bson:",inline"`
 	}
-	var c commandWithID
 	if id, ok := commandID["id"]; ok {
 		objectID, err := primitive.ObjectIDFromHex(id)
 		if err != nil {
@@ -101,6 +101,5 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-
 	respondObject(&w, c, 200)
 }
