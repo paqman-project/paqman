@@ -17,32 +17,6 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, []byte(`{"response": "pong"}`), 200)
 }
 
-func newCommandHandler(w http.ResponseWriter, r *http.Request) {
-
-	var c command.Command
-	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
-		respondError(&w, err, 400)
-		return
-	}
-	ids, err := db.Store("commands", c)
-	if err != nil {
-		respondError(&w, err, 400)
-		return
-	}
-
-	b, err := json.Marshal(
-		struct {
-			ID string `json:"_id"`
-		}{
-			ids[0].Hex(),
-		},
-	)
-	if err != nil {
-		respondError(&w, err, 500)
-	}
-	respondJSON(&w, b, 200)
-}
-
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 
 	type smallCommand struct {
@@ -76,6 +50,32 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, response, 200)
 }
 
+func newCommandHandler(w http.ResponseWriter, r *http.Request) {
+
+	var c command.Command
+	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+	ids, err := db.Store("commands", c)
+	if err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	b, err := json.Marshal(
+		struct {
+			ID string `json:"_id"`
+		}{
+			ids[0].Hex(),
+		},
+	)
+	if err != nil {
+		respondError(&w, err, 500)
+	}
+	respondJSON(&w, b, 200)
+}
+
 func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	commandID := mux.Vars(r)
@@ -102,4 +102,8 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondObject(&w, c, 200)
+}
+
+func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
+
 }
