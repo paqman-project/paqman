@@ -53,7 +53,7 @@ func Disconnect() error {
 
 // Store stores command structs in the DB.
 // Multiple commands can be passed.
-func Store(collection string, v ...interface{}) ([]string, error) {
+func Store(collection string, v ...interface{}) ([]primitive.ObjectID, error) {
 	var bsonElements []interface{}
 	for _, e := range v {
 		bsonElement, err := bson.Marshal(e)
@@ -67,13 +67,13 @@ func Store(collection string, v ...interface{}) ([]string, error) {
 		return nil, err
 	}
 
-	var output []string
+	var output []primitive.ObjectID
 	for _, e := range res.InsertedIDs {
 
 		if tmp, ok := e.(primitive.ObjectID); !ok {
 			return nil, errors.New("type assertion was not successful")
 		} else {
-			output = append(output, tmp.String())
+			output = append(output, tmp)
 		}
 	}
 	return output, nil

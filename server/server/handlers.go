@@ -34,7 +34,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		struct {
 			ID string `json:"_id"`
 		}{
-			ids[0],
+			ids[0].Hex(),
 		},
 	)
 	if err != nil {
