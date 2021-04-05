@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"paqman-backend/command"
 	"paqman-backend/db"
@@ -28,7 +29,18 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondString(&w, "Command added as "+ids[0], 200)
+
+	b, err := json.Marshal(
+		struct {
+			ID string `json:"_id"`
+		}{
+			ids[0],
+		},
+	)
+	if err != nil {
+		respondError(&w, err, 500)
+	}
+	respondJSON(&w, b, 200)
 }
 
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,20 +86,19 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 	if id, ok := commandID["id"]; ok {
 		objectID, err := primitive.ObjectIDFromHex(id)
 		if err != nil {
-			respondError(&w, err, 500)
+			respondError(&w, err, 400)
 			return
 		}
 		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
 			"_id": objectID,
 		}).Decode(&c)
 		if err != nil {
-			w.WriteHeader(404)
-			w.Write(nil)
+			respondError(&w, err, 404)
 			return
 		}
 	} else {
-		w.WriteHeader(400)
-		w.Write(nil)
+		err := errors.New("id not present")
+		respondError(&w, err, 400)
 		return
 	}
 
