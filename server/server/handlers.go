@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"paqman-backend/command"
 	"paqman-backend/db"
@@ -129,15 +130,13 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var v map[string]string
+	var v map[string]interface{}
 
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		respondError(&w, err, 400)
 		return
 	}
-
-	c.Template.FillAll(v)
-
-	respondObject(&w, c, 200)
+	fmt.Println(v)
+	respondString(&w, c.FillTemplate(v), 200)
 
 }
