@@ -1,8 +1,14 @@
 package command
 
+type Template string
+
+func (t *Template) fill(templateValue, value string) string {
+
+}
+
 type Command struct {
 	Description    string                          `bson:"description" json:"description"`
-	Template       string                          `bson:"template" json:"template"`
+	Template       Template                        `bson:"template" json:"template"`
 	Name           string                          `bson:"name" json:"name"`
 	TemplateValues map[string]CommandTemplateValue `bson:"template_values" json:"template_values"`
 	RequiresRoot   bool                            `bson:"requires_root" json:"requires_root"`

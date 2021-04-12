@@ -101,9 +101,43 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondObject(&w, c, 200)
+	respondObject(&w, c, 201)
 }
 
 func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
+	commandID := mux.Vars(r)
+	var c struct {
+		ID              primitive.ObjectID `bson:"_id" json:"_id"`
+		command.Command `bson:",inline"`
+	}
+	if id, ok := commandID["id"]; ok {
+		objectID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			respondError(&w, err, 400)
+			return
+		}
+		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+			"_id": objectID,
+		}).Decode(&c)
+		if err != nil {
+			respondError(&w, err, 404)
+			return
+		}
+	} else {
+		err := errors.New("id not present")
+		respondError(&w, err, 400)
+		return
+	}
+
+	var v map[string]string
+
+	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	command.Template()
+
+	respondObject(&w, c, 200)
 
 }
