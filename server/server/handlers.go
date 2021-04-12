@@ -136,7 +136,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	command.Template()
+	c.Template.FillAll(v)
 
 	respondObject(&w, c, 200)
 

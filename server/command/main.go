@@ -1,9 +1,22 @@
 package command
 
+import (
+	"regexp"
+	"strings"
+)
+
 type Template string
 
-func (t *Template) fill(templateValue, value string) string {
+func (t *Template) FillAll(values map[string]string) string {
+	template := string(*t)
+	re := regexp.MustCompile(`\%\{.*?\}`)
+	for _, match := range re.FindAllString(template, -1) {
+		match = strings.Trim(match, "%{")
+		match = strings.Trim(match, "}")
+		template = strings.ReplaceAll(template, "%{"+match+"}", values[match])
+	}
 
+	return template
 }
 
 type Command struct {
