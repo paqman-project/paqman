@@ -15,38 +15,45 @@ type Command struct {
 	RequiresRoot   bool                            `bson:"requires_root" json:"requires_root"`
 }
 
+// FillTemplate
+//replaces the template values of a command with the specfic user defined values for a complete command
 func (c *Command) FillTemplate(values map[string]interface{}) string {
 	template := string(c.Template)
+	// regex, parses all template values out of a template specified with the syntax %{}
 	re := regexp.MustCompile(`\%\{.*?\}`)
 	for _, match := range re.FindAllString(template, -1) {
+		//removes useless characters before and after a match
 		match = strings.Trim(match, "%{")
 		match = strings.Trim(match, "}")
+		//switch between different TemplateValueTypes
 		switch t := c.TemplateValues[match]; t.Type {
 		case TemplateValueTypeNonvalueFlag:
+			//checks if type assertion was successful
 			if v, ok := values[match].(bool); ok {
 				if v {
-					template = strings.ReplaceAll(template, "%{"+match+"}", t.Value)
+					template = strings.ReplaceAll(template, "%{"+match+"}", t.Value) //if nonvalue-flag is set
 				} else {
-					template = strings.ReplaceAll(template, "%{"+match+"}", "")
+					template = strings.ReplaceAll(template, "%{"+match+"}", "") // if nonvalue-flag is not set
 				}
 			} else {
-				template = strings.ReplaceAll(template, "%{"+match+"}", "")
+				template = strings.ReplaceAll(template, "%{"+match+"}", "") //default (nonvalue-flag is not set)
 			}
-
+		//not implemented yet
 		case TemplateValueTypeParameter:
 			if v, ok := values[match].(string); ok {
 				_ = v
 			}
 
 		case TemplateValueTypeValue:
+			//checks if type assertion was successful
 			if v, ok := values[match].(string); ok {
 				template = strings.ReplaceAll(template, "%{"+match+"}", v)
 			} else {
-				template = strings.ReplaceAll(template, "%{"+match+"}", t.Default)
+				template = strings.ReplaceAll(template, "%{"+match+"}", t.Default) //default
 			}
 		}
 	}
-
+	//regex, removes the wrong whitespacing
 	removeSpace := regexp.MustCompile(`\s+`)
 	template = removeSpace.ReplaceAllString(template, " ")
 	return template
@@ -54,6 +61,7 @@ func (c *Command) FillTemplate(values map[string]interface{}) string {
 
 type TemplateValueType string
 
+//constant variables
 const (
 	TemplateValueTypeNonvalueFlag TemplateValueType = "nonvalue-flag"
 	TemplateValueTypeParameter    TemplateValueType = "parameter"

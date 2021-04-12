@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"paqman-backend/command"
 	"paqman-backend/db"
@@ -106,6 +105,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
+	//get a command by ID
 	commandID := mux.Vars(r)
 	var c struct {
 		ID              primitive.ObjectID `bson:"_id" json:"_id"`
@@ -132,11 +132,11 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	var v map[string]interface{}
 
+	// parses the request body into a map of key and value pairs
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		respondError(&w, err, 400)
 		return
 	}
-	fmt.Println(v)
 	respondString(&w, c.FillTemplate(v), 200)
 
 }
