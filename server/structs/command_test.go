@@ -2,24 +2,29 @@ package structs
 
 import "testing"
 
+// TODO add paramter tests as well
 func TestFillTemplate(t *testing.T) {
 
+	// struct to group test values and expected values
 	type G struct {
 		TestValue map[string]interface{}
 		Expected  string
 	}
 
 	testCases := []G{
+		// set only nonvalue-flag "verbosity" to true
 		{
 			TestValue: map[string]interface{}{
 				"verbosity": true,
 			},
 			Expected: "dislocker -v $(dislocker-find) -- /mnt/fuse",
 		},
+		// leave values empty (use defaults for everything)
 		{
 			TestValue: map[string]interface{}{},
 			Expected:  "dislocker $(dislocker-find) -- /mnt/fuse",
 		},
+		// overwrite defaults
 		{
 			TestValue: map[string]interface{}{
 				"bitlocker-partition": "/dev/sdb1",
@@ -29,6 +34,7 @@ func TestFillTemplate(t *testing.T) {
 		},
 	}
 
+	// example command
 	c := Command{
 		Template: "dislocker %{verbosity} %{bitlocker-partition} -- %{mount-path}",
 		TemplateValues: map[string]CommandTemplateValue{
@@ -51,7 +57,7 @@ func TestFillTemplate(t *testing.T) {
 
 		plain, err := c.FillTemplate(g.TestValue)
 		if err != nil {
-			t.Error(err)
+			t.Errorf("Got error: %s", err.Error())
 		}
 		if plain != g.Expected {
 			t.Errorf("Expected %s, got %s", g.Expected, plain)
