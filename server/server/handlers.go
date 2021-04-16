@@ -13,10 +13,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// status function for API
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, []byte(`{"response": "pong"}`), 200)
 }
 
+// gets all Commands
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 
 	type smallCommand struct {
@@ -50,6 +52,7 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, response, 200)
 }
 
+// creates a new Command
 func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	var c command.Command
@@ -76,6 +79,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, b, 200)
 }
 
+// gets a Command by ID
 func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	commandID := mux.Vars(r)
@@ -104,6 +108,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 	respondObject(&w, c, 201)
 }
 
+// returns a Command with filled template values
 func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	// get a command by ID
 	commandID := mux.Vars(r)
@@ -141,6 +146,30 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// gets a parameter by ID
 func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	paramID := mux.Vars(r)
+	var c struct {
+		ID                primitive.ObjectID `bson:"_id" json:"_id"`
+		command.Parameter `bson:",inline"`
+	}
+	if id, ok := paramID["id"]; ok {
+		objectID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			respondError(&w, err, 400)
+			return
+		}
+		err = db.Client.Database("Test").Collection("parameter").FindOne(context.TODO(), bson.M{
+			"_id": objectID,
+		}).Decode(&c)
+		if err != nil {
+			respondError(&w, err, 404)
+			return
+		}
+	} else {
+		err := errors.New("id not present")
+		respondError(&w, err, 400)
+		return
+	}
+	respondObject(&w, c, 201)
 }

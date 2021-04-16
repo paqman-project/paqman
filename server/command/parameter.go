@@ -1,20 +1,19 @@
 package command
 
 type Parameter struct {
-	Name           string                            `bson:"name"`
-	Description    string                            `bson:"description"`
-	Template       string                            `bson:"template"`
-	TemplateValues map[string]ParameterTemplateValue `bson:"template_values"`
-	Primitive      bool                              `bson:"primitive"`
-	Value          string                            `bson:"value"`
+	Name           string                            `json:"name" bson:"name"`
+	Description    string                            `json:"description" bson:"description"`
+	Template       string                            `json:"template" bson:"template"`
+	TemplateValues map[string]ParameterTemplateValue `json:"template_values" bson:"template_values"`
+	Primitive      bool                              `json:"primitive" bson:"primitive"`
 }
 
 type ParameterTemplateValue struct {
-	Format       string         `bson:"format,omitempty"`
-	ReturnedFrom []ReturnedFrom `bson:"returned_from,omitempty"`
+	Type         string         `json:"type" bson:"type"`
+	ReturnedFrom []ReturnedFrom `json:"returned_from,omitempty" bson:"returned_from,omitempty"`
 }
 
 type ReturnedFrom struct {
-	Plain     string `bson:"plain,omitempty"`
-	CommandID int    `bson:"command_id,omitempty"`
+	Plain     string `json:"plain,omitempty" bson:"plain,omitempty"`
+	CommandID int    `json:"command_id,omitempty" bson:"command_id,omitempty"`
 }
