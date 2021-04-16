@@ -20,11 +20,18 @@ type Command struct {
 
 // FillTemplate replaces the template values of a command
 // with the specfic user defined values for a complete command
-func (c *Command) FillTemplate(values map[string]interface{}) string {
+func (c *Command) FillTemplate(values map[string]interface{}) (string, error) {
 	template := string(c.Template)
 	// regex, parses all template values out of a template specified with the syntax %{}
 	re := regexp.MustCompile(`\%\{.*?\}`)
-	for _, match := range re.FindAllString(template, -1) {
+
+	// checks if any template_values are present
+	matches := re.FindAllString(template, -1)
+	if matches == nil {
+		return string(c.Template), nil
+	}
+
+	for _, match := range matches {
 		// removes useless characters before and after a match
 		match = strings.Trim(match, "%{")
 		match = strings.Trim(match, "}")
