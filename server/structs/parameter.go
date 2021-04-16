@@ -1,4 +1,4 @@
-package command
+package structs
 
 type Parameter struct {
 	Name           string                            `json:"name" bson:"name"`

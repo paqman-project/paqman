@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"paqman-backend/command"
+
 	"paqman-backend/db"
+	"paqman-backend/structs"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -55,7 +56,7 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 // creates a new Command
 func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 
-	var c command.Command
+	var c structs.Command
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 		respondError(&w, err, 400)
 		return
@@ -85,7 +86,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 	commandID := mux.Vars(r)
 	var c struct {
 		ID              primitive.ObjectID `bson:"_id" json:"_id"`
-		command.Command `bson:",inline"`
+		structs.Command `bson:",inline"`
 	}
 	if id, ok := commandID["id"]; ok {
 		objectID, err := primitive.ObjectIDFromHex(id)
@@ -114,7 +115,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	commandID := mux.Vars(r)
 	var c struct {
 		ID              primitive.ObjectID `bson:"_id" json:"_id"`
-		command.Command `bson:",inline"`
+		structs.Command `bson:",inline"`
 	}
 	if id, ok := commandID["id"]; ok {
 		objectID, err := primitive.ObjectIDFromHex(id)
@@ -142,7 +143,11 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondString(&w, c.FillTemplate(v), 200)
+	if plain, err := c.FillTemplate(v); err != nil {
+		respondString(&w, plain, 200)
+		return
+	}
+	respondError(&w, errors.New("Broken"), 500)
 
 }
 
@@ -151,7 +156,7 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 	paramID := mux.Vars(r)
 	var c struct {
 		ID                primitive.ObjectID `bson:"_id" json:"_id"`
-		command.Parameter `bson:",inline"`
+		structs.Parameter `bson:",inline"`
 	}
 	if id, ok := paramID["id"]; ok {
 		objectID, err := primitive.ObjectIDFromHex(id)

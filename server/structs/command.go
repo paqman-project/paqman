@@ -1,4 +1,4 @@
-package command
+package structs
 
 import (
 	"regexp"
@@ -66,7 +66,7 @@ func (c *Command) FillTemplate(values map[string]interface{}) (string, error) {
 	// regex, removes the wrong whitespacing
 	removeSpace := regexp.MustCompile(`\s+`)
 	template = removeSpace.ReplaceAllString(template, " ")
-	return template
+	return template, nil
 }
 
 // TemplateValueType -
