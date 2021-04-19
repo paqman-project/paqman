@@ -1,6 +1,7 @@
 package structs
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -38,29 +39,36 @@ func (c *Command) FillTemplate(values map[string]interface{}) (string, error) {
 		// switch between different TemplateValueTypes
 		switch t := c.TemplateValues[match]; t.Type {
 		case TemplateValueTypeNonvalueFlag:
-			// checks if type assertion was successful
-			if v, ok := values[match].(bool); ok {
-				if v {
-					template = strings.ReplaceAll(template, "%{"+match+"}", t.Value) // if nonvalue-flag is true
+			if value, ok := values[match]; ok { // check for value existence in POST body
+				if bValue, ok := value.(bool); ok { // check if value is bool
+					if bValue {
+						template = strings.ReplaceAll(template, "%{"+match+"}", t.Value) // if nonvalue-flag is true
+					} else {
+						template = strings.ReplaceAll(template, "%{"+match+"}", "") // if nonvalue-flag is false
+					}
 				} else {
-					template = strings.ReplaceAll(template, "%{"+match+"}", "") // if nonvalue-flag is false
+					return "", fmt.Errorf("template value %s is not a boolean", match)
 				}
 			} else {
-				template = strings.ReplaceAll(template, "%{"+match+"}", "") // default (nonvalue-flag is not set or not a bool)
+				template = strings.ReplaceAll(template, "%{"+match+"}", "") // default (nonvalue-flag is not set)
 			}
-		// not implemented yet
 		case TemplateValueTypeParameter:
+			// not implemented yet
 			if v, ok := values[match].(string); ok {
 				_ = v
 			}
 
 		case TemplateValueTypeValue:
-			// checks if type assertion was successful
-			if v, ok := values[match].(string); ok {
-				template = strings.ReplaceAll(template, "%{"+match+"}", v)
+			if value, ok := values[match]; ok {
+				if sValue, ok := value.(string); ok {
+					template = strings.ReplaceAll(template, "%{"+match+"}", sValue)
+				} else {
+					return "", fmt.Errorf("template value %s is not a string", match)
+				}
 			} else {
-				template = strings.ReplaceAll(template, "%{"+match+"}", t.Default) // default (if not set or not a string)
+				template = strings.ReplaceAll(template, "%{"+match+"}", t.Default)
 			}
+			// checks if type assertion was successful
 		}
 	}
 	// regex, removes the wrong whitespacing
