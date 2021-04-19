@@ -22,22 +22,27 @@ export default function App() {
                         <Route path="/" exact>
                             <Redirect to="/prepare/" />
                         </Route>
-                        <Route path="/prepare">
-                            <PreperationPage />
-                        </Route>
-                        <Route path="/perform/:attackID">
-                            <PerformAttackPage />
-                        </Route>
-                        <Route path="/attack/:attackID">
-                            <AttackViewerPage />
-                        </Route>
-                        <Route path="/command/:commandID">
-                            <CommandViewerPage />
-                        </Route>
+                        <Route 
+                            path="/prepare" 
+                            component={PreperationPage} 
+                        />
+                        <Route 
+                            path="/perform/:attackID" 
+                            component={PerformAttackPage} 
+                        />
+                        <Route 
+                            path="/attack/:attackID" 
+                            component={AttackViewerPage} 
+                        />
+                        <Route 
+                            path="/command/:commandID" 
+                            component={CommandViewerPage} 
+                        />
                         {/* Fallback (404 page) */}
-                        <Route path="/">
-                            <NotFound />
-                        </Route>
+                        <Route 
+                            path="/" 
+                            component={NotFound} 
+                        />
                     </Switch>
                 </Router>
             </div>
