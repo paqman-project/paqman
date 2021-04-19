@@ -143,11 +143,14 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	if plain, err := c.FillTemplate(v); err != nil {
-		respondString(&w, plain, 200)
+
+	plain, err := c.FillTemplate(v)
+	if err != nil {
+		respondError(&w, err, 500)
 		return
 	}
-	respondError(&w, errors.New("Broken"), 500)
+
+	respondString(&w, plain, 200)
 
 }
 
