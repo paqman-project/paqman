@@ -107,7 +107,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondObject(&w, c, 201)
+	respondObject(&w, c, 200)
 }
 
 // returns a Command with filled template values
