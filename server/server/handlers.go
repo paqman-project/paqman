@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 
 	"paqman-backend/db"
@@ -140,7 +141,12 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	// parses the request body into a map of key and value pairs
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
-		respondError(&w, err, 400)
+		switch {
+		case err == io.EOF:
+			respondError(&w, errors.New("Missing body"), 400)
+		case err != nil:
+			respondError(&w, err, 500)
+		}
 		return
 	}
 
