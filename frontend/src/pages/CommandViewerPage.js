@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import Template from "../components/Template"
+import TemplateForm from "../components/TemplateForm"
 import ViewHeading from "../components/ViewHeading"
+import Loading from "../components/Loading"
 
 /**
  * This page is used to display more information about a
@@ -8,34 +9,34 @@ import ViewHeading from "../components/ViewHeading"
  */
 export default function CommandViewerPage({ match }) {
     
-    const temp = match.url.split("/")
-    const commandId = temp[temp.length - 1]
+    const { params: { commandID } } = match
 
     const [ data, setData ] = useState()
 
     useEffect(() => {
-        fetch(`/api/command/${commandId}`)
+        fetch(`/api/command/${commandID}`)
             .then(r => r.json())
             .then(r => setData(r))
             .catch(e => console.log(e))
     }, [])
 
+    const inner = () => {
+        if (!data) return <Loading />
+        if (data.error) return <p>{data.error}</p>
+        return (
+            <div>
+                <ViewHeading title={data.name[0].toUpperCase() + data.name.substring(1)} />
+                <TemplateForm
+                    template={data.template}
+                    templateValues={data.template_values}
+                />
+            </div>
+        )
+    }
+
     return (
-        <div className="text-center h-full">
-            { !data ?
-               <p>Loading</p>
-               :
-               data.error ?
-                    <p>{data.error}</p>
-                    :
-                    <>
-                        <ViewHeading title={data.name[0].toUpperCase() + data.name.substring(1)} />
-                        <Template
-                            template={data.template}
-                            templateValues={data.template_values}
-                        />
-                    </>
-            }
+        <div className="h-full w-full flex justify-center">
+            { inner() }
         </div>
     )
 }
