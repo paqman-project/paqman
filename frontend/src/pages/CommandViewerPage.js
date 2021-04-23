@@ -27,6 +27,7 @@ export default function CommandViewerPage({ match }) {
             <div>
                 <ViewHeading title={data.name[0].toUpperCase() + data.name.substring(1)} />
                 <TemplateForm
+                    commandID={commandID}
                     template={data.template}
                     templateValues={data.template_values}
                 />
