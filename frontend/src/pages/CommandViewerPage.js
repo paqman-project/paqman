@@ -18,14 +18,17 @@ export default function CommandViewerPage({ match }) {
             .then(r => r.json())
             .then(r => setData(r))
             .catch(e => console.log(e))
-    }, [])
+    }, [ commandID ]) // TODO don't know if this is correct
 
     const inner = () => {
         if (!data) return <Loading />
         if (data.error) return <p>{data.error}</p>
         return (
             <div>
-                <ViewHeading title={data.name[0].toUpperCase() + data.name.substring(1)} />
+                <ViewHeading 
+                    title={data.name[0].toUpperCase() + data.name.substring(1)}
+                    subtitle={data.description}
+                />
                 <TemplateForm
                     commandID={commandID}
                     template={data.template}
@@ -36,7 +39,7 @@ export default function CommandViewerPage({ match }) {
     }
 
     return (
-        <div className="h-full w-full flex justify-center">
+        <div className="h-full w-full flex justify-center p-4">
             { inner() }
         </div>
     )
