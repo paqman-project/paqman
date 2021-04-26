@@ -30,7 +30,6 @@ export default function CommandViewerPage({ match }) {
                     subtitle={data.description}
                 />
                 <TemplateForm
-                    commandID={commandID}
                     template={data.template}
                     templateValues={data.template_values}
                 />

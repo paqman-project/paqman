@@ -1,8 +1,10 @@
 import React, { useState } from "react"
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
+import TemplateValueWrapper from "./TemplateValueWrapper"
 
-export default function TemplateForm({ commandID, template, templateValues }) {
+export default function TemplateForm({ template, templateValues }) {
 
     /**
      * This function creates a ready-to-render array from a template and it's values.
@@ -25,15 +27,27 @@ export default function TemplateForm({ commandID, template, templateValues }) {
         const templateArray = []
         for (let i = 0; i < templateValuesFound.length; i++) {
             // add the plaintext
-            templateArray.push(templateSplit[i])
-            // add the template values wrapped in <span>
             templateArray.push(
-                <span
-                    key={templateValuesFound[i]}
-                    className="bg-red-500 p-1 m-1 rounded-lg"
-                >
-                    { templateValuesFound[i] }
-                </span>
+                // TODO this is ugly af
+                <TemplateValueWrapper key={templateSplit[i]}>
+                    <div className="p-2">
+                        &nbsp;
+                    </div>
+                    <div className="p-2">
+                        { templateSplit[i] }
+                    </div>
+                </TemplateValueWrapper>
+            )
+            // add the template values
+            templateArray.push(
+                <TemplateValueWrapper key={templateValuesFound[i]} >
+                    <div className="p-2 border">
+                        { templateValuesFound[i] }
+                    </div>
+                    <div className="p-2 border">
+                        { formData[templateValuesFound[i]] ? formData[templateValuesFound[i]] : <p>&nbsp;</p> }
+                    </div>
+                </TemplateValueWrapper>
             )
         }
         return templateArray
@@ -56,16 +70,17 @@ export default function TemplateForm({ commandID, template, templateValues }) {
         }
     }
 
+    /**
+     * This function computes a full command string to be pasted to the clipboard.
+     * @returns {string} Full command ready to be pasted to the command line
+     */
+    const fullCommandString = () => {
+        return 1337
+    }
+
     const [ formData, setFormData ] = useState({}) // TODO fill with initial values
 
-    const handleSubmit = event => {
-        event.preventDefault()
-        alert("Filling with: \n" + JSON.stringify(formData, null, 2)) // TEMP
-        fetch(`/api/command/${commandID}/fill`, {
-            method: "POST",
-            body: JSON.stringify(formData)
-        })
-    }
+    const [ copied, setCopied ] = useState(false)
 
     const handleChange = event => {
         const { name, type, checked, value } = event.target
@@ -79,35 +94,47 @@ export default function TemplateForm({ commandID, template, templateValues }) {
         <div>
             { /* render out the reassambled template */ }
             <CodeWrapper>
-                { templateArray() }
+                <div className="flex items-center">
+                    { templateArray() }
+                </div>
             </CodeWrapper>
             { /* form to fill the template with actual values */ }
             <div>
-                <form onSubmit={handleSubmit}>
-                    {
-                        Object.entries(templateValues).map(([ tvName, tvDef ]) => 
-                            <div
-                                key={tvName}
-                                className="flex justify-between w-2/3 mx-auto my-2"
-                            >
-                                <label>{tvName}</label>
-                                <input
-                                    type={ inputTypeOf(tvDef) }
-                                    className="border border-red-500"
-                                    name={tvName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        )
-                    }
-                    <div className="text-center">
-                        <Button 
-                            title="Fill command" 
-                            submit
-                            important 
-                        />
-                    </div>
-                </form>
+                {
+                    Object.entries(templateValues).map(([ tvName, tvDef ]) => 
+                        <div
+                            key={tvName}
+                            className="flex justify-between w-2/3 mx-auto my-2"
+                        >
+                            <label>{tvName}</label>
+                            <input
+                                type={ inputTypeOf(tvDef) }
+                                className="border border-red-500"
+                                name={tvName}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    )
+                }
+                <div className="text-center">
+                    <CopyToClipboard
+                        text={ fullCommandString() }
+                        onCopy={() => {
+                            setCopied(true)
+                            setTimeout(
+                                () => setCopied(false), 
+                                1000
+                            )
+                        }}
+                    >
+                        <div className={ copied ? "animate-spin" : "animate-none" }>
+                            <Button 
+                                title="Copy to clipboard" 
+                                important 
+                            />
+                        </div>
+                    </CopyToClipboard>
+                </div>
             </div>
         </div>
     )

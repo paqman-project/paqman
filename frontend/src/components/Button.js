@@ -1,5 +1,14 @@
 import React from "react"
 
+/**
+ * A universal styled button. Can be used as a submit button and has two different
+ * kinds of styling.
+ * @param props
+ * @param {Function} props.onClick An onClick handler to be passed in
+ * @param {string} props.title Title of the button (visible)
+ * @param {boolean} props.important If the button should be filled (true) or only surrounded (false)
+ * @param {boolean} props.submit If this is a submit button (used inside a form) 
+ */
 export default function Button({ onClick, title, important, submit }) {
     return (
         <div>
