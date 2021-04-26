@@ -1,73 +1,73 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
-import TemplateValueWrapper from "./TemplateValueWrapper"
+import TemplateValueBox from "./TemplateValueBox"
+import Loading from "./Loading"
 
 export default function TemplateForm({ template, templateValues }) {
 
-    /**
-     * This function creates a ready-to-render array from a template and it's values.
-     * @returns {Array} Array containing CDATA strings and JSX-Components
-     */
+    const [ formData, setFormData ] = useState() // TODO fill with initial values
+
+    // populate formData with defaults, if any
+    useEffect(() => {
+        let fd = {}
+        Object.entries(templateValues).forEach(([ n, v ]) => {
+            switch (v.type) {
+                case "nonvalue-flag":
+                    fd[n] = false
+                    break
+                case "value":
+                    fd[n] = v.default || ""
+                    break;
+                case "parameter":
+                    // TODO this is temporary until #62 is resolved
+                    fd[n] = ""
+                    break;
+                default:
+                    console.log(`ERROR: found unsupported type ${v.type} in command template value`)
+            }
+        })
+        setFormData(fd)
+    }, [ templateValues ])
+
+    const regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
+    const templateCopy = template
+
+    // split the template copy at the patters to retreive everything
+    // that is not template value
+    const templatePlaintextFound = templateCopy.split(regex)
+
+    // search for all templates with regex pattern and replace brackets
+    const templateValuesFound = [...templateCopy.matchAll(regex)].map(e => 
+        e[0].replace("%{", "").replace("}", "")
+    )
+
     const templateArray = () => {
-        const regex = /\%\{.*?\}/g // pattern to find template values ( %{ } )
-        const templateCopy = template
-
-        // search for all templates with regex pattern and replace brackets
-        const templateValuesFound = [...templateCopy.matchAll(regex)].map(e => 
-            e[0].replace("%{", "").replace("}", "")
-        )
-
-        // split the template copy at the patters
-        const templateSplit = templateCopy.split(regex)
-        
-        // reassamble the template to contain both strings and
-        // react compoents
+        // reassamble the template to contain both plaintext and template values
         const templateArray = []
         for (let i = 0; i < templateValuesFound.length; i++) {
             // add the plaintext
             templateArray.push(
-                // TODO this is ugly af
-                <TemplateValueWrapper key={templateSplit[i]}>
-                    <div className="p-2">
-                        &nbsp;
-                    </div>
-                    <div className="p-2">
-                        { templateSplit[i] }
-                    </div>
-                </TemplateValueWrapper>
+                <TemplateValueBox 
+                    key={ i }
+                    plaintext={ templatePlaintextFound[i] }
+                    formData={ formData }
+                    setFormData= { setFormData }
+                />
             )
-            // add the template values
+            // add the template value
             templateArray.push(
-                <TemplateValueWrapper key={templateValuesFound[i]} >
-                    <div className="p-2 border">
-                        { templateValuesFound[i] }
-                    </div>
-                    <div className="p-2 border">
-                        { formData[templateValuesFound[i]] ? formData[templateValuesFound[i]] : <p>&nbsp;</p> }
-                    </div>
-                </TemplateValueWrapper>
+                <TemplateValueBox 
+                    key={ templateValuesFound[i] }
+                    templateName={ templateValuesFound[i] }
+                    templateValue={ templateValues[templateValuesFound[i]] }
+                    formData={ formData }
+                    setFormData= { setFormData }
+                />
             )
         }
         return templateArray
-    }
-
-    /**
-     * Used to compute the HTML input type by template value
-     * @param v Object containing the template value definition
-     * @returns {string} Type to be used in input elements
-     */
-    const inputTypeOf = v => {
-        switch (v.type) {
-            case "nonvalue-flag":
-                return "checkbox"
-            case "parameter":
-            case "value":
-                return "text"
-            default:
-                console.error("ERROR: found unsupported type in command template value")
-        }
     }
 
     /**
@@ -75,19 +75,41 @@ export default function TemplateForm({ template, templateValues }) {
      * @returns {string} Full command ready to be pasted to the command line
      */
     const fullCommandString = () => {
-        return 1337
+        let fcs = ""
+        for (let i = 0; i < templateValuesFound.length; i++) {
+            // add the plaintext
+            fcs = fcs + templatePlaintextFound[i]
+            // add the template value
+            switch (templateValues[templateValuesFound[i]].type) {
+                case "nonvalue-flag":
+                    if (formData[templateValuesFound[i]] === true) {
+                        fcs = fcs + templateValues[templateValuesFound[i]].value // TODO, check if existent?
+                    }
+                    break
+                case "value":
+                    fcs = fcs + formData[templateValuesFound[i]]
+                    break
+                case "parameter":
+                    // TODO this is temporary until #62 is resolved
+                    fcs = fcs + formData[templateValuesFound[i]]
+                    break
+                default:
+                    console.log(`ERROR: found unsupported type ${templateValues[templateValuesFound[i]].type} in command template value`)
+            }
+        }
+        fcs = fcs.replace(/\s+/g, " ") // remove duplicate whitespaces
+        return fcs
     }
-
-    const [ formData, setFormData ] = useState({}) // TODO fill with initial values
 
     const [ copied, setCopied ] = useState(false)
 
-    const handleChange = event => {
-        const { name, type, checked, value } = event.target
-        const combValue = type === "checkbox" ? checked : value
-        const d = {...formData} // shallow copy formData
-        d[name] = combValue
-        setFormData(d)
+    // wait for everything to populate before rendering the form
+    // (formData is populated via useEffect(..., []). This means
+    // that setFormData() will be called asynchronously and this
+    // component will render without waiting for the effect to
+    // finish.)
+    if (!formData) {
+        return <Loading />
     }
 
     return (
@@ -99,42 +121,23 @@ export default function TemplateForm({ template, templateValues }) {
                 </div>
             </CodeWrapper>
             { /* form to fill the template with actual values */ }
-            <div>
-                {
-                    Object.entries(templateValues).map(([ tvName, tvDef ]) => 
-                        <div
-                            key={tvName}
-                            className="flex justify-between w-2/3 mx-auto my-2"
-                        >
-                            <label>{tvName}</label>
-                            <input
-                                type={ inputTypeOf(tvDef) }
-                                className="border border-red-500"
-                                name={tvName}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )
-                }
-                <div className="text-center">
-                    <CopyToClipboard
-                        text={ fullCommandString() }
-                        onCopy={() => {
-                            setCopied(true)
-                            setTimeout(
-                                () => setCopied(false), 
-                                1000
-                            )
-                        }}
-                    >
-                        <div className={ copied ? "animate-spin" : "animate-none" }>
-                            <Button 
-                                title="Copy to clipboard" 
-                                important 
-                            />
-                        </div>
-                    </CopyToClipboard>
-                </div>
+            <div className="w-max mx-auto mt-10">
+                { /* Copy to Clipboard button */ }
+                <CopyToClipboard
+                    text={ fullCommandString() }
+                    onCopy={() => {
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 3000)
+                    }}
+                >
+                    <div>
+                        <Button 
+                            title="Copy to clipboard" 
+                            important 
+                        />
+                        { copied && <p className="text-center mt-4">Copied 👍</p> }
+                    </div>
+                </CopyToClipboard>
             </div>
         </div>
     )
