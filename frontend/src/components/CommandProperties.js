@@ -1,5 +1,10 @@
 import React from "react"
 
+/**
+ * Displays the command properties (e.g. "requires_root")
+ * @param props
+ * @param props.properties The object from where the properties will be extracted from
+ */
 export default function CommandProperties({ properties }) {
     return (
         <div className="text-center border-l-2 border-r-2 rounded-xl px-8 py-4 h-full">
