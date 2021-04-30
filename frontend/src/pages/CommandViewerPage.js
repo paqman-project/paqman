@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
-import TemplateForm from "../components/TemplateForm"
+import CommandTemplateForm from "../components/CommandTemplateForm"
 import ViewHeading from "../components/ViewHeading"
 import Loading from "../components/Loading"
+import CommandProperties from "../components/CommandProperties"
+import Instructions from "../components/Instructions"
 
 /**
  * This page is used to display more information about a
@@ -29,10 +31,24 @@ export default function CommandViewerPage({ match }) {
                     title={data.name[0].toUpperCase() + data.name.substring(1)}
                     subtitle={data.description}
                 />
-                <TemplateForm
-                    template={data.template}
-                    templateValues={data.template_values}
-                />
+                <div className="max-w-min"> {/* Do not allow the instruction component to grow endlessly */}
+                    <div className="w-5/6 mx-auto flex space-x-20 mb-10">
+                        <div className="flex-1"> {/* .flex-1 allows the div to grow and shrink to "just fit". As this is a flexbox, Instructions and CommandProperties will have the same size */}
+                            <Instructions
+                                text={"Unused, until #71 is resolved"}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <CommandProperties 
+                                properties={data}
+                            />
+                        </div>
+                    </div>
+                    <CommandTemplateForm
+                        template={data.template}
+                        templateValues={data.template_values}
+                    />
+                </div>
             </div>
         )
     }

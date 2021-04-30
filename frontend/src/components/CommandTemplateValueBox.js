@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function TemplateValueBox({ plaintext, templateName, templateValue, formData, setFormData }) {
+export default function CommandTemplateValueBox({ plaintext, templateName, templateValue, formData, setFormData }) {
 
     /**
      * Used to compute the HTML input type by template value

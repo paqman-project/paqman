@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
-import TemplateValueBox from "./TemplateValueBox"
+import CommandTemplateValueBox from "./CommandTemplateValueBox"
 import Loading from "./Loading"
 
-export default function TemplateForm({ template, templateValues }) {
+export default function CommandTemplateForm({ template, templateValues }) {
 
     const [ formData, setFormData ] = useState() // TODO fill with initial values
 
@@ -49,7 +49,7 @@ export default function TemplateForm({ template, templateValues }) {
         for (let i = 0; i < templateValuesFound.length; i++) {
             // add the plaintext
             templateArray.push(
-                <TemplateValueBox 
+                <CommandTemplateValueBox 
                     key={ i }
                     plaintext={ templatePlaintextFound[i] }
                     formData={ formData }
@@ -58,7 +58,7 @@ export default function TemplateForm({ template, templateValues }) {
             )
             // add the template value
             templateArray.push(
-                <TemplateValueBox 
+                <CommandTemplateValueBox 
                     key={ templateValuesFound[i] }
                     templateName={ templateValuesFound[i] }
                     templateValue={ templateValues[templateValuesFound[i]] }
@@ -116,7 +116,7 @@ export default function TemplateForm({ template, templateValues }) {
         <div>
             { /* render out the reassambled template */ }
             <CodeWrapper>
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                     { templateArray() }
                 </div>
             </CodeWrapper>
