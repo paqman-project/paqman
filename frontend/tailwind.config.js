@@ -6,17 +6,17 @@ module.exports = {
             // Costum Colors
             colors: {
                 'paqyellow': {              // Yellow
-                    DEFAULT: '#FCD222',
+                    DEFAULT: '#FCC922',
                     '50': '#FFFFFF',
-                    '100': '#FFFBEB',
-                    '200': '#FEF1B9',
-                    '300': '#FDE687',
-                    '400': '#FDDC54',
-                    '500': '#FCD222',
-                    '600': '#E8BC03',
-                    '700': '#B69302',
-                    '800': '#836A02',
-                    '900': '#514201'
+                    '100': '#FFFAEB',
+                    '200': '#FEEEB9',
+                    '300': '#FDE287',
+                    '400': '#FDD554',
+                    '500': '#FCC922',
+                    '600': '#E8B203',
+                    '700': '#B68C02',
+                    '800': '#836502',
+                    '900': '#513E01'
                 },
                 'paqgreen': {               // Dark Green / Teal
                     DEFAULT: '#384141',
@@ -71,6 +71,10 @@ module.exports = {
                     '900': '#3D2504'
                 },
             },
+
+            fontFamily: {
+                raleway: ['Raleway']
+            }
         },
     },
     variants: {
