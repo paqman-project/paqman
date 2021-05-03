@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react"
 import CommandTemplateForm from "../components/CommandTemplateForm"
 import ViewHeading from "../components/ViewHeading"
 import Loading from "../components/Loading"
-import CommandProperties from "../components/CommandProperties"
-import Instructions from "../components/Instructions"
+import Card from "../components/Card"
 
 /**
  * This page is used to display more information about a
@@ -35,19 +34,27 @@ export default function CommandViewerPage({ match }) {
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1"> {/* .flex-1 allows the div to grow and shrink to "just fit". As this is a flexbox, Instructions and CommandProperties will have the same size */}
-                        <Instructions
-                            text={"Unused, until #71 is resolved. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"} // TODO
-                        />
+                        <Card title="Instructions">
+                            <p className="italic">
+                                Unused, until #71 is resolved. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                            </p>
+                        </Card>
                     </div>
                     <div className="flex-1">
-                        <CommandProperties 
-                            properties={data}
-                        />
+                        <Card title="Command properties">
+                            <p>Requires root?<span> </span>
+                                { data.requires_root ? 
+                                    <span className="text-green-500 text-xl">&#10003;</span> : 
+                                    <span className="text-red-500 text-xl">&#10005;</span> 
+                                }
+                            </p>
+                        </Card>
                     </div>
                 </div>
                 <CommandTemplateForm
                     template={data.template}
                     templateValues={data.template_values}
+                    withCopyButton
                 />
             </div>
         </div>

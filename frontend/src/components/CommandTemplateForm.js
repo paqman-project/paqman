@@ -5,7 +5,7 @@ import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
 import Loading from "./Loading"
 
-export default function CommandTemplateForm({ template, templateValues }) {
+export default function CommandTemplateForm({ template, templateValues, withCopyButton }) {
 
     const [ formData, setFormData ] = useState() // TODO fill with initial values
 
@@ -120,25 +120,26 @@ export default function CommandTemplateForm({ template, templateValues }) {
                     { templateArray() }
                 </div>
             </CodeWrapper>
-            { /* form to fill the template with actual values */ }
-            <div className="w-max mx-auto mt-10">
-                { /* Copy to Clipboard button */ }
-                <CopyToClipboard
-                    text={ fullCommandString() }
-                    onCopy={() => {
-                        setCopied(true)
-                        setTimeout(() => setCopied(false), 3000)
-                    }}
-                >
-                    <div>
-                        <Button 
-                            title="Copy to clipboard" 
-                            important 
-                        />
-                        { copied && <p className="text-center mt-4">Copied 👍</p> }
-                    </div>
-                </CopyToClipboard>
-            </div>
+            { withCopyButton && ( // only display copy button, if 
+                <div className="w-max mx-auto mt-10">
+                    { /* Copy to Clipboard button */ }
+                    <CopyToClipboard
+                        text={ fullCommandString() }
+                        onCopy={() => {
+                            setCopied(true)
+                            setTimeout(() => setCopied(false), 3000)
+                        }}
+                    >
+                        <div>
+                            <Button 
+                                title="Copy to clipboard" 
+                                important
+                            />
+                            { copied && <p className="text-center mt-4">Copied 👍</p> }
+                        </div>
+                    </CopyToClipboard>
+                </div>
+            )}
         </div>
     )
 
