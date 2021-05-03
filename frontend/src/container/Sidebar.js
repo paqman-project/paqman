@@ -9,7 +9,9 @@ export default function Sidebar() {
     return (
         <div className="h-full w-60 shadow-2xl flex flex-col justify-between">
             {/* upper buttons */}
+            
             <div>
+                <img src="/font.svg" width="300px" alt="PAQMAN Logo" className="p-3"/>
                 <LinkButtonGroup title="Attacks">
                     <LinkButton title="List" to="/prepare/attack/list/" />
                     <LinkButton
