@@ -31,7 +31,7 @@ export default function Sidebar() {
             </div>
             {/* lower buttons */}
             <div>
-                <LinkButton title="About" to="/prepare/about/" />
+                <LinkButton classname="text-raleway" title="About" to="/prepare/about/" />
             </div>
         </div>
     )
