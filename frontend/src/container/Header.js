@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactComponent as Logo } from "../logo.svg";
+import "../logo_v2.svg";
 
 /**
  * This is PAQMANs header for all pages
@@ -7,7 +7,7 @@ import { ReactComponent as Logo } from "../logo.svg";
 export default function Header() {
     return (
         <div className="h-16 flex justify-between items-center shadow-lg">
-            <Logo />
+            <img src="/logo.svg" width="350px" alt="PAQMAN Logo" className="px-1"/>
         </div>
     )
 }
