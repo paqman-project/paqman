@@ -11,7 +11,6 @@ export default function Sidebar() {
             {/* upper buttons */}
             
             <div>
-                <img src="/font.svg" width="300px" alt="PAQMAN Logo" className="p-3"/>
                 <LinkButtonGroup title="Attacks">
                     <LinkButton title="List" to="/prepare/attack/list/" />
                     <LinkButton
