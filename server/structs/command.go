@@ -120,7 +120,33 @@ type CommandTemplateValue struct {
 	Value       string            `json:"value,omitempty" bson:"value,omitempty"`
 	Optional    bool              `json:"optional,omitempty" bson:"optional,omitempty"`
 	Default     string            `json:"default,omitempty" bson:"default,omitempty"`
-	ParamId     int               `json:"param_id,omitempty" bson:"param_id,omitempty"` // foreign key in MongoDB research!
+	ParamId     string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+}
+
+// Check template values type func
+func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
+	missingFields := make([]string, 0)
+	switch c.Type {
+	case TemplateValueTypeNonvalueFlag:
+		if c.Description == "" {
+			missingFields = append(missingFields, "description")
+		}
+		if c.Value == "" {
+			missingFields = append(missingFields, "value")
+		}
+	case TemplateValueTypeParameter:
+		if c.ParamId == "" {
+			missingFields = append(missingFields, "parameter_id")
+		}
+	case TemplateValueTypeValue:
+		if c.Description == "" {
+			missingFields = append(missingFields, "description")
+		}
+	default:
+		return nil, fmt.Errorf("%s not found", string(c.Type))
+	}
+
+	return missingFields, nil
 }
 
 // maybe useful some day
