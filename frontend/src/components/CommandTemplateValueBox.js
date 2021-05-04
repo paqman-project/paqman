@@ -1,4 +1,5 @@
 import React from "react"
+import Tooltip from "./Tooltip"
 
 export default function CommandTemplateValueBox({ plaintext, templateName, templateValue, formData, setFormData }) {
 
@@ -43,9 +44,11 @@ export default function CommandTemplateValueBox({ plaintext, templateName, templ
     if (templateName && templateValue) {
         return (
             <div>
-                <div className="p-2 border font-sans text-center">
-                    <label>{ templateName }</label>
-                </div>
+                <Tooltip tip={templateValue.description}>
+                    <div className="p-2 border font-sans text-center">
+                        <label>{ templateName }</label>
+                    </div>
+                </Tooltip>
                 <div className="p-2 border text-center">
                     <input
                         className="text-center"
