@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -75,31 +74,75 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	matches := re.FindAllString(string(c.Template), -1)
 
 	// check if more template values under template are given then in template_values map specified
-	missingInTemplateValues := make([]string, 0)
+	undefinedTemplates := make([]string, 0)
+	missingFields := make(map[string][]string)
+	wrongTypedTemplates := make([]string, 0)
 	for _, match := range matches {
 		match = strings.Trim(match, "%{")
 		match = strings.Trim(match, "}")
-		if _, ok := c.TemplateValues[match]; ok {
+		if value, ok := c.TemplateValues[match]; ok {
 			delete(copyTemplateValue, match)
+			missing, err := value.CheckTypeCompleteness()
+			if err != nil {
+				wrongTypedTemplates = append(wrongTypedTemplates, match)
+			} else {
+				if len(missing) > 0 {
+					missingFields[match] = missing
+				}
+			}
 		} else {
-			missingInTemplateValues = append(missingInTemplateValues, match)
+			undefinedTemplates = append(undefinedTemplates, match)
 		}
 	}
-	if len(missingInTemplateValues) > 0 {
-		err := fmt.Errorf("there are more template values in the template argument defined, following values in the template_values map are missing: %v", strings.Join(missingInTemplateValues, ", "))
-		respondError(&w, err, 400)
+
+	if len(wrongTypedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error               string   `json:"error"`
+			WrongTypedTemplates []string `json:"wrong_typed_templates"`
+		}{
+			"found templates with unknown type",
+			wrongTypedTemplates,
+		}, 400)
+		return
+	}
+
+	if len(undefinedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			UndefinedTemplates []string `json:"undefined_templates"`
+		}{
+			"undefined templates",
+			undefinedTemplates,
+		}, 400)
 		return
 	}
 
 	// check if more template values in the template_values map are given then in template specified
-	if len(copyTemplateValue) != 0 {
-		missingInTemplates := make([]string, 0)
+	if len(copyTemplateValue) > 0 {
+		redundantTemplates := make([]string, 0)
 		for key, _ := range copyTemplateValue {
-			missingInTemplates = append(missingInTemplates, key)
+			redundantTemplates = append(redundantTemplates, key)
 
 		}
-		err := fmt.Errorf("there are more template values in the template_values map given than initially specified in the template argument, following values in template are missing: %v", strings.Join(missingInTemplates, ", "))
-		respondError(&w, err, 400)
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			RedundantTemplates []string `json:"redundant_template_definitions"`
+		}{
+			"redundant template definitions found in template_values",
+			redundantTemplates,
+		}, 400)
+		return
+	}
+
+	if len(missingFields) > 0 {
+
+		respondObject(&w, struct {
+			Error         string              `json:"error"`
+			MissingFields map[string][]string `json:"missing_fields"`
+		}{
+			"fields are missing",
+			missingFields,
+		}, 400)
 		return
 	}
 
