@@ -7,7 +7,7 @@ import LinkButtonGroup from "../components/LinkButtonGroup"
  */
 export default function Sidebar() {
     return (
-        <div className="h-full w-60 shadow-2xl flex flex-col justify-between">
+        <div className="h-full w-60 shadow-2xl flex flex-col justify-between font-raleway">
             {/* upper buttons */}
 
             <div>
@@ -32,7 +32,6 @@ export default function Sidebar() {
             {/* lower buttons */}
             <div>
                 <LinkButton
-                    classname="text-raleway"
                     title="About"
                     to="/prepare/about/"
                 />
