@@ -120,7 +120,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	// check if more template values in the template_values map are given then in template specified
 	if len(copyTemplateValue) > 0 {
 		redundantTemplates := make([]string, 0)
-		for key, _ := range copyTemplateValue {
+		for key := range copyTemplateValue {
 			redundantTemplates = append(redundantTemplates, key)
 
 		}
