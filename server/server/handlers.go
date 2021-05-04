@@ -4,8 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -62,6 +65,45 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
+
+	// copy TemplateValues map for checking if more template values in template_values are given then in template specified
+	copyTemplateValue := c.TemplateValues
+
+	// regex, parses all template values out of a template specified with the syntax %{}
+	re := regexp.MustCompile(`\%\{.*?\}`)
+	// checks if any template_values are present
+	matches := re.FindAllString(string(c.Template), -1)
+
+	// check if more template values under template are given then in template_values map specified
+	missingInTemplateValues := make([]string, 0)
+	for _, match := range matches {
+		match = strings.Trim(match, "%{")
+		match = strings.Trim(match, "}")
+		if _, ok := c.TemplateValues[match]; ok {
+			delete(copyTemplateValue, match)
+		} else {
+			missingInTemplateValues = append(missingInTemplateValues, match)
+		}
+	}
+	if len(missingInTemplateValues) > 0 {
+		err := fmt.Errorf("there are more template values in the template argument defined, following values in the template_values map are missing: %v", strings.Join(missingInTemplateValues, ", "))
+		respondError(&w, err, 400)
+		return
+	}
+
+	// check if more template values in the template_values map are given then in template specified
+	if len(copyTemplateValue) != 0 {
+		missingInTemplates := make([]string, 0)
+		for key, _ := range copyTemplateValue {
+			missingInTemplates = append(missingInTemplates, key)
+
+		}
+		err := fmt.Errorf("there are more template values in the template_values map given than initially specified in the template argument, following values in template are missing: %v", strings.Join(missingInTemplates, ", "))
+		respondError(&w, err, 400)
+		return
+	}
+
+	// checks done, store command in db
 	ids, err := db.Store("commands", c)
 	if err != nil {
 		respondError(&w, err, 400)
@@ -143,7 +185,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		switch {
 		case err == io.EOF:
-			respondError(&w, errors.New("Missing body"), 400)
+			respondError(&w, errors.New("missing body"), 400)
 		case err != nil:
 			respondError(&w, err, 500)
 		}
