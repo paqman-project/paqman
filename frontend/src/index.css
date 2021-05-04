@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'Raleway';
-    src: url('raleway.ttf') format('ttf');
+    font-family: "Raleway";
+    src: url("raleway.ttf") format("ttf");
 }
 
 @tailwind base;

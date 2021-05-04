@@ -9,7 +9,7 @@ export default function Sidebar() {
     return (
         <div className="h-full w-60 shadow-2xl flex flex-col justify-between">
             {/* upper buttons */}
-            
+
             <div>
                 <LinkButtonGroup title="Attacks">
                     <LinkButton title="List" to="/prepare/attack/list/" />
@@ -31,7 +31,11 @@ export default function Sidebar() {
             </div>
             {/* lower buttons */}
             <div>
-                <LinkButton classname="text-raleway" title="About" to="/prepare/about/" />
+                <LinkButton
+                    classname="text-raleway"
+                    title="About"
+                    to="/prepare/about/"
+                />
             </div>
         </div>
     )
