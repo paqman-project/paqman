@@ -15,6 +15,8 @@ var frontendRoutes = []string{
 	"/asset-manifest.json",
 	"/favicon.ico",
 	"/robots.txt",
+	"/paqman192.png",
+	"/paqman512.png",
 }
 
 // Start starts the API and frontend server.
