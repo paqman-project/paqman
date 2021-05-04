@@ -17,12 +17,12 @@ export default function AboutView() {
                     amet.
                 </p>
                 <p className="font-serif p-2">
-                    font-serif: Lorem ipsum dolor sit amet, consetetur sadipscing
-                    elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-                    dolore magna aliquyam erat, sed diam voluptua. At vero eos
-                    et accusam et justo duo dolores et ea rebum. Stet clita kasd
-                    gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-                    amet.
+                    font-serif: Lorem ipsum dolor sit amet, consetetur
+                    sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At
+                    vero eos et accusam et justo duo dolores et ea rebum. Stet
+                    clita kasd gubergren, no sea takimata sanctus est Lorem
+                    ipsum dolor sit amet.
                 </p>
                 <p className="font-mono p-2">
                     font-mono: Lorem ipsum dolor sit amet, consetetur sadipscing
@@ -33,12 +33,12 @@ export default function AboutView() {
                     amet.
                 </p>
                 <p className="font-raleway p-2">
-                    font-raleway: Lorem ipsum dolor sit amet, consetetur sadipscing
-                    elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-                    dolore magna aliquyam erat, sed diam voluptua. At vero eos
-                    et accusam et justo duo dolores et ea rebum. Stet clita kasd
-                    gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-                    amet.
+                    font-raleway: Lorem ipsum dolor sit amet, consetetur
+                    sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At
+                    vero eos et accusam et justo duo dolores et ea rebum. Stet
+                    clita kasd gubergren, no sea takimata sanctus est Lorem
+                    ipsum dolor sit amet.
                 </p>
             </p>
         </div>

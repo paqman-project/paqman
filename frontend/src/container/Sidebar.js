@@ -31,10 +31,7 @@ export default function Sidebar() {
             </div>
             {/* lower buttons */}
             <div>
-                <LinkButton
-                    title="About"
-                    to="/prepare/about/"
-                />
+                <LinkButton title="About" to="/prepare/about/" />
             </div>
         </div>
     )
