@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import NotImplemented from "../../components/NotImplemented"
 import ViewHeading from "../../components/ViewHeading"
 
 /**
@@ -90,6 +91,11 @@ export default function CommandNewView() {
                     </div>
                 )}
             </form>
+            <p className="text-center font-bold text-xl m-16">or</p>
+            <div className="text-center">
+                <p>Add a command by importing a manpage</p>
+                <NotImplemented />
+            </div>
         </div>
     )
 }
