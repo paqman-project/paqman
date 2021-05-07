@@ -14,6 +14,7 @@ type Template string
 type Command struct {
 	Name           string                          `json:"name" bson:"name"`
 	Description    string                          `json:"description" bson:"description"`
+	Instructions   string                          `json:"instructions" bson:"instructions"`
 	Template       Template                        `json:"template" bson:"template"`
 	TemplateValues map[string]CommandTemplateValue `json:"template_values" bson:"template_values"`
 	RequiresRoot   bool                            `json:"requires_root" bson:"requires_root"`

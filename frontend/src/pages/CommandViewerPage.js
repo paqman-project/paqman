@@ -36,12 +36,7 @@ export default function CommandViewerPage({ match }) {
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1">
                         <Card title="Instructions">
-                            <p className="italic">
-                                Unused, until #71 is resolved. Lorem ipsum dolor
-                                sit amet, consetetur sadipscing elitr, sed diam
-                                nonumy eirmod tempor invidunt ut labore et
-                                dolore magna aliquyam
-                            </p>
+                            <p>{data.instructions}</p>
                         </Card>
                     </div>
                     <div className="flex-1">

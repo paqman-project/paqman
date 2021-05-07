@@ -21,11 +21,11 @@ export default function CommandListView() {
             {data ? (
                 data.map(e => (
                     <Link key={e._id} to={`/command/${e._id}`}>
-                        <div className="mb-4 mx-8 p-4 border-l-2 hover:border-r-8">
-                            <h1 className="capitalize font-bold text-lg">
+                        <div className="mb-4 mx-8 p-4 border-l-2">
+                            <h1 className="capitalize font-raleway font-bold text-lg">
                                 {e.name}
                             </h1>
-                            <h2>{e.description}</h2>
+                            <h2 className="font-raleway">{e.description}</h2>
                         </div>
                     </Link>
                 ))
