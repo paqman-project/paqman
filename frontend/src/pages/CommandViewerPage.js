@@ -9,44 +9,54 @@ import Card from "../components/Card"
  * command. It shows it's paramters and how they are retreived.
  */
 export default function CommandViewerPage({ match }) {
-    
     // get the commandID from route URL
-    const { params: { commandID } } = match
+    const {
+        params: { commandID },
+    } = match
 
-    const [ data, setData ] = useState()
+    const [data, setData] = useState()
 
     useEffect(() => {
         fetch(`/api/command/${commandID}`)
             .then(r => r.json())
             .then(r => setData(r))
             .catch(e => console.log(e))
-    }, [ commandID ])
+    }, [commandID])
 
     if (!data) return <Loading />
     if (data.error) return <p>{data.error}</p>
 
     return (
         <div className="h-full w-full p-4">
-            <ViewHeading 
+            <ViewHeading
                 title={data.name[0].toUpperCase() + data.name.substring(1)}
                 subtitle={data.description}
             />
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
-                    <div className="flex-1"> {/* .flex-1 allows the div to grow and shrink to "just fit". As this is a flexbox, Instructions and CommandProperties will have the same size */}
+                    <div className="flex-1">
                         <Card title="Instructions">
                             <p className="italic">
-                                Unused, until #71 is resolved. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                                Unused, until #71 is resolved. Lorem ipsum dolor
+                                sit amet, consetetur sadipscing elitr, sed diam
+                                nonumy eirmod tempor invidunt ut labore et
+                                dolore magna aliquyam
                             </p>
                         </Card>
                     </div>
                     <div className="flex-1">
                         <Card title="Command properties">
-                            <p>Requires root?<span> </span>
-                                { data.requires_root ? 
-                                    <span className="text-green-500 text-xl">&#10003;</span> : 
-                                    <span className="text-red-500 text-xl">&#10005;</span> 
-                                }
+                            <p>
+                                Requires root?<span> </span>
+                                {data.requires_root ? (
+                                    <span className="text-green-500 text-xl">
+                                        &#10003;
+                                    </span>
+                                ) : (
+                                    <span className="text-red-500 text-xl">
+                                        &#10005;
+                                    </span>
+                                )}
                             </p>
                         </Card>
                     </div>

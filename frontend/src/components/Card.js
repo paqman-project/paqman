@@ -8,8 +8,10 @@ import React from "react"
 export default function Card({ title, children }) {
     return (
         <div className="text-center border border-gray-100 rounded-xl px-8 py-4 h-full shadow-lg">
-            <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">{ title || "Title" }</p>
-            { children }
+            <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
+                {title || "Title"}
+            </p>
+            {children}
         </div>
     )
 }

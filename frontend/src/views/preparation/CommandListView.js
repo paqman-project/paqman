@@ -6,8 +6,7 @@ import ViewHeading from "../../components/ViewHeading"
  * This view provides a list of all commands for the preparation page
  */
 export default function CommandListView() {
-
-    const [ data, setData ] = useState(null)
+    const [data, setData] = useState(null)
 
     useEffect(() => {
         fetch("/api/commands")
@@ -19,22 +18,20 @@ export default function CommandListView() {
     return (
         <div className="flex-row">
             <ViewHeading title="Command list" />
-            { data ?
-                data.map(e => 
-                    <Link 
-                        key={e._id}
-                        to={`/command/${e._id}`}
-                    >
+            {data ? (
+                data.map(e => (
+                    <Link key={e._id} to={`/command/${e._id}`}>
                         <div className="mb-4 mx-8 p-4 border-l-2 hover:border-r-8">
-                            <h1 className="capitalize font-bold text-lg">{e.name}</h1>
+                            <h1 className="capitalize font-bold text-lg">
+                                {e.name}
+                            </h1>
                             <h2>{e.description}</h2>
                         </div>
                     </Link>
-                )
-                :
+                ))
+            ) : (
                 <p>No data</p>
-            }
+            )}
         </div>
     )
-
 }

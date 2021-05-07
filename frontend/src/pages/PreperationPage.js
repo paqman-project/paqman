@@ -27,34 +27,31 @@ export default function PreperationPage() {
                     <Route path={path} exact>
                         <Redirect to={`${path}/attack/list/`} />
                     </Route>
-                    <Route 
-                        path={`${path}/attack/list`} 
-                        component={AttackListView} 
+                    <Route
+                        path={`${path}/attack/list`}
+                        component={AttackListView}
                     />
-                    <Route 
-                        path={`${path}/attack/by-parameter`} 
-                        component={AttackByParameterView} 
+                    <Route
+                        path={`${path}/attack/by-parameter`}
+                        component={AttackByParameterView}
                     />
-                    <Route 
-                        path={`${path}/attack/new`} 
-                        component={AttackNewView} 
+                    <Route
+                        path={`${path}/attack/new`}
+                        component={AttackNewView}
                     />
-                    <Route 
-                        path={`${path}/command/list`} 
-                        component={CommandListView} 
+                    <Route
+                        path={`${path}/command/list`}
+                        component={CommandListView}
                     />
-                    <Route 
-                        path={`${path}/command/by-parameter`} 
-                        component={CommandByParameterView} 
+                    <Route
+                        path={`${path}/command/by-parameter`}
+                        component={CommandByParameterView}
                     />
-                    <Route 
-                        path={`${path}/command/new`} 
-                        component={CommandNewView} 
+                    <Route
+                        path={`${path}/command/new`}
+                        component={CommandNewView}
                     />
-                    <Route 
-                        path={`${path}/about`} 
-                        component={AboutView} 
-                    />
+                    <Route path={`${path}/about`} component={AboutView} />
                 </Switch>
             </div>
         </div>

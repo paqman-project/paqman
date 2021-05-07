@@ -1,35 +1,47 @@
 import React, { useEffect, useState } from "react"
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { CopyToClipboard } from "react-copy-to-clipboard"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
 import Loading from "./Loading"
 
-export default function CommandTemplateForm({ template, templateValues, withCopyButton }) {
-
-    const [ formData, setFormData ] = useState() // TODO fill with initial values
+/**
+ * Displays the gray box containing the fillable template values of a command
+ * @param {Object} props
+ * @param {string} props.template The template string
+ * @param {Object} props.templateValues The object from the command document containing the template value definitions
+ * @param {boolean} props.withCopyButton Whether the button to copy the filled command should be displayed
+ */
+export default function CommandTemplateForm({
+    template,
+    templateValues,
+    withCopyButton,
+}) {
+    const [formData, setFormData] = useState() // TODO fill with initial values
 
     // populate formData with defaults, if any
     useEffect(() => {
         let fd = {}
-        Object.entries(templateValues).forEach(([ n, v ]) => {
+        Object.entries(templateValues).forEach(([n, v]) => {
             switch (v.type) {
                 case "nonvalue-flag":
                     fd[n] = false
                     break
                 case "value":
                     fd[n] = v.default || ""
-                    break;
+                    break
                 case "parameter":
                     // TODO this is temporary until #62 is resolved
                     fd[n] = ""
-                    break;
+                    break
                 default:
-                    console.log(`ERROR: found unsupported type ${v.type} in command template value`)
+                    console.log(
+                        `ERROR: found unsupported type ${v.type} in command template value`
+                    )
             }
         })
         setFormData(fd)
-    }, [ templateValues ])
+    }, [templateValues])
 
     const regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
     const templateCopy = template
@@ -39,7 +51,7 @@ export default function CommandTemplateForm({ template, templateValues, withCopy
     const templatePlaintextFound = templateCopy.split(regex)
 
     // search for all templates with regex pattern and replace brackets
-    const templateValuesFound = [...templateCopy.matchAll(regex)].map(e => 
+    const templateValuesFound = [...templateCopy.matchAll(regex)].map(e =>
         e[0].replace("%{", "").replace("}", "")
     )
 
@@ -49,21 +61,21 @@ export default function CommandTemplateForm({ template, templateValues, withCopy
         for (let i = 0; i < templateValuesFound.length; i++) {
             // add the plaintext
             templateArray.push(
-                <CommandTemplateValueBox 
-                    key={ i }
-                    plaintext={ templatePlaintextFound[i] }
-                    formData={ formData }
-                    setFormData= { setFormData }
+                <CommandTemplateValueBox
+                    key={i}
+                    plaintext={templatePlaintextFound[i]}
+                    formData={formData}
+                    setFormData={setFormData}
                 />
             )
             // add the template value
             templateArray.push(
-                <CommandTemplateValueBox 
-                    key={ templateValuesFound[i] }
-                    templateName={ templateValuesFound[i] }
-                    templateValue={ templateValues[templateValuesFound[i]] }
-                    formData={ formData }
-                    setFormData= { setFormData }
+                <CommandTemplateValueBox
+                    key={templateValuesFound[i]}
+                    templateName={templateValuesFound[i]}
+                    templateValue={templateValues[templateValuesFound[i]]}
+                    formData={formData}
+                    setFormData={setFormData}
                 />
             )
         }
@@ -94,14 +106,18 @@ export default function CommandTemplateForm({ template, templateValues, withCopy
                     fcs = fcs + formData[templateValuesFound[i]]
                     break
                 default:
-                    console.log(`ERROR: found unsupported type ${templateValues[templateValuesFound[i]].type} in command template value`)
+                    console.log(
+                        `ERROR: found unsupported type ${
+                            templateValues[templateValuesFound[i]].type
+                        } in command template value`
+                    )
             }
         }
         fcs = fcs.replace(/\s+/g, " ") // remove duplicate whitespaces
         return fcs
     }
 
-    const [ copied, setCopied ] = useState(false)
+    const [copied, setCopied] = useState(false)
 
     // wait for everything to populate before rendering the form
     // (formData is populated via useEffect(..., []). This means
@@ -114,33 +130,31 @@ export default function CommandTemplateForm({ template, templateValues, withCopy
 
     return (
         <div>
-            { /* render out the reassambled template */ }
+            {/* render out the reassambled template */}
             <CodeWrapper>
                 <div className="flex items-center justify-center">
-                    { templateArray() }
+                    {templateArray()}
                 </div>
             </CodeWrapper>
-            { withCopyButton && ( // only display copy button, if 
+            {withCopyButton && ( // only display copy button, if
                 <div className="w-max mx-auto mt-10">
-                    { /* Copy to Clipboard button */ }
+                    {/* Copy to Clipboard button */}
                     <CopyToClipboard
-                        text={ fullCommandString() }
+                        text={fullCommandString()}
                         onCopy={() => {
                             setCopied(true)
                             setTimeout(() => setCopied(false), 3000)
                         }}
                     >
                         <div>
-                            <Button 
-                                title="Copy to clipboard" 
-                                important
-                            />
-                            { copied && <p className="text-center mt-4">Copied 👍</p> }
+                            <Button title="Copy to clipboard" important />
+                            {copied && (
+                                <p className="text-center mt-4">Copied 👍</p>
+                            )}
                         </div>
                     </CopyToClipboard>
                 </div>
             )}
         </div>
     )
-
 }

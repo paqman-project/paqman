@@ -9,8 +9,8 @@ import React from "react"
 export default function ViewHeading({ title, subtitle }) {
     return (
         <div className="text-center mt-4 mb-12">
-            <h1 className="font-bold text-xl">{ title }</h1>
-            <h2 className="font-medium text-lg">{ subtitle }</h2>
+            <h1 className="font-bold text-xl">{title}</h1>
+            <h2 className="font-medium text-lg">{subtitle}</h2>
         </div>
     )
 }
