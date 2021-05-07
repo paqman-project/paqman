@@ -73,7 +73,10 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	// checks if any template_values are present
 	matches := re.FindAllString(string(c.Template), -1)
 
-	// check if more template values under template are given then in template_values map specified
+	// following checks have to be passed before the command will be stored in the database, there are three error cases
+	// undefinedTemplates: specified template type does not exist
+	// missingFields: more template values under template are given then in template_values map specified
+	// wrongTypedTemplates: specified templates have a wrong type
 	undefinedTemplates := make([]string, 0)
 	missingFields := make(map[string][]string)
 	wrongTypedTemplates := make([]string, 0)
@@ -146,7 +149,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// checks done, store command in db
+	// all checks done, store command in db
 	ids, err := db.Store("commands", c)
 	if err != nil {
 		respondError(&w, err, 400)
