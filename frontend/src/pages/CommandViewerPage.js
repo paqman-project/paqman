@@ -35,12 +35,12 @@ export default function CommandViewerPage({ match }) {
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1">
-                        <Card title="Instructions" fullHight>
+                        <Card title="Instructions" fullHeight>
                             <p>{data.instructions || "No instructions available"}</p>
                         </Card>
                     </div>
                     <div className="flex-1">
-                        <Card title="Command properties" fullHight>
+                        <Card title="Command properties" fullHeight>
                             <p>
                                 Requires root?<span> </span>
                                 {data.requires_root ? (

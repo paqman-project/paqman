@@ -139,27 +139,31 @@ export default function CommandTemplateForm({
                 </div>
             </CodeWrapper>
             {/* things below the template (preview, copy button) */}
-            <div className="flex items-center justify-between space-x-10 mx-32">
+            <div className="flex items-center justify-center space-x-10 mx-10">
                 {withCommandPreview && (
-                    <CodeWrapper>
-                        <p>&gt; {fullCommandString()}</p>
-                    </CodeWrapper>
+                    <div className="flex-grow">
+                        <CodeWrapper>
+                            <p>&gt; {fullCommandString()}</p>
+                        </CodeWrapper>
+                    </div>
                 )}
                 {withCopyButton && (
-                    <CopyToClipboard
-                        text={fullCommandString()}
-                        onCopy={() => {
-                            setCopied(true)
-                            setTimeout(() => setCopied(false), 3000)
-                        }}
-                    >
-                        <div>
-                            <Button title="Copy to clipboard" important />
-                            {copied && (
-                                <p className="text-center mt-4">Copied 👍</p>
-                            )}
-                        </div>
-                    </CopyToClipboard>
+                    <div>
+                        <CopyToClipboard
+                            text={fullCommandString()}
+                            onCopy={() => {
+                                setCopied(true)
+                                setTimeout(() => setCopied(false), 3000)
+                            }}
+                        >
+                            <div> {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
+                                <Button title="Copy to clipboard" important />
+                                    {copied && (
+                                        <p className="fixed mt-4 ml-2">Copied 👍</p>
+                                    )}                         
+                                </div>
+                        </CopyToClipboard>
+                    </div>
                 )}
             </div>
         </div>
