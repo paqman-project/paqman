@@ -59,6 +59,7 @@ export default function CommandViewerPage({ match }) {
                 <CommandTemplateForm
                     template={data.template}
                     templateValues={data.template_values}
+                    withCommandPreview
                     withCopyButton
                 />
             </div>

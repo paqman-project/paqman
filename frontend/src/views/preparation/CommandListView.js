@@ -34,6 +34,7 @@ export default function CommandListView() {
         <div className="flex-row">
             <ViewHeading title="Command list" />
             <div className="w-2/3 max-w-5xl mx-4 mb-10 mx-auto">
+                {/* Search bar */}
                 <input 
                     type="text"
                     onChange={handleChange}

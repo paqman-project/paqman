@@ -11,11 +11,13 @@ import Loading from "./Loading"
  * @param {string} props.template The template string
  * @param {Object} props.templateValues The object from the command document containing the template value definitions
  * @param {boolean} props.withCopyButton Whether the button to copy the filled command should be displayed
+ * @param {boolean} props.withCommandPreview Whether the full plaintext command should be displayed
  */
 export default function CommandTemplateForm({
     template,
     templateValues,
     withCopyButton,
+    withCommandPreview,
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
@@ -129,19 +131,21 @@ export default function CommandTemplateForm({
     }
 
     return (
-        <div>
+        <div className="w-max mx-auto">
             {/* render out the reassambled template */}
             <CodeWrapper>
                 <div className="flex items-center justify-center">
                     {templateArray()}
                 </div>
             </CodeWrapper>
-            <CodeWrapper>
-                <p>{fullCommandString()}</p>
-            </CodeWrapper>
-            {withCopyButton && ( // only display copy button, if
-                <div className="w-max mx-auto mt-10">
-                    {/* Copy to Clipboard button */}
+            {/* things below the template (preview, copy button) */}
+            <div className="flex items-center justify-between space-x-10 mx-32">
+                {withCommandPreview && (
+                    <CodeWrapper>
+                        <p>&gt; {fullCommandString()}</p>
+                    </CodeWrapper>
+                )}
+                {withCopyButton && (
                     <CopyToClipboard
                         text={fullCommandString()}
                         onCopy={() => {
@@ -156,8 +160,8 @@ export default function CommandTemplateForm({
                             )}
                         </div>
                     </CopyToClipboard>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     )
 }
