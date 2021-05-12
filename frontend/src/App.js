@@ -13,6 +13,7 @@ import PerformAttackPage from "./pages/PerformAttackPage"
 import NotFound from "./components/NotFound"
 
 export default function App() {
+
     return (
         <div className="flex flex-col h-screen w-full">
             <Header />

@@ -136,6 +136,9 @@ export default function CommandTemplateForm({
                     {templateArray()}
                 </div>
             </CodeWrapper>
+            <CodeWrapper>
+                <p>{fullCommandString()}</p>
+            </CodeWrapper>
             {withCopyButton && ( // only display copy button, if
                 <div className="w-max mx-auto mt-10">
                     {/* Copy to Clipboard button */}

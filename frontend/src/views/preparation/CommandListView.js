@@ -25,7 +25,7 @@ export default function CommandListView() {
     const handleChange = (event) => {
         setFiltered(
             data.filter(command => 
-                command.name.includes(event.target.value)
+                command.name.includes(event.target.value.toLowerCase())
             )
         )
     }
