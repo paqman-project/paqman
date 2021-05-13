@@ -8,8 +8,11 @@ import Loading from "../../components/Loading"
  * This view provides a list of all commands for the preparation page
  */
 export default function CommandListView() {
-    const [data, setData] = useState(null)
+    const [data, setData] = useState()
     const [filtered, setFiltered] = useState()
+    // Keep in mind that there is no "search term" state!
+    // It is not required as the inputs value is passed
+    // directly into handleChange to filter the data state.
 
     useEffect(() => {
         fetch("/api/commands")
@@ -23,10 +26,16 @@ export default function CommandListView() {
     }, [])
 
     const handleChange = (event) => {
+        // This handler takes the value of the search bar
+        // and filters the data state with it. The result 
+        // is stored in the filtered state, which is
+        // rendered out.
         setFiltered(
-            data.filter(command => 
-                command.name.includes(event.target.value.toLowerCase())
-            )
+            data.filter(command => {
+                let term = event.target.value.toLowerCase()
+                return command.name.toLowerCase().includes(term) || 
+                    command.description.toLowerCase().includes(term)
+            })
         )
     }
 
@@ -34,7 +43,7 @@ export default function CommandListView() {
         <div className="flex-row">
             <ViewHeading title="Command list" />
             <div className="w-2/3 max-w-5xl mx-4 mb-10 mx-auto">
-                {/* Search bar */}
+                {/* Search bar (using client side filtering) */}
                 <input 
                     type="text"
                     onChange={handleChange}
@@ -43,7 +52,7 @@ export default function CommandListView() {
                 />
             </div>
             <div className="w-5/6 mx-auto flex justify-center items-center flex-wrap">
-                {filtered ? (
+                {filtered ? ( // render out the filtered commands
                     filtered.map(e => (
                         <div className="m-3 max-w-2xl">
                             <Link key={e._id} to={`/command/${e._id}`}>
