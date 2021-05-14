@@ -169,7 +169,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		respondError(&w, err, 500)
 	}
-	respondJSON(&w, b, 200)
+	respondJSON(&w, b, 201)
 }
 
 // gets a Command by ID
@@ -198,7 +198,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondObject(&w, c, 201)
+	respondObject(&w, c, 200)
 }
 
 // returns a Command with filled template values
