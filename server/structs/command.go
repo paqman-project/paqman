@@ -123,7 +123,8 @@ type CommandTemplateValue struct {
 	ParamId     string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
 }
 
-// CheckTypeCompleteness checks if all template values are assigned for the template
+// CheckTypeCompleteness checks for one template value type,
+// if all required values for this particularly type are assigned
 func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 	missingFields := make([]string, 0)
 	switch c.Type {
