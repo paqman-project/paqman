@@ -1,6 +1,9 @@
 package structs
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 // TODO add paramter tests as well
 func TestFillTemplate(t *testing.T) {
@@ -65,4 +68,76 @@ func TestFillTemplate(t *testing.T) {
 
 	}
 
+}
+
+func TestCheckTypeCompleteness(t *testing.T) {
+
+	type G struct {
+		TestValue   CommandTemplateValue
+		Expected    []string
+		ExpectError bool
+	}
+
+	testCases := []G{
+		{
+			TestValue: CommandTemplateValue{
+				Type:        "nonvalue-flag",
+				Description: "example description for nonvalue-flag",
+				Value:       "-xyz",
+			},
+			Expected: []string{},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:     "parameter",
+				Optional: false,
+				ParamId:  "123ABC",
+			},
+			Expected: []string{},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:        "value",
+				Description: "example description for value",
+			},
+			Expected: []string{},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:        "nonvalue",
+				Description: "example description for nonvalue-flag",
+				Value:       "-xyz",
+			},
+			ExpectError: true,
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:     "parameter",
+				Optional: false,
+			},
+			Expected: []string{"parameter_id"},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type: "value",
+			},
+			Expected: []string{"description"},
+		},
+	}
+
+	for _, g := range testCases {
+		r, err := g.TestValue.CheckTypeCompleteness()
+		if err != nil {
+			if !g.ExpectError {
+				t.Errorf("Got error: %s", err.Error())
+			}
+			continue
+		} else if g.ExpectError {
+			t.Error("Expected error, but got none")
+		}
+
+		if !reflect.DeepEqual(r, g.Expected) {
+			t.Errorf("Expected %s, got %s", g.Expected, r)
+		}
+	}
 }
