@@ -3,6 +3,7 @@ import CommandTemplateForm from "../components/CommandTemplateForm"
 import ViewHeading from "../components/ViewHeading"
 import Loading from "../components/Loading"
 import Card from "../components/Card"
+import { capitalize } from "../utils/strings"
 
 /**
  * This page is used to display more information about a
@@ -29,18 +30,21 @@ export default function CommandViewerPage({ match }) {
     return (
         <div className="h-full w-full p-4">
             <ViewHeading
-                title={data.name[0].toUpperCase() + data.name.substring(1)}
+                title={capitalize(data.name)}
                 subtitle={data.description}
             />
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1">
-                        <Card title="Instructions">
-                            <p>{data.instructions}</p>
+                        <Card title="Instructions" fullHeight>
+                            <p>
+                                {data.instructions ||
+                                    "No instructions available"}
+                            </p>
                         </Card>
                     </div>
                     <div className="flex-1">
-                        <Card title="Command properties">
+                        <Card title="Command properties" fullHeight>
                             <p>
                                 Requires root?<span> </span>
                                 {data.requires_root ? (
@@ -59,6 +63,7 @@ export default function CommandViewerPage({ match }) {
                 <CommandTemplateForm
                     template={data.template}
                     templateValues={data.template_values}
+                    withCommandPreview
                     withCopyButton
                 />
             </div>
