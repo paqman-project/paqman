@@ -156,13 +156,13 @@ export default function CommandTemplateForm({
                                 setTimeout(() => setCopied(false), 3000)
                             }}
                         >
-                            <div> 
+                            <div>
                                 {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
                                 <Button title="Copy to clipboard" important />
-                                    {copied && (
-                                        <p className="fixed mt-4 ml-2">Copied 👍</p>
-                                    )}                         
-                                </div>
+                                {copied && (
+                                    <p className="fixed mt-4 ml-2">Copied 👍</p>
+                                )}
+                            </div>
                         </CopyToClipboard>
                     </div>
                 )}

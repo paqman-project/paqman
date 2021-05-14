@@ -25,16 +25,18 @@ export default function CommandListView() {
             .catch(e => console.log(e))
     }, [])
 
-    const handleChange = (event) => {
+    const handleChange = event => {
         // This handler takes the value of the search bar
-        // and filters the data state with it. The result 
+        // and filters the data state with it. The result
         // is stored in the filtered state, which is
         // rendered out.
         setFiltered(
             data.filter(command => {
                 let term = event.target.value.toLowerCase()
-                return command.name.toLowerCase().includes(term) || 
+                return (
+                    command.name.toLowerCase().includes(term) ||
                     command.description.toLowerCase().includes(term)
+                )
             })
         )
     }
@@ -44,7 +46,7 @@ export default function CommandListView() {
             <ViewHeading title="Command list" />
             <div className="w-2/3 max-w-5xl mx-4 mb-10 mx-auto">
                 {/* Search bar (using client side filtering) */}
-                <input 
+                <input
                     type="text"
                     onChange={handleChange}
                     placeholder="Search for commands"

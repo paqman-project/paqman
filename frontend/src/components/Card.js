@@ -10,9 +10,17 @@ import React from "react"
  */
 export default function Card({ title, capitalize, fullHeight, children }) {
     return (
-        <div className={`text-center border border-gray-100 rounded-xl px-8 py-4 shadow-lg font-raleway ${fullHeight && "h-full"}`}>
+        <div
+            className={`text-center border border-gray-100 rounded-xl px-8 py-4 shadow-lg font-raleway ${
+                fullHeight && "h-full"
+            }`}
+        >
             {title && (
-                <p className={`font-semibold mb-2 bg-gray-100 rounded-lg p-1 ${capitalize && "capitalize"}`}>
+                <p
+                    className={`font-semibold mb-2 bg-gray-100 rounded-lg p-1 ${
+                        capitalize && "capitalize"
+                    }`}
+                >
                     {title}
                 </p>
             )}

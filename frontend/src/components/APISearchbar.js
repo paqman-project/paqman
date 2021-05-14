@@ -7,10 +7,9 @@ import React, { useEffect, useState } from "react"
  * @param props.type Can be one of ("command", "parameter", "attack"). If not set, a global search is performed
  */
 export default function APISearchbar({ type }) {
+    const [term, setTerm] = useState()
 
-    const [ term, setTerm ] = useState()
-
-    const handleChange = (event) => {
+    const handleChange = event => {
         console.log(event.target.value)
     }
 
@@ -20,7 +19,7 @@ export default function APISearchbar({ type }) {
 
     return (
         <div>
-            <input 
+            <input
                 type="text"
                 value={term}
                 onChange={handleChange}
