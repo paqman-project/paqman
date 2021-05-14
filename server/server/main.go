@@ -26,6 +26,14 @@ func Start() error {
 	// router
 	router := mux.NewRouter()
 
+	// route logging
+	router.Use(mux.MiddlewareFunc(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+			log.Printf("%s %s %s%s from %s\n", r.Proto, r.Method, r.Host, r.RequestURI, r.RemoteAddr)
+			next.ServeHTTP(rw, r)
+		})
+	}))
+
 	// API routes
 	apiRouter := router.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/ping", pingHandler).Methods("GET")
@@ -53,7 +61,7 @@ func Start() error {
 		Addr:    config.Current.BindAddress,
 		Handler: router,
 	}
-	log.Println("Starting server...")
+	log.Println("Started API and frontend server, ready to handle connections")
 	return server.ListenAndServe() // ListenAndServer never returns a non-nil error
 
 }
