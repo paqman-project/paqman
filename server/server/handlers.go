@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"regexp"
 	"strings"
@@ -202,7 +201,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // returns a Command with filled template values
-func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
+/*func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	// get a command by ID
 	commandID := mux.Vars(r)
 	var c struct {
@@ -249,7 +248,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	respondString(&w, plain, 200)
 
-}
+}*/
 
 // gets a parameter by ID
 func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {

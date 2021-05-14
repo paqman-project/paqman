@@ -2,8 +2,6 @@ package structs
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 )
 
 // Template -
@@ -21,7 +19,7 @@ type Command struct {
 
 // FillTemplate replaces the template values of a command
 // with the specfic user defined values for a complete command
-func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error) {
+/*func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error) {
 
 	// shallow copy
 	values := make(map[string]interface{})
@@ -99,7 +97,7 @@ func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error
 	template = removeSpace.ReplaceAllString(template, " ")
 	return template, nil
 
-}
+}*/
 
 // TemplateValueType -
 type TemplateValueType string

@@ -7,7 +7,7 @@ var (
 		Template:    "dislocker %{verbosity} %{bitlocker-partition} %{fvek} %{vmk} -- %{mount-path}",
 		TemplateValues: map[string]CommandTemplateValue{
 			"verbosity": {
-				Type:        "value",
+				Type:        "nonvalue-flag",
 				Description: "If the command should print verbose logs to stdout",
 				Value:       "-v",
 			},
