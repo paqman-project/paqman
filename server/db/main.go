@@ -5,8 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"paqman-backend/config"
 	"time"
+
+	"paqman-backend/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,9 +23,16 @@ var Client *mongo.Client
 // MongoDB URI uses values from config.json
 // so make sure config.LoadFrom() is called before Connect().
 func Connect() error {
+
+	connectString := fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, config.Current.MongoDBPass, config.Current.MongoDBAddress)
+	connectStringNoPass := fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, "***", config.Current.MongoDBAddress)
+
+	log.Printf("Connecting to MongoDB at %s\n", connectStringNoPass)
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, config.Current.MongoDBPass, config.Current.MongoDBAddress)))
+
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectString))
 	if err != nil {
 		return err
 	}
@@ -33,21 +41,26 @@ func Connect() error {
 		return err
 	}
 
-	log.Println("Connected to MongoDB!")
+	log.Println("Connected to MongoDB")
 
 	Client = client
 	return nil
 }
 
 // Disconnect closes the db connection.
-// Applies to the client obeject.
+// Applies to the Client object.
 func Disconnect() error {
+
+	log.Println("Disconnecting MongoDB")
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := Client.Disconnect(ctx); err != nil {
 		return err
 	}
-	log.Println("Connection closed!")
+
+	log.Println("DB connection closed")
+
 	return nil
 }
 

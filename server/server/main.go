@@ -53,7 +53,7 @@ func Start() error {
 		Addr:    config.Current.BindAddress,
 		Handler: router,
 	}
-	log.Println("Starting server...")
+	log.Println("Started API and frontend server, ready to handle connections")
 	return server.ListenAndServe() // ListenAndServer never returns a non-nil error
 
 }
