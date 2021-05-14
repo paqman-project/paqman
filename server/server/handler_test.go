@@ -32,3 +32,7 @@ func TestPingHandler(t *testing.T) {
 	}
 
 }
+
+func TestNewCommandHandler(t *testing.T) {
+	// TODO
+}
