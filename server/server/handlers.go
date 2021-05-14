@@ -31,7 +31,7 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 		Description string             `bson:"description" json:"description"`
 	}
 
-	cursor, err := db.Client.Database("Test").Collection("commands").Find(context.TODO(), bson.M{})
+	cursor, err := db.Client.ReadMany("commands", bson.M{})
 	if err != nil {
 		respondError(&w, err, 500)
 		return
@@ -66,7 +66,10 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// copy TemplateValues map for checking if more template values in template_values are given then in template specified
-	copyTemplateValue := c.TemplateValues
+	copyTemplateValue := make(map[string]structs.CommandTemplateValue)
+	for k, v := range c.TemplateValues {
+		copyTemplateValue[k] = v
+	}
 
 	// regex, parses all template values out of a template specified with the syntax %{}
 	re := regexp.MustCompile(`\%\{.*?\}`)
@@ -150,7 +153,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// all checks done, store command in db
-	ids, err := db.Store("commands", c)
+	ids, err := db.Client.CreateOne("commands", c)
 	if err != nil {
 		respondError(&w, err, 400)
 		return
@@ -160,7 +163,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		struct {
 			ID string `json:"_id"`
 		}{
-			ids[0].Hex(),
+			ids.Hex(),
 		},
 	)
 	if err != nil {
@@ -183,9 +186,9 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return
@@ -212,9 +215,9 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return
@@ -261,9 +264,9 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("parameter").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return

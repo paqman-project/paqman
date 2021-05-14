@@ -2,11 +2,14 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
-	"paqman-backend/config"
 	"time"
+
+	"paqman-backend/config"
+	"paqman-backend/structs"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,67 +17,111 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client *mongo.Client
+var Client *Mongo
+
+type MongoCRUD interface {
+	CreateOne(string, interface{}) (primitive.ObjectID, error)
+	ReadOne(string, bson.M, interface{}) error
+	ReadMany(string, bson.M) (*mongo.Cursor, error)
+	// Update(string, bson.M, ...)
+	DeleteOne(string, bson.M) (*mongo.DeleteResult, error)
+	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
+}
+
+type Mongo struct {
+	Mocked     bool
+	connection *mongo.Client
+}
+
+var _ MongoCRUD = (*Mongo)(nil)
 
 // Connect creates a database connection
 // and assignes it to the Client variable.
 //
 // MongoDB URI uses values from config.json
 // so make sure config.LoadFrom() is called before Connect().
-func Connect() error {
+func Connect(mocked bool) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, config.Current.MongoDBPass, config.Current.MongoDBAddress)))
-	if err != nil {
-		return err
+
+	var client *mongo.Client
+
+	if !mocked {
+		var err error
+		client, err = mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, config.Current.MongoDBPass, config.Current.MongoDBAddress)))
+		if err != nil {
+			return err
+		}
+		if err := client.Ping(ctx, nil); err != nil {
+			return err
+		}
+		log.Println("Connected to MongoDB!")
 	}
 
-	if err := client.Ping(ctx, nil); err != nil {
-		return err
+	Client = &Mongo{
+		Mocked:     mocked,
+		connection: client,
 	}
-
-	log.Println("Connected to MongoDB!")
-
-	Client = client
 	return nil
 }
 
 // Disconnect closes the db connection.
 // Applies to the client obeject.
-func Disconnect() error {
+func (m *Mongo) Disconnect() error {
+
+	if m.Mocked {
+		return nil
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := Client.Disconnect(ctx); err != nil {
+
+	if err := m.connection.Disconnect(ctx); err != nil {
 		return err
 	}
+
 	log.Println("Connection closed!")
 	return nil
 }
 
 // Store stores command structs in the DB.
 // Multiple commands can be passed.
-func Store(collection string, v ...interface{}) ([]primitive.ObjectID, error) {
-	var bsonElements []interface{}
-	for _, e := range v {
-		bsonElement, err := bson.Marshal(e)
-		if err != nil {
-			return nil, err
-		}
-		bsonElements = append(bsonElements, bsonElement)
+func (m *Mongo) CreateOne(collection string, v interface{}) (primitive.ObjectID, error) {
+
+	if m.Mocked {
+		return primitive.NewObjectID(), nil
 	}
-	res, err := Client.Database("Test").Collection(collection).InsertMany(context.TODO(), bsonElements)
+
+	res, err := m.connection.Database("Test").Collection(collection).InsertOne(context.TODO(), v)
 	if err != nil {
-		return nil, err
+		return primitive.ObjectID{}, err
 	}
 
-	var output []primitive.ObjectID
-	for _, e := range res.InsertedIDs {
-
-		if tmp, ok := e.(primitive.ObjectID); !ok {
-			return nil, errors.New("type assertion was not successful")
-		} else {
-			output = append(output, tmp)
-		}
+	if tmp, ok := res.InsertedID.(primitive.ObjectID); ok {
+		return tmp, nil
 	}
-	return output, nil
+	return primitive.ObjectID{}, errors.New("type assertion was not successful")
+}
+
+func (m *Mongo) ReadOne(collection string, filter bson.M, v interface{}) error {
+
+	if m.Mocked {
+		b, _ := json.Marshal(structs.ExampleCommandDislocker)
+		json.Unmarshal(b, v)
+		return nil
+	}
+
+	return m.connection.Database("Test").Collection(collection).FindOne(context.TODO(), filter).Decode(v)
+}
+
+func (m *Mongo) ReadMany(collection string, filter bson.M) (*mongo.Cursor, error) {
+	return m.connection.Database("Test").Collection(collection).Find(context.TODO(), filter)
+}
+
+func (m *Mongo) DeleteOne(collection string, filter bson.M) (*mongo.DeleteResult, error) {
+	return m.connection.Database("Test").Collection(collection).DeleteOne(context.TODO(), filter)
+}
+
+func (m *Mongo) DeleteMany(collection string, filter bson.M) (*mongo.DeleteResult, error) {
+	return m.connection.Database("Test").Collection(collection).DeleteMany(context.TODO(), filter)
 }
