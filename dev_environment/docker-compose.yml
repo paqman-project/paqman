@@ -6,8 +6,8 @@ services:
     container_name: mongo
     ports:
       - 27017:27017
-    #volumes:
-    #  - ./data:/data/db
+    volumes:
+      - paqman-dev-db:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: toor
@@ -20,3 +20,6 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: toor
+
+volumes: 
+  paqman-dev-db:
