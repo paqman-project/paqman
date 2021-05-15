@@ -15,9 +15,7 @@ import (
 )
 
 // DatabaseName is the constant used in all .Database(DatabaseName) calls
-const DatabaseName = "Test"
-
-//const DatabaseName = "PAQMAN"
+const DatabaseName = "PAQMAN"
 
 // Client holds a wrapper type instance of the MongoDB
 // connection to support mocking for unit tests
