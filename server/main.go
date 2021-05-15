@@ -37,7 +37,9 @@ func main() {
 		log.Printf("Starting cleanup jobs (got %s)", s.String())
 
 		// do cleanup jobs
-		db.Disconnect()
+		if err := db.Client.Disconnect(); err != nil {
+			panic(err)
+		}
 
 		os.Exit(0)
 	}()
@@ -47,8 +49,7 @@ func main() {
 		panic(err)
 	}
 
-	// connect to the database
-	if err := db.Connect(); err != nil {
+	if err := db.Connect(false /* If the DB connection should be mocked */); err != nil {
 		panic(err)
 	}
 

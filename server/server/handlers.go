@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -29,7 +30,7 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 		Description string             `bson:"description" json:"description"`
 	}
 
-	cursor, err := db.Client.Database("Test").Collection("commands").Find(context.TODO(), bson.M{})
+	cursor, err := db.Client.ReadMany("commands", bson.M{})
 	if err != nil {
 		respondError(&w, err, 500)
 		return
@@ -62,7 +63,96 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	ids, err := db.Store("commands", c)
+
+	// copy TemplateValues map for checking if more template values in template_values are given then in template specified
+	copyTemplateValue := make(map[string]structs.CommandTemplateValue)
+	for k, v := range c.TemplateValues {
+		copyTemplateValue[k] = v
+	}
+
+	// regex, parses all template values out of a template specified with the syntax %{}
+	re := regexp.MustCompile(`\%\{.*?\}`)
+	// checks if any template_values are present
+	matches := re.FindAllString(string(c.Template), -1)
+
+	// following checks have to be passed before the command will be stored in the database, there are three error cases
+	// undefinedTemplates: specified template type does not exist
+	// missingFields: more template values under template are given then in template_values map specified
+	// wrongTypedTemplates: specified templates have a wrong type
+	undefinedTemplates := make([]string, 0)
+	missingFields := make(map[string][]string)
+	wrongTypedTemplates := make([]string, 0)
+	for _, match := range matches {
+		match = strings.Trim(match, "%{")
+		match = strings.Trim(match, "}")
+		if value, ok := c.TemplateValues[match]; ok {
+			delete(copyTemplateValue, match)
+			missing, err := value.CheckTypeCompleteness()
+			if err != nil {
+				wrongTypedTemplates = append(wrongTypedTemplates, match)
+			} else {
+				if len(missing) > 0 {
+					missingFields[match] = missing
+				}
+			}
+		} else {
+			undefinedTemplates = append(undefinedTemplates, match)
+		}
+	}
+
+	if len(wrongTypedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error               string   `json:"error"`
+			WrongTypedTemplates []string `json:"wrong_typed_templates"`
+		}{
+			"found templates with unknown type",
+			wrongTypedTemplates,
+		}, 400)
+		return
+	}
+
+	if len(undefinedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			UndefinedTemplates []string `json:"undefined_templates"`
+		}{
+			"undefined templates",
+			undefinedTemplates,
+		}, 400)
+		return
+	}
+
+	// check if more template values in the template_values map are given then in template specified
+	if len(copyTemplateValue) > 0 {
+		redundantTemplates := make([]string, 0)
+		for key := range copyTemplateValue {
+			redundantTemplates = append(redundantTemplates, key)
+
+		}
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			RedundantTemplates []string `json:"redundant_template_definitions"`
+		}{
+			"redundant template definitions found in template_values",
+			redundantTemplates,
+		}, 400)
+		return
+	}
+
+	if len(missingFields) > 0 {
+
+		respondObject(&w, struct {
+			Error         string              `json:"error"`
+			MissingFields map[string][]string `json:"missing_fields"`
+		}{
+			"fields are missing",
+			missingFields,
+		}, 400)
+		return
+	}
+
+	// all checks done, store command in db
+	ids, err := db.Client.CreateOne("commands", c)
 	if err != nil {
 		respondError(&w, err, 400)
 		return
@@ -72,13 +162,13 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		struct {
 			ID string `json:"_id"`
 		}{
-			ids[0].Hex(),
+			ids.Hex(),
 		},
 	)
 	if err != nil {
 		respondError(&w, err, 500)
 	}
-	respondJSON(&w, b, 200)
+	respondJSON(&w, b, 201)
 }
 
 // gets a Command by ID
@@ -95,9 +185,9 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return
@@ -111,7 +201,7 @@ func getCommandByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // returns a Command with filled template values
-func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
+/*func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	// get a command by ID
 	commandID := mux.Vars(r)
 	var c struct {
@@ -124,9 +214,9 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("commands").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return
@@ -143,7 +233,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		switch {
 		case err == io.EOF:
-			respondError(&w, errors.New("Missing body"), 400)
+			respondError(&w, errors.New("missing body"), 400)
 		case err != nil:
 			respondError(&w, err, 500)
 		}
@@ -158,7 +248,7 @@ func fillCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	respondString(&w, plain, 200)
 
-}
+}*/
 
 // gets a parameter by ID
 func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -173,9 +263,9 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.Database("Test").Collection("parameter").FindOne(context.TODO(), bson.M{
+		err = db.Client.ReadOne("commands", bson.M{
 			"_id": objectID,
-		}).Decode(&c)
+		}, &c)
 		if err != nil {
 			respondError(&w, err, 404)
 			return

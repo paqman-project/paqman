@@ -2,8 +2,6 @@ package structs
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 )
 
 // Template -
@@ -22,7 +20,7 @@ type Command struct {
 
 // FillTemplate replaces the template values of a command
 // with the specfic user defined values for a complete command
-func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error) {
+/*func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error) {
 
 	// shallow copy
 	values := make(map[string]interface{})
@@ -100,7 +98,7 @@ func (c *Command) FillTemplate(valuesOrig map[string]interface{}) (string, error
 	template = removeSpace.ReplaceAllString(template, " ")
 	return template, nil
 
-}
+}*/
 
 // TemplateValueType -
 type TemplateValueType string
@@ -121,7 +119,34 @@ type CommandTemplateValue struct {
 	Value       string            `json:"value,omitempty" bson:"value,omitempty"`
 	Optional    bool              `json:"optional,omitempty" bson:"optional,omitempty"`
 	Default     string            `json:"default,omitempty" bson:"default,omitempty"`
-	ParamId     int               `json:"param_id,omitempty" bson:"param_id,omitempty"` // foreign key in MongoDB research!
+	ParamId     string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+}
+
+// CheckTypeCompleteness checks for one template value type,
+// if all required values for this particularly type are assigned
+func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
+	missingFields := make([]string, 0)
+	switch c.Type {
+	case TemplateValueTypeNonvalueFlag:
+		if c.Description == "" {
+			missingFields = append(missingFields, "description")
+		}
+		if c.Value == "" {
+			missingFields = append(missingFields, "value")
+		}
+	case TemplateValueTypeParameter:
+		if c.ParamId == "" {
+			missingFields = append(missingFields, "parameter_id")
+		}
+	case TemplateValueTypeValue:
+		if c.Description == "" {
+			missingFields = append(missingFields, "description")
+		}
+	default:
+		return nil, fmt.Errorf("%s not found", string(c.Type))
+	}
+
+	return missingFields, nil
 }
 
 // maybe useful some day

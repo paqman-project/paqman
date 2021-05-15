@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
 	"paqman-backend/config"
+
+	"github.com/gorilla/mux"
 )
 
 var frontendRoutes = []string{
@@ -40,7 +40,7 @@ func Start() error {
 	apiRouter.HandleFunc("/commands", getAllCommandsHandler).Methods("GET")
 	apiRouter.HandleFunc("/command", newCommandHandler).Methods("POST")
 	apiRouter.HandleFunc("/command/{id}", getCommandByIDHandler).Methods("GET")
-	apiRouter.HandleFunc("/command/{id}/fill", fillCommandHandler).Methods("POST")
+	//apiRouter.HandleFunc("/command/{id}/fill", fillCommandHandler).Methods("POST")
 	apiRouter.HandleFunc("/parameter/{id}", getParameterByIDHandler).Methods("GET")
 	apiRouter.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		respondString(&rw, "Endpoint not found", 404)
