@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"testing"
+
 	"paqman-backend/db"
 	"paqman-backend/structs"
-	"testing"
 )
 
 func TestPingHandler(t *testing.T) {
@@ -15,7 +16,7 @@ func TestPingHandler(t *testing.T) {
 	// request that will be tested
 	req, err := http.NewRequest("GET", "/api/ping", nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Error creating the request: %s", err.Error())
 	}
 
 	// test server that uses the handler that will be tested
@@ -39,14 +40,17 @@ func TestPingHandler(t *testing.T) {
 
 func TestNewCommandHandler(t *testing.T) {
 
-	db.Connect(true)
+	if err := db.Connect(true); err != nil {
+		t.Fatal("Could not create the mocked database")
+	}
 
+	// this is intended to always work!
 	j, _ := json.Marshal(structs.ExampleCommandDislocker)
 
 	// request that will be tested
 	req, err := http.NewRequest("POST", "/api/command", bytes.NewReader(j))
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Error creating the request: %s", err.Error())
 	}
 
 	// test server that uses the handler that will be tested
@@ -60,16 +64,15 @@ func TestNewCommandHandler(t *testing.T) {
 		t.Errorf("Handler returned wrong status code: got %v want %v", sc, expectedSC)
 	}
 
-	// check if body contains new ObjectID
-	type MongoID struct {
+	// check if body contains a new ObjectID
+	var body struct {
 		ID string `json:"_id"`
 	}
-	var mID MongoID
-	err = json.NewDecoder(rec.Body).Decode(&mID)
+	err = json.NewDecoder(rec.Body).Decode(&body)
 	if err != nil {
-		t.Error(err.Error())
+		t.Errorf("Error while decoding the body: %s", err.Error())
 	}
-	if mID.ID == "" {
+	if body.ID == "" {
 		t.Error("Couldn't get new Object ID")
 	}
 

@@ -12,7 +12,7 @@ func main() {
 		panic(err)
 	}
 
-	if err := db.Connect(false); err != nil {
+	if err := db.Connect(false /* If the DB connection should be mocked */); err != nil {
 		panic(err)
 	}
 

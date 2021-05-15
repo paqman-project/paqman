@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
 	"paqman-backend/config"
+
+	"github.com/gorilla/mux"
 )
 
 var frontendRoutes = []string{

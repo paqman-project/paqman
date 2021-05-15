@@ -14,8 +14,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// DatabaseName is the constant used in all .Database(DatabaseName) calls
+const DatabaseName = "Test"
+
+//const DatabaseName = "PAQMAN"
+
+// Client holds a wrapper type instance of the MongoDB
+// connection to support mocking for unit tests
 var Client *Mongo
 
+// MongoCRUD defines the functions that follow the CRUD
+// paradigm, but with a more fitting relation to mongos
+// No-SQL approach
 type MongoCRUD interface {
 	CreateOne(string, interface{}) (primitive.ObjectID, error)
 	ReadOne(string, bson.M, interface{}) error
@@ -25,27 +35,38 @@ type MongoCRUD interface {
 	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
 }
 
+// Mongo is the wrapper around a MongoDB connection
+// that allows mocking
+//
+// (implements MongoCRUD interface)
 type Mongo struct {
 	Mocked     bool
 	connection *mongo.Client
 }
 
+// Interface guard for Mongo struct
 var _ MongoCRUD = (*Mongo)(nil)
 
 // Connect creates a database connection
-// and assignes it to the Client variable.
+// and assignes it to the Client variable
 //
-// MongoDB URI uses values from config.json
-// so make sure config.LoadFrom() is called before Connect().
+// It uses the config.json file to retreive the
+// connection details so make sure config.LoadFrom(path)
+// is called before Connect().
 func Connect(mocked bool) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	var client *mongo.Client
 
-	if !mocked {
+	if !mocked { // only establish a real connection, if the database should not be mocked
 		var err error
-		client, err = mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin", config.Current.MongoDBUser, config.Current.MongoDBPass, config.Current.MongoDBAddress)))
+		client, err = mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf(
+			"mongodb://%s:%s@%s/?authSource=admin",
+			config.Current.MongoDBUser,
+			config.Current.MongoDBPass,
+			config.Current.MongoDBAddress,
+		)))
 		if err != nil {
 			return err
 		}
@@ -62,8 +83,20 @@ func Connect(mocked bool) error {
 	return nil
 }
 
-// Disconnect closes the db connection.
-// Applies to the client obeject.
+// CheckConnection pings the database to determine
+// if it is still reachable. Returns nil, if it is
+// reachable or returns the error otherwise
+func (m *Mongo) CheckConnection() error {
+	if err := m.connection.Ping(context.TODO(), nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Disconnect closes the db connection properly
+//
+// It is encouraged to call this method in a
+// defer statement or goroutine
 func (m *Mongo) Disconnect() error {
 
 	if m.Mocked {
