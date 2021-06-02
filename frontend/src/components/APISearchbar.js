@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
+import NotImplemented from "./NotImplemented"
 
 /**
  * Uses the /search enpoint to search for commands, parameters or attacks.
- * THIS IS CURRENTLY UNUSED ANY MAY NOT WORK
+ * THIS IS CURRENTLY UNUSED AND DOES NOT WORK
  * @param props
  * @param props.type Can be one of ("command", "parameter", "attack"). If not set, a global search is performed
  */
 export default function APISearchbar({ type }) {
-    const [term, setTerm] = useState()
+    /*const [term, setTerm] = useState()
 
     const handleChange = event => {
         console.log(event.target.value)
@@ -26,5 +27,7 @@ export default function APISearchbar({ type }) {
                 placeholder={`Search for ${type}s`}
             />
         </div>
-    )
+    )*/
+
+    return <NotImplemented />
 }

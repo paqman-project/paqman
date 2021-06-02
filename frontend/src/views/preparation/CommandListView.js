@@ -56,8 +56,8 @@ export default function CommandListView() {
             <div className="w-5/6 mx-auto flex justify-center items-center flex-wrap">
                 {filtered ? ( // render out the filtered commands
                     filtered.map(e => (
-                        <div className="m-3 max-w-2xl">
-                            <Link key={e._id} to={`/command/${e._id}`}>
+                        <div key={e._id} className="m-3 max-w-2xl">
+                            <Link to={`/command/${e._id}`}>
                                 <Card title={e.name}>
                                     <p>{e.description}</p>
                                 </Card>
