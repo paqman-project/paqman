@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { parseTemplate, populateDefaults } from "../utils/templates"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -10,52 +11,21 @@ import Loading from "./Loading"
  * @param {Object} props
  * @param {string} props.template The template string
  * @param {Object} props.templateValues The object from the command document containing the template value definitions
- * @param {boolean} props.withCopyButton Whether the button to copy the filled command should be displayed
- * @param {boolean} props.withCommandPreview Whether the full plaintext command should be displayed
+ * @param {boolean} props.withPreview Whether the full plaintext command should be displayed
  */
 export default function CommandTemplateForm({
     template,
     templateValues,
-    withCopyButton,
-    withCommandPreview,
+    withPreview,
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
     // populate formData with defaults, if any
     useEffect(() => {
-        let fd = {}
-        Object.entries(templateValues).forEach(([n, v]) => {
-            switch (v.type) {
-                case "nonvalue-flag":
-                    fd[n] = false
-                    break
-                case "value":
-                    fd[n] = v.default || ""
-                    break
-                case "parameter":
-                    // TODO this is temporary until #62 is resolved
-                    fd[n] = ""
-                    break
-                default:
-                    console.log(
-                        `ERROR: found unsupported type ${v.type} in command template value`
-                    )
-            }
-        })
-        setFormData(fd)
+        setFormData(populateDefaults(templateValues))
     }, [templateValues])
 
-    const regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
-    const templateCopy = template
-
-    // split the template copy at the patters to retreive everything
-    // that is not template value
-    const templatePlaintextFound = templateCopy.split(regex)
-
-    // search for all templates with regex pattern and replace brackets
-    const templateValuesFound = [...templateCopy.matchAll(regex)].map(e =>
-        e[0].replace("%{", "").replace("}", "")
-    )
+    const [ templatePlaintextFound, templateValuesFound ] = parseTemplate(template)
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
@@ -140,31 +110,31 @@ export default function CommandTemplateForm({
             </CodeWrapper>
             {/* things below the template (preview, copy button) */}
             <div className="flex items-center justify-center space-x-10 mx-10">
-                {withCommandPreview && (
-                    <div className="flex-grow">
-                        <CodeWrapper>
-                            <p>&gt; {fullCommandString()}</p>
-                        </CodeWrapper>
-                    </div>
-                )}
-                {withCopyButton && (
-                    <div>
-                        <CopyToClipboard
-                            text={fullCommandString()}
-                            onCopy={() => {
-                                setCopied(true)
-                                setTimeout(() => setCopied(false), 3000)
-                            }}
-                        >
-                            <div>
-                                {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
-                                <Button title="Copy to clipboard" important />
-                                {copied && (
-                                    <p className="fixed mt-4 ml-2">Copied 👍</p>
-                                )}
-                            </div>
-                        </CopyToClipboard>
-                    </div>
+                {withPreview && (
+                    <>
+                        <div className="flex-grow">
+                            <CodeWrapper>
+                                <p>&gt; {fullCommandString()}</p>
+                            </CodeWrapper>
+                        </div>
+                        <div>
+                            <CopyToClipboard
+                                text={fullCommandString()}
+                                onCopy={() => {
+                                    setCopied(true)
+                                    setTimeout(() => setCopied(false), 3000)
+                                }}
+                            >
+                                <div>
+                                    {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
+                                    <Button title="Copy to clipboard" important />
+                                    {copied && (
+                                        <p className="fixed mt-4 ml-2">Copied 👍</p>
+                                    )}
+                                </div>
+                            </CopyToClipboard>
+                        </div>
+                    </>
                 )}
             </div>
         </div>
