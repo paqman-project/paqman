@@ -1,6 +1,7 @@
 {
     "bind_address": "0.0.0.0:3002",
     "db_address": "mongo:27017",
+    "db_name": "PAQMAN",
     "db_username": "root",
     "db_password": "toor"
 }

@@ -12,6 +12,7 @@ import (
 type Config struct {
 	BindAddress    string `json:"bind_address"` // Default 0.0.0.0:3002
 	MongoDBAddress string `json:"db_address"`   // Default 127.0.0.1:27017
+	MongoDBName    string `json:"db_name"`      // Default PAQMAN
 	MongoDBUser    string `json:"db_username"`
 	MongoDBPass    string `json:"db_password"`
 }
@@ -26,6 +27,10 @@ func (c *Config) setDefaults() {
 	if c.MongoDBAddress == "" {
 		log.Println(`"db_address" not set, using default "127.0.0.1:27017"`)
 		c.MongoDBAddress = "127.0.0.1:27017"
+	}
+	if c.MongoDBName == "" {
+		log.Println(`"db_name" not set, using default "PAQMAN"`)
+		c.MongoDBName = "PAQMAN"
 	}
 }
 
