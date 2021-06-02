@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"paqman-backend/config"
 	"paqman-backend/structs"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,7 +26,7 @@ func (m *Mongo) CreateOne(collection string, v interface{}) (primitive.ObjectID,
 		return primitive.NewObjectID(), nil
 	}
 
-	res, err := m.connection.Database(DatabaseName).Collection(collection).InsertOne(context.TODO(), v)
+	res, err := m.connection.Database(config.Current.MongoDBName).Collection(collection).InsertOne(context.TODO(), v)
 	if err != nil {
 		return primitive.ObjectID{}, err
 	}
@@ -51,7 +52,7 @@ func (m *Mongo) ReadOne(collection string, filter bson.M, v interface{}) error {
 		return nil
 	}
 
-	return m.connection.Database(DatabaseName).Collection(collection).FindOne(context.TODO(), filter).Decode(v)
+	return m.connection.Database(config.Current.MongoDBName).Collection(collection).FindOne(context.TODO(), filter).Decode(v)
 }
 
 // ReadMany works just like ReadOne, but returns a *mongo.Cursor instead of
@@ -64,7 +65,7 @@ func (m *Mongo) ReadMany(collection string, filter bson.M) (*mongo.Cursor, error
 		return &mongo.Cursor{}, nil
 	}
 
-	return m.connection.Database(DatabaseName).Collection(collection).Find(context.TODO(), filter)
+	return m.connection.Database(config.Current.MongoDBName).Collection(collection).Find(context.TODO(), filter)
 }
 
 // DeleteOne finds the first match for filter in collection and deletes it.
@@ -77,7 +78,7 @@ func (m *Mongo) DeleteOne(collection string, filter bson.M) (*mongo.DeleteResult
 		return &mongo.DeleteResult{}, nil
 	}
 
-	return m.connection.Database(DatabaseName).Collection(collection).DeleteOne(context.TODO(), filter)
+	return m.connection.Database(config.Current.MongoDBName).Collection(collection).DeleteOne(context.TODO(), filter)
 }
 
 // DeleteMany finds all matches for filter in collection and deletes them.
@@ -90,5 +91,5 @@ func (m *Mongo) DeleteMany(collection string, filter bson.M) (*mongo.DeleteResul
 		return &mongo.DeleteResult{}, nil
 	}
 
-	return m.connection.Database(DatabaseName).Collection(collection).DeleteMany(context.TODO(), filter)
+	return m.connection.Database(config.Current.MongoDBName).Collection(collection).DeleteMany(context.TODO(), filter)
 }

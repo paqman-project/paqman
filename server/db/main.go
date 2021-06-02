@@ -14,9 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// DatabaseName is the constant used in all .Database(DatabaseName) calls
-const DatabaseName = "PAQMAN"
-
 // Client holds a wrapper type instance of the MongoDB
 // connection to support mocking for unit tests
 var Client *Mongo
