@@ -44,9 +44,8 @@ export default function CommandTemplateForm({
         setFormData(fd)
     }, [templateValues])
 
-    const [templatePlaintextFound, templateValuesFound] = parseTemplate(
-        template
-    )
+    const [templatePlaintextFound, templateValuesFound] =
+        parseTemplate(template)
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
