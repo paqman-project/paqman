@@ -3,7 +3,6 @@ import CommandTemplateForm from "../components/CommandTemplateForm"
 import ViewHeading from "../components/ViewHeading"
 import Loading from "../components/Loading"
 import Card from "../components/Card"
-import { capitalize } from "../utils/strings"
 
 /**
  * This page is used to display more information about a
@@ -30,7 +29,7 @@ export default function CommandViewerPage({ match }) {
     return (
         <div className="h-full w-full p-4">
             <ViewHeading
-                title={capitalize(data.name)}
+                title={data.name}
                 subtitle={data.description}
             />
             <div>

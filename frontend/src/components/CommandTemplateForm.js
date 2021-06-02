@@ -16,7 +16,7 @@ import Loading from "./Loading"
 export default function CommandTemplateForm({
     template,
     templateValues,
-    withPreview,
+    withPreview
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
