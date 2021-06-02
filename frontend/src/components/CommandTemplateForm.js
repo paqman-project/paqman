@@ -16,7 +16,7 @@ import Loading from "./Loading"
 export default function CommandTemplateForm({
     template,
     templateValues,
-    withPreview
+    withPreview,
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
@@ -44,7 +44,9 @@ export default function CommandTemplateForm({
         setFormData(fd)
     }, [templateValues])
 
-    const [ templatePlaintextFound, templateValuesFound ] = parseTemplate(template)
+    const [templatePlaintextFound, templateValuesFound] = parseTemplate(
+        template
+    )
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
@@ -146,9 +148,14 @@ export default function CommandTemplateForm({
                             >
                                 <div>
                                     {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
-                                    <Button title="Copy to clipboard" important />
+                                    <Button
+                                        title="Copy to clipboard"
+                                        important
+                                    />
                                     {copied && (
-                                        <p className="fixed mt-4 ml-2">Copied 👍</p>
+                                        <p className="fixed mt-4 ml-2">
+                                            Copied 👍
+                                        </p>
                                     )}
                                 </div>
                             </CopyToClipboard>

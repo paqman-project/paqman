@@ -1,11 +1,11 @@
 /**
  * Parses a template string. Returns an array containing all found
  * plaintext and an array containing all template value names.
- * 
- * The return is meant to be destructured like this: 
+ *
+ * The return is meant to be destructured like this:
  * `const [ plaintexts, templateValueNames ] = parseTemplate(t)`
- * 
- * @param {string} template The template string to parse 
+ *
+ * @param {string} template The template string to parse
  * @returns {Array} Two arrays (found plaintexts, found template value names) in one array
  */
 export function parseTemplate(template) {
@@ -21,5 +21,5 @@ export function parseTemplate(template) {
         e[0].replace("%{", "").replace("}", "")
     )
 
-    return [ templatePlaintextFound, templateValuesFound ]
+    return [templatePlaintextFound, templateValuesFound]
 }

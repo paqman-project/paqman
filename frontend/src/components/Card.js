@@ -15,7 +15,7 @@ export default function Card({ title, fullHeight, children }) {
             }`}
         >
             {title && (
-                <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1" >
+                <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
                     {title}
                 </p>
             )}

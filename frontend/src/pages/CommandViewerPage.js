@@ -28,10 +28,7 @@ export default function CommandViewerPage({ match }) {
 
     return (
         <div className="h-full w-full p-4">
-            <ViewHeading
-                title={data.name}
-                subtitle={data.description}
-            />
+            <ViewHeading title={data.name} subtitle={data.description} />
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1">
