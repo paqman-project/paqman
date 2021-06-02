@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { parseTemplate, populateDefaults } from "../utils/templates"
+import { parseTemplate } from "../utils/templates"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -22,7 +22,26 @@ export default function CommandTemplateForm({
 
     // populate formData with defaults, if any
     useEffect(() => {
-        setFormData(populateDefaults(templateValues))
+        let fd = {}
+        Object.entries(templateValues).forEach(([n, v]) => {
+            switch (v.type) {
+                case "nonvalue-flag":
+                    fd[n] = false
+                    break
+                case "value":
+                    fd[n] = v.default || ""
+                    break
+                case "parameter":
+                    // TODO this is temporary until #62 is resolved
+                    fd[n] = ""
+                    break
+                default:
+                    console.log(
+                        `ERROR: found unsupported type ${v.type} in command template value`
+                    )
+            }
+        })
+        setFormData(fd)
     }, [templateValues])
 
     const [ templatePlaintextFound, templateValuesFound ] = parseTemplate(template)
