@@ -263,7 +263,7 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 400)
 			return
 		}
-		err = db.Client.ReadOne("commands", bson.M{
+		err = db.Client.ReadOne("parameters", bson.M{
 			"_id": objectID,
 		}, &c)
 		if err != nil {
@@ -275,5 +275,5 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, err, 400)
 		return
 	}
-	respondObject(&w, c, 201)
+	respondObject(&w, c, 200)
 }

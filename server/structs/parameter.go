@@ -15,5 +15,5 @@ type ParameterTemplateValue struct {
 
 type ReturnedFrom struct {
 	Plain     string `json:"plain,omitempty" bson:"plain,omitempty"`
-	CommandID int    `json:"command_id,omitempty" bson:"command_id,omitempty"`
+	CommandID string `json:"command_id,omitempty" bson:"command_id,omitempty"`
 }
