@@ -75,9 +75,18 @@ func TestCheckTypeCompleteness(t *testing.T) {
 			TestValue: CommandTemplateValue{
 				Type:     "parameter",
 				Optional: false,
-				ParamId:  "123ABC",
+				ParamId:  "123ABC", // TODO maybe check, if this is a valid object ID?
+				Usage:    "%",
 			},
 			Expected: []string{},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:     "parameter",
+				Optional: true,
+				ParamId:  "123ABC",
+			},
+			Expected: []string{"usage"},
 		},
 		{
 			TestValue: CommandTemplateValue{
@@ -92,20 +101,20 @@ func TestCheckTypeCompleteness(t *testing.T) {
 				Hint:  "example description for nonvalue-flag",
 				Value: "-xyz",
 			},
-			ExpectError: true,
+			ExpectError: true, // type "nonvalue" not existent
 		},
 		{
 			TestValue: CommandTemplateValue{
 				Type:     "parameter",
 				Optional: false,
 			},
-			Expected: []string{"parameter_id"},
+			Expected: []string{"parameter_id", "usage"},
 		},
 		{
 			TestValue: CommandTemplateValue{
 				Type: "value",
 			},
-			Expected: []string{"description"},
+			Expected: []string{},
 		},
 	}
 

@@ -20,11 +20,13 @@ var (
 				Type:     "parameter",
 				ParamId:  "1234",
 				Optional: true,
+				Usage:    "--fvek %",
 			},
 			"vmk": {
 				Type:     "parameter",
 				ParamId:  "1235",
 				Optional: true,
+				Usage:    "--vmk %",
 			},
 			"mount-path": {
 				Type:    "value",
