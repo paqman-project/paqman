@@ -122,18 +122,20 @@ export default function CommandTemplateForm({
     }
 
     return (
-        <div className="w-max mx-auto">
+        <div>
             {/* render out the reassambled template */}
-            <CodeWrapper>
-                <div className="flex items-center justify-center">
-                    {templateArray()}
-                </div>
-            </CodeWrapper>
+            <div className="w-max mx-auto">
+                <CodeWrapper>
+                    <div className="flex items-center justify-center">
+                        {templateArray()}
+                    </div>
+                </CodeWrapper>
+            </div>
             {/* things below the template (preview, copy button) */}
-            <div className="flex items-center justify-center space-x-10 mx-10">
+            <div className="flex items-center justify-center space-x-10">
                 {withPreview && (
                     <>
-                        <div className="flex-grow">
+                        <div className="min-w-max">
                             <CodeWrapper>
                                 <p>&gt; {fullCommandString()}</p>
                             </CodeWrapper>
