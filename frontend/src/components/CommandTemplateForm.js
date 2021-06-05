@@ -11,11 +11,13 @@ import Loading from "./Loading"
  * @param {string} props.template The template string
  * @param {Object} props.templateValues The object from the command document containing the template value definitions
  * @param {boolean} props.withCopyButton Whether the button to copy the filled command should be displayed
+ * @param {boolean} props.withCommandPreview Whether the full plaintext command should be displayed
  */
 export default function CommandTemplateForm({
     template,
     templateValues,
     withCopyButton,
+    withCommandPreview,
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
@@ -129,32 +131,42 @@ export default function CommandTemplateForm({
     }
 
     return (
-        <div>
+        <div className="w-max mx-auto">
             {/* render out the reassambled template */}
             <CodeWrapper>
                 <div className="flex items-center justify-center">
                     {templateArray()}
                 </div>
             </CodeWrapper>
-            {withCopyButton && ( // only display copy button, if
-                <div className="w-max mx-auto mt-10">
-                    {/* Copy to Clipboard button */}
-                    <CopyToClipboard
-                        text={fullCommandString()}
-                        onCopy={() => {
-                            setCopied(true)
-                            setTimeout(() => setCopied(false), 3000)
-                        }}
-                    >
-                        <div>
-                            <Button title="Copy to clipboard" important />
-                            {copied && (
-                                <p className="text-center mt-4">Copied 👍</p>
-                            )}
-                        </div>
-                    </CopyToClipboard>
-                </div>
-            )}
+            {/* things below the template (preview, copy button) */}
+            <div className="flex items-center justify-center space-x-10 mx-10">
+                {withCommandPreview && (
+                    <div className="flex-grow">
+                        <CodeWrapper>
+                            <p>&gt; {fullCommandString()}</p>
+                        </CodeWrapper>
+                    </div>
+                )}
+                {withCopyButton && (
+                    <div>
+                        <CopyToClipboard
+                            text={fullCommandString()}
+                            onCopy={() => {
+                                setCopied(true)
+                                setTimeout(() => setCopied(false), 3000)
+                            }}
+                        >
+                            <div>
+                                {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
+                                <Button title="Copy to clipboard" important />
+                                {copied && (
+                                    <p className="fixed mt-4 ml-2">Copied 👍</p>
+                                )}
+                            </div>
+                        </CopyToClipboard>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
