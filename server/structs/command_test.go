@@ -65,9 +65,9 @@ func TestCheckTypeCompleteness(t *testing.T) {
 	testCases := []G{
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "nonvalue-flag",
-				Description: "example description for nonvalue-flag",
-				Value:       "-xyz",
+				Type:  "nonvalue-flag",
+				Hint:  "example description for nonvalue-flag",
+				Value: "-xyz",
 			},
 			Expected: []string{},
 		},
@@ -81,16 +81,16 @@ func TestCheckTypeCompleteness(t *testing.T) {
 		},
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "value",
-				Description: "example description for value",
+				Type: "value",
+				Hint: "example description for value",
 			},
 			Expected: []string{},
 		},
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "nonvalue",
-				Description: "example description for nonvalue-flag",
-				Value:       "-xyz",
+				Type:  "nonvalue",
+				Hint:  "example description for nonvalue-flag",
+				Value: "-xyz",
 			},
 			ExpectError: true,
 		},

@@ -7,14 +7,14 @@ var (
 		Template:    "dislocker %{verbosity} %{bitlocker-partition} %{fvek} %{vmk} -- %{mount-path}",
 		TemplateValues: map[string]CommandTemplateValue{
 			"verbosity": {
-				Type:        "nonvalue-flag",
-				Description: "If the command should print verbose logs to stdout",
-				Value:       "-v",
+				Type:  "nonvalue-flag",
+				Hint:  "If the command should print verbose logs to stdout",
+				Value: "-v",
 			},
 			"bitlocker-partition": {
-				Type:        "value",
-				Description: "Bitlocker partition device",
-				Default:     "$(dislocker-find)",
+				Type:    "value",
+				Hint:    "Bitlocker partition device",
+				Default: "$(dislocker-find)",
 			},
 			"fvek": {
 				Type:     "parameter",
@@ -27,9 +27,9 @@ var (
 				Optional: true,
 			},
 			"mount-path": {
-				Type:        "value",
-				Description: "Where to mount the fuse volume to",
-				Default:     "/mnt/fuse",
+				Type:    "value",
+				Hint:    "Where to mount the fuse volume to",
+				Default: "/mnt/fuse",
 			},
 		},
 		RequiresRoot: true,
