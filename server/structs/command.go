@@ -121,6 +121,7 @@ type CommandTemplateValue struct {
 	Optional bool              `json:"optional,omitempty" bson:"optional,omitempty"`
 	Default  string            `json:"default,omitempty" bson:"default,omitempty"`
 	ParamId  string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+	Usage    string            `json:"usage" bson:"usage"`
 }
 
 // CheckTypeCompleteness checks for one template value type,
@@ -135,6 +136,9 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 	case TemplateValueTypeParameter:
 		if c.ParamId == "" {
 			missingFields = append(missingFields, "parameter_id")
+		}
+		if c.Usage == "" {
+			missingFields = append(missingFields, "usage")
 		}
 	case TemplateValueTypeValue:
 		// everything is optional
