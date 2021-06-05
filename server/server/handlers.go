@@ -64,6 +64,23 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// check if "name", "template" and "template_values are provided"
+	type missErr struct {
+		Error string `json:"error"`
+	}
+	if c.Name == "" {
+		respondObject(&w, missErr{`Missing "name" field`}, 400)
+		return
+	}
+	if c.Template == "" {
+		respondObject(&w, missErr{`"template" field is empty`}, 400)
+		return
+	}
+	if c.TemplateValues == nil {
+		respondObject(&w, missErr{`"template_values" field is empty`}, 400)
+		return
+	}
+
 	// copy TemplateValues map for checking if more template values in template_values are given then in template specified
 	copyTemplateValue := make(map[string]structs.CommandTemplateValue)
 	for k, v := range c.TemplateValues {
