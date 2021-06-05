@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import CommandTemplate from "../utils/CommandTemplate"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -10,14 +11,12 @@ import Loading from "./Loading"
  * @param {Object} props
  * @param {string} props.template The template string
  * @param {Object} props.templateValues The object from the command document containing the template value definitions
- * @param {boolean} props.withCopyButton Whether the button to copy the filled command should be displayed
- * @param {boolean} props.withCommandPreview Whether the full plaintext command should be displayed
+ * @param {boolean} props.withPreview Whether the full plaintext command should be displayed
  */
 export default function CommandTemplateForm({
     template,
     templateValues,
-    withCopyButton,
-    withCommandPreview,
+    withPreview,
 }) {
     const [formData, setFormData] = useState() // TODO fill with initial values
 
@@ -45,17 +44,9 @@ export default function CommandTemplateForm({
         setFormData(fd)
     }, [templateValues])
 
-    const regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
-    const templateCopy = template
-
-    // split the template copy at the patters to retreive everything
-    // that is not template value
-    const templatePlaintextFound = templateCopy.split(regex)
-
-    // search for all templates with regex pattern and replace brackets
-    const templateValuesFound = [...templateCopy.matchAll(regex)].map(e =>
-        e[0].replace("%{", "").replace("}", "")
-    )
+    const t = new CommandTemplate(template)
+    const templatePlaintextFound = t.plaintexts
+    const templateValuesFound = t.templateValueNames
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
@@ -131,40 +122,47 @@ export default function CommandTemplateForm({
     }
 
     return (
-        <div className="w-max mx-auto">
+        <div>
             {/* render out the reassambled template */}
-            <CodeWrapper>
-                <div className="flex items-center justify-center">
-                    {templateArray()}
-                </div>
-            </CodeWrapper>
+            <div className="w-max mx-auto">
+                <CodeWrapper>
+                    <div className="flex items-center justify-center">
+                        {templateArray()}
+                    </div>
+                </CodeWrapper>
+            </div>
             {/* things below the template (preview, copy button) */}
-            <div className="flex items-center justify-center space-x-10 mx-10">
-                {withCommandPreview && (
-                    <div className="flex-grow">
-                        <CodeWrapper>
-                            <p>&gt; {fullCommandString()}</p>
-                        </CodeWrapper>
-                    </div>
-                )}
-                {withCopyButton && (
-                    <div>
-                        <CopyToClipboard
-                            text={fullCommandString()}
-                            onCopy={() => {
-                                setCopied(true)
-                                setTimeout(() => setCopied(false), 3000)
-                            }}
-                        >
-                            <div>
-                                {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
-                                <Button title="Copy to clipboard" important />
-                                {copied && (
-                                    <p className="fixed mt-4 ml-2">Copied 👍</p>
-                                )}
-                            </div>
-                        </CopyToClipboard>
-                    </div>
+            <div className="flex items-center justify-center space-x-10">
+                {withPreview && (
+                    <>
+                        <div className="min-w-max">
+                            <CodeWrapper>
+                                <p>&gt; {fullCommandString()}</p>
+                            </CodeWrapper>
+                        </div>
+                        <div>
+                            <CopyToClipboard
+                                text={fullCommandString()}
+                                onCopy={() => {
+                                    setCopied(true)
+                                    setTimeout(() => setCopied(false), 3000)
+                                }}
+                            >
+                                <div>
+                                    {/* Don't delete this div! It is required, as CopyToClipboard only accepts one child */}
+                                    <Button
+                                        title="Copy to clipboard"
+                                        important
+                                    />
+                                    {copied && (
+                                        <p className="fixed mt-4 ml-2">
+                                            Copied 👍
+                                        </p>
+                                    )}
+                                </div>
+                            </CopyToClipboard>
+                        </div>
+                    </>
                 )}
             </div>
         </div>
