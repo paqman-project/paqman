@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { parseTemplate } from "../utils/templates"
+import CommandTemplate from "../utils/CommandTemplate"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -44,8 +44,9 @@ export default function CommandTemplateForm({
         setFormData(fd)
     }, [templateValues])
 
-    const [templatePlaintextFound, templateValuesFound] =
-        parseTemplate(template)
+    const t = new CommandTemplate(template)
+    const templatePlaintextFound = t.plaintexts
+    const templateValuesFound = t.templateValueNames
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
