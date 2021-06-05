@@ -18,7 +18,7 @@ export default function CommandTemplateForm({
     templateValues,
     withPreview,
 }) {
-    const [formData, setFormData] = useState() // TODO fill with initial values
+    const [formData, setFormData] = useState()
 
     // populate formData with defaults, if any
     useEffect(() => {
@@ -45,12 +45,12 @@ export default function CommandTemplateForm({
     }, [templateValues])
 
     const t = new Template(template)
-    const marked = t.markedArray 
+    const marked = t.markedArray // see javadoc for details on what this does
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
         return marked.map(([type, e], index) =>
-            type === "template_value" ?
+            type === "template_value" ? (
                 <CommandTemplateValueBox
                     key={index}
                     templateName={e}
@@ -58,13 +58,14 @@ export default function CommandTemplateForm({
                     formData={formData}
                     setFormData={setFormData}
                 />
-                :
+            ) : (
                 <CommandTemplateValueBox
                     key={index}
                     plaintext={e}
                     formData={formData}
                     setFormData={setFormData}
                 />
+            )
         )
     }
 
@@ -91,9 +92,7 @@ export default function CommandTemplateForm({
                         break
                     default:
                         console.log(
-                            `ERROR: found unsupported type ${
-                                templateValues[e].type
-                            } in command template value`
+                            `ERROR: found unsupported type ${templateValues[e].type} in command template value`
                         )
                 }
             } else {
