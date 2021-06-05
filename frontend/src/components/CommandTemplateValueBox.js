@@ -57,7 +57,7 @@ export default function CommandTemplateValueBox({
     if (templateName && templateValue) {
         return (
             <div>
-                <Tooltip tip={templateValue.description}>
+                <Tooltip tip={templateValue.hint}>
                     <div className="p-2 border font-sans text-center">
                         <label>{templateName}</label>
                     </div>

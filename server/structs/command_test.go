@@ -65,9 +65,9 @@ func TestCheckTypeCompleteness(t *testing.T) {
 	testCases := []G{
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "nonvalue-flag",
-				Description: "example description for nonvalue-flag",
-				Value:       "-xyz",
+				Type:  "nonvalue-flag",
+				Hint:  "example description for nonvalue-flag",
+				Value: "-xyz",
 			},
 			Expected: []string{},
 		},
@@ -75,37 +75,46 @@ func TestCheckTypeCompleteness(t *testing.T) {
 			TestValue: CommandTemplateValue{
 				Type:     "parameter",
 				Optional: false,
+				ParamId:  "123ABC", // TODO maybe check, if this is a valid object ID?
+				Usage:    "%",
+			},
+			Expected: []string{},
+		},
+		{
+			TestValue: CommandTemplateValue{
+				Type:     "parameter",
+				Optional: true,
 				ParamId:  "123ABC",
 			},
-			Expected: []string{},
+			Expected: []string{"usage"},
 		},
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "value",
-				Description: "example description for value",
+				Type: "value",
+				Hint: "example description for value",
 			},
 			Expected: []string{},
 		},
 		{
 			TestValue: CommandTemplateValue{
-				Type:        "nonvalue",
-				Description: "example description for nonvalue-flag",
-				Value:       "-xyz",
+				Type:  "nonvalue",
+				Hint:  "example description for nonvalue-flag",
+				Value: "-xyz",
 			},
-			ExpectError: true,
+			ExpectError: true, // type "nonvalue" not existent
 		},
 		{
 			TestValue: CommandTemplateValue{
 				Type:     "parameter",
 				Optional: false,
 			},
-			Expected: []string{"parameter_id"},
+			Expected: []string{"parameter_id", "usage"},
 		},
 		{
 			TestValue: CommandTemplateValue{
 				Type: "value",
 			},
-			Expected: []string{"description"},
+			Expected: []string{},
 		},
 	}
 

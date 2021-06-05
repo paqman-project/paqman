@@ -15,6 +15,7 @@ type Command struct {
 	Instructions   string                          `json:"instructions" bson:"instructions"`
 	Template       Template                        `json:"template" bson:"template"`
 	TemplateValues map[string]CommandTemplateValue `json:"template_values" bson:"template_values"`
+	Returns        string                          `json:"returns" bson:"returns"`
 	RequiresRoot   bool                            `json:"requires_root" bson:"requires_root"`
 }
 
@@ -114,12 +115,13 @@ const (
 
 // A CommandTemplateValue defines the format of a TemplateValue in a Command Template
 type CommandTemplateValue struct {
-	Type        TemplateValueType `json:"type" bson:"type"`
-	Description string            `json:"description,omitempty" bson:"description,omitempty"`
-	Value       string            `json:"value,omitempty" bson:"value,omitempty"`
-	Optional    bool              `json:"optional,omitempty" bson:"optional,omitempty"`
-	Default     string            `json:"default,omitempty" bson:"default,omitempty"`
-	ParamId     string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+	Type     TemplateValueType `json:"type" bson:"type"`
+	Hint     string            `json:"hint" bson:"hint"`
+	Value    string            `json:"value,omitempty" bson:"value,omitempty"`
+	Optional bool              `json:"optional,omitempty" bson:"optional,omitempty"`
+	Default  string            `json:"default,omitempty" bson:"default,omitempty"`
+	ParamId  string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+	Usage    string            `json:"usage" bson:"usage"`
 }
 
 // CheckTypeCompleteness checks for one template value type,
@@ -128,9 +130,6 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 	missingFields := make([]string, 0)
 	switch c.Type {
 	case TemplateValueTypeNonvalueFlag:
-		if c.Description == "" {
-			missingFields = append(missingFields, "description")
-		}
 		if c.Value == "" {
 			missingFields = append(missingFields, "value")
 		}
@@ -138,10 +137,11 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 		if c.ParamId == "" {
 			missingFields = append(missingFields, "parameter_id")
 		}
-	case TemplateValueTypeValue:
-		if c.Description == "" {
-			missingFields = append(missingFields, "description")
+		if c.Usage == "" {
+			missingFields = append(missingFields, "usage")
 		}
+	case TemplateValueTypeValue:
+		// everything is optional
 	default:
 		return nil, fmt.Errorf("%s not found", string(c.Type))
 	}
