@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import Template from "../utils/Template"
+import * as enums from "../utils/enums"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -25,13 +26,16 @@ export default function CommandTemplateForm({
         let fd = {}
         Object.entries(templateValues).forEach(([n, v]) => {
             switch (v.type) {
-                case "nonvalue-flag":
+                case enums.nonvalueFlag:
                     fd[n] = false
                     break
-                case "value":
+                case enums.valueFlag:
+                    fd[n] = v.usage.replace("%", v.default || " ") // TEMP
+                    break
+                case enums.value:
                     fd[n] = v.default || ""
                     break
-                case "parameter":
+                case enums.parameter:
                     // TODO this is temporary until #62 is resolved
                     fd[n] = ""
                     break
@@ -78,15 +82,18 @@ export default function CommandTemplateForm({
         marked.forEach(([type, e]) => {
             if (type === "template_value") {
                 switch (templateValues[e].type) {
-                    case "nonvalue-flag":
+                    case enums.nonvalueFlag:
                         if (formData[e] === true) {
                             fcs += templateValues[e].value // TODO, check if existent?
                         }
                         break
-                    case "value":
+                    case enums.valueFlag:
                         fcs += formData[e]
                         break
-                    case "parameter":
+                    case enums.value:
+                        fcs += formData[e]
+                        break
+                    case enums.parameter:
                         // TODO this is temporary until #62 is resolved
                         fcs += formData[e]
                         break
