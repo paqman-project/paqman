@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import CommandTemplate from "../utils/CommandTemplate"
+import Template from "../utils/Template"
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -44,35 +44,28 @@ export default function CommandTemplateForm({
         setFormData(fd)
     }, [templateValues])
 
-    const t = new CommandTemplate(template)
-    const templatePlaintextFound = t.plaintexts
-    const templateValuesFound = t.templateValueNames
+    const t = new Template(template)
+    const marked = t.markedArray 
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values
-        const templateArray = []
-        for (let i = 0; i < templateValuesFound.length; i++) {
-            // add the plaintext
-            templateArray.push(
+        return marked.map(([type, e], index) =>
+            type === "template_value" ?
                 <CommandTemplateValueBox
-                    key={i}
-                    plaintext={templatePlaintextFound[i]}
+                    key={index}
+                    templateName={e}
+                    templateValue={templateValues[e]}
                     formData={formData}
                     setFormData={setFormData}
                 />
-            )
-            // add the template value
-            templateArray.push(
+                :
                 <CommandTemplateValueBox
-                    key={templateValuesFound[i]}
-                    templateName={templateValuesFound[i]}
-                    templateValue={templateValues[templateValuesFound[i]]}
+                    key={index}
+                    plaintext={e}
                     formData={formData}
                     setFormData={setFormData}
                 />
-            )
-        }
-        return templateArray
+        )
     }
 
     /**
@@ -81,31 +74,32 @@ export default function CommandTemplateForm({
      */
     const fullCommandString = () => {
         let fcs = ""
-        for (let i = 0; i < templateValuesFound.length; i++) {
-            // add the plaintext
-            fcs = fcs + templatePlaintextFound[i]
-            // add the template value
-            switch (templateValues[templateValuesFound[i]].type) {
-                case "nonvalue-flag":
-                    if (formData[templateValuesFound[i]] === true) {
-                        fcs = fcs + templateValues[templateValuesFound[i]].value // TODO, check if existent?
-                    }
-                    break
-                case "value":
-                    fcs = fcs + formData[templateValuesFound[i]]
-                    break
-                case "parameter":
-                    // TODO this is temporary until #62 is resolved
-                    fcs = fcs + formData[templateValuesFound[i]]
-                    break
-                default:
-                    console.log(
-                        `ERROR: found unsupported type ${
-                            templateValues[templateValuesFound[i]].type
-                        } in command template value`
-                    )
+        marked.forEach(([type, e]) => {
+            if (type === "template_value") {
+                switch (templateValues[e].type) {
+                    case "nonvalue-flag":
+                        if (formData[e] === true) {
+                            fcs += templateValues[e].value // TODO, check if existent?
+                        }
+                        break
+                    case "value":
+                        fcs += formData[e]
+                        break
+                    case "parameter":
+                        // TODO this is temporary until #62 is resolved
+                        fcs += formData[e]
+                        break
+                    default:
+                        console.log(
+                            `ERROR: found unsupported type ${
+                                templateValues[e].type
+                            } in command template value`
+                        )
+                }
+            } else {
+                fcs += e
             }
-        }
+        })
         fcs = fcs.replace(/\s+/g, " ") // remove duplicate whitespaces
         return fcs
     }

@@ -1,8 +1,13 @@
 export default class Template {
+
     constructor(template) {
         this.raw = template
     }
 
+    /**
+     * @returns Plaintext parts of the template as Array
+     * @deprecated
+     */
     get plaintexts() {
         let regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
         let templateCopy = this.raw
@@ -11,6 +16,10 @@ export default class Template {
         return templateCopy.split(regex)
     }
 
+    /**
+     * @returns Template value names found in the template as Array
+     * @deprecated
+     */
     get templateValueNames() {
         let regex = /%\{.*?\}/g // pattern to find template values ( %{ } )
         let templateCopy = this.raw
@@ -19,4 +28,32 @@ export default class Template {
             e[0].replace("%{", "").replace("}", "")
         )
     }
+
+    /**
+     * This returns an array which contains tupels of this form:
+     * 
+     * `[ ("plain" || "template_value") , content ]`
+     * 
+     * The first value describes, if the element is pure plaintext
+     * or if it is a template value. The second element contains the
+     * actual string (plaintext or template value name, respectively)
+     * 
+     * This can be used to render out React components to display commands.
+     * 
+     * @returns String
+     */
+    get markedArray() {
+        let regex = /(%\{.*?\})/g // pattern to find template values ( %{ } )
+        let templateCopy = this.raw
+
+        return templateCopy.split(regex).map(e => { // the regex pattern does not replace the matches !!!
+            if (regex.test(e)) { // if e is a template value
+                return ["template_value", e.replace("%{", "").replace("}", "")]
+            } else {
+                return ["plain", e]
+            }
+        })
+
+    }
+
 }
