@@ -14,10 +14,10 @@ import NotFound from "./components/NotFound"
 
 export default function App() {
     return (
-        <div className="flex flex-col h-screen w-full">
-            <Header />
-            <div className="flex-1 h-full">
-                <Router>
+        <Router>
+            <div className="flex flex-col h-screen w-full">
+                <Header />
+                <div className="flex-1 h-full">
                     <Switch>
                         <Route path="/" exact>
                             <Redirect to="/prepare/" />
@@ -38,8 +38,8 @@ export default function App() {
                         {/* Fallback (404 page) */}
                         <Route path="/" component={NotFound} />
                     </Switch>
-                </Router>
+                </div>
             </div>
-        </div>
+        </Router>
     )
 }
