@@ -107,6 +107,8 @@ type TemplateValueType string
 const (
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Nonvalue-flag
 	TemplateValueTypeNonvalueFlag TemplateValueType = "nonvalue-flag"
+	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Value-flag
+	TemplateValueTypeValueFlag TemplateValueType = "value-flag"
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Parameter
 	TemplateValueTypeParameter TemplateValueType = "parameter"
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Value
@@ -132,6 +134,10 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 	case TemplateValueTypeNonvalueFlag:
 		if c.Value == "" {
 			missingFields = append(missingFields, "value")
+		}
+	case TemplateValueTypeValueFlag:
+		if c.Usage == "" {
+			missingFields = append(missingFields, "usage")
 		}
 	case TemplateValueTypeParameter:
 		if c.ParamId == "" {
