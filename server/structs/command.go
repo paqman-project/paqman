@@ -113,6 +113,8 @@ const (
 	TemplateValueTypeParameter TemplateValueType = "parameter"
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Value
 	TemplateValueTypeValue TemplateValueType = "value"
+	// not specified yet, see #65
+	TemplateValueTypeSelection TemplateValueType = "selection"
 )
 
 // A CommandTemplateValue defines the format of a TemplateValue in a Command Template

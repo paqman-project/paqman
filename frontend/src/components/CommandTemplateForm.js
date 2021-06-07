@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+// utils
 import Template from "../utils/Template"
-import * as enums from "../utils/enums"
+import { commandTemplateValueTypes as valTypes } from "../utils/enums"
+// JSX components
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -26,16 +28,16 @@ export default function CommandTemplateForm({
         let fd = {}
         Object.entries(templateValues).forEach(([n, v]) => {
             switch (v.type) {
-                case enums.nonvalueFlag:
+                case valTypes.nonvalueFlag:
                     fd[n] = false
                     break
-                case enums.valueFlag:
+                case valTypes.valueFlag:
                     fd[n] = v.usage.replace("%", v.default || " ") // TEMP
                     break
-                case enums.value:
+                case valTypes.value:
                     fd[n] = v.default || ""
                     break
-                case enums.parameter:
+                case valTypes.parameter:
                     // TODO this is temporary until #62 is resolved
                     fd[n] = ""
                     break
@@ -82,18 +84,18 @@ export default function CommandTemplateForm({
         marked.forEach(([type, e]) => {
             if (type === "template_value") {
                 switch (templateValues[e].type) {
-                    case enums.nonvalueFlag:
+                    case valTypes.nonvalueFlag:
                         if (formData[e] === true) {
                             fcs += templateValues[e].value // TODO, check if existent?
                         }
                         break
-                    case enums.valueFlag:
+                    case valTypes.valueFlag:
                         fcs += formData[e]
                         break
-                    case enums.value:
+                    case valTypes.value:
                         fcs += formData[e]
                         break
-                    case enums.parameter:
+                    case valTypes.parameter:
                         // TODO this is temporary until #62 is resolved
                         fcs += formData[e]
                         break
