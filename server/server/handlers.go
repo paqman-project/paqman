@@ -277,3 +277,119 @@ func getParameterByIDHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	respondObject(&w, c, 200)
 }
+
+// creates a new parameter
+func newParameterHandler(w http.ResponseWriter, r *http.Request) {
+
+	var c structs.Parameter
+	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	// copy TemplateValues map for checking if more template values in template_values are given then in template specified
+	copyTemplateValue := make(map[string]structs.ParameterTemplateValue)
+	for k, v := range c.TemplateValues {
+		copyTemplateValue[k] = v
+	}
+
+	// regex, parses all template values out of a template specified with the syntax %{}
+	re := regexp.MustCompile(`\%\{.*?\}`)
+	// checks if any template_values are present
+	matches := re.FindAllString(string(c.Template), -1)
+
+	// following checks have to be passed before the command will be stored in the database, there are three error cases
+	// undefinedTemplates: specified template type does not exist
+	// missingFields: more template values under template are given then in template_values map specified
+	// wrongTypedTemplates: specified templates have a wrong type
+	undefinedTemplates := make([]string, 0)
+	missingFields := make(map[string][]string)
+	wrongTypedTemplates := make([]string, 0)
+	for _, match := range matches {
+		match = strings.Trim(match, "%{")
+		match = strings.Trim(match, "}")
+		if _, ok := c.TemplateValues[match]; ok {
+			delete(copyTemplateValue, match)
+			// missing, err := value.CheckTypeCompleteness()
+			// if err != nil {
+			// 	wrongTypedTemplates = append(wrongTypedTemplates, match)
+			// } else {
+			// 	if len(missing) > 0 {
+			// 		missingFields[match] = missing
+			// 	}
+			// }
+		} else {
+			undefinedTemplates = append(undefinedTemplates, match)
+		}
+	}
+
+	if len(wrongTypedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error               string   `json:"error"`
+			WrongTypedTemplates []string `json:"wrong_typed_templates"`
+		}{
+			"found templates with unknown type",
+			wrongTypedTemplates,
+		}, 400)
+		return
+	}
+
+	if len(undefinedTemplates) > 0 {
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			UndefinedTemplates []string `json:"undefined_templates"`
+		}{
+			"undefined templates",
+			undefinedTemplates,
+		}, 400)
+		return
+	}
+
+	// check if more template values in the template_values map are given then in template specified
+	if len(copyTemplateValue) > 0 {
+		redundantTemplates := make([]string, 0)
+		for key := range copyTemplateValue {
+			redundantTemplates = append(redundantTemplates, key)
+
+		}
+		respondObject(&w, struct {
+			Error              string   `json:"error"`
+			RedundantTemplates []string `json:"redundant_template_definitions"`
+		}{
+			"redundant template definitions found in template_values",
+			redundantTemplates,
+		}, 400)
+		return
+	}
+
+	if len(missingFields) > 0 {
+
+		respondObject(&w, struct {
+			Error         string              `json:"error"`
+			MissingFields map[string][]string `json:"missing_fields"`
+		}{
+			"fields are missing",
+			missingFields,
+		}, 400)
+		return
+	}
+
+	// all checks done, store command in db
+	ids, err := db.Client.CreateOne("parameters", c)
+	if err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	b, err := json.Marshal(
+		struct {
+			ID string `json:"_id"`
+		}{
+			ids.Hex(),
+		},
+	)
+	if err != nil {
+		respondError(&w, err, 500)
+	}
+	respondJSON(&w, b, 201)
+}

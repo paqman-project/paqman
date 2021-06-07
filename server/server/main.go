@@ -42,6 +42,7 @@ func Start() error {
 	apiRouter.HandleFunc("/command/{id}", getCommandByIDHandler).Methods("GET")
 	//apiRouter.HandleFunc("/command/{id}/fill", fillCommandHandler).Methods("POST")
 	apiRouter.HandleFunc("/parameter/{id}", getParameterByIDHandler).Methods("GET")
+	apiRouter.HandleFunc("/parameter", newParameterHandler).Methods("POST")
 	apiRouter.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		respondString(&rw, "Endpoint not found", 404)
 	})
