@@ -29,17 +29,26 @@ export default function CommandTemplateForm({
         Object.entries(templateValues).forEach(([n, v]) => {
             switch (v.type) {
                 case valTypes.nonvalueFlag:
-                    fd[n] = false
+                    fd[n] = {
+                        triggered: false,
+                    }
                     break
                 case valTypes.valueFlag:
-                    fd[n] = v.usage.replace("%", v.default || " ") // TEMP
+                    fd[n] = {
+                        triggered: false,
+                        value: v.default || ""
+                    }
                     break
                 case valTypes.value:
-                    fd[n] = v.default || ""
+                    fd[n] = {
+                        value: v.default || ""
+                    }
                     break
                 case valTypes.parameter:
                     // TODO this is temporary until #62 is resolved
-                    fd[n] = ""
+                    fd[n] = {
+                        value: ""
+                    }
                     break
                 default:
                     console.log(
@@ -47,6 +56,7 @@ export default function CommandTemplateForm({
                     )
             }
         })
+        console.log(fd)
         setFormData(fd)
     }, [templateValues])
 
@@ -85,19 +95,21 @@ export default function CommandTemplateForm({
             if (type === "template_value") {
                 switch (templateValues[e].type) {
                     case valTypes.nonvalueFlag:
-                        if (formData[e] === true) {
+                        if (formData[e].triggered) {
                             fcs += templateValues[e].value // TODO, check if existent?
                         }
                         break
                     case valTypes.valueFlag:
-                        fcs += formData[e]
+                        if (formData[e].triggered) {
+                            fcs += templateValues[e].usage.replace("%", formData[e].value)
+                        }
                         break
                     case valTypes.value:
-                        fcs += formData[e]
+                        fcs += formData[e].value
                         break
                     case valTypes.parameter:
                         // TODO this is temporary until #62 is resolved
-                        fcs += formData[e]
+                        fcs += formData[e].value
                         break
                     default:
                         console.log(

@@ -1,4 +1,5 @@
 import React from "react"
+import { commandTemplateValueTypes as valTypes } from "../utils/enums"
 import Tooltip from "./Tooltip"
 
 /**
@@ -18,30 +19,51 @@ export default function CommandTemplateValueBox({
     formData,
     setFormData,
 }) {
+
     /**
-     * Used to compute the HTML input type by template value
+     * Used to compute the HTML input types by template value
      * @param v Object containing the template value definition
-     * @returns {string} Type to be used in input elements
+     * @returns Array that can be mapped to create the input elements
      */
-    const inputTypeOf = v => {
+    const inputTypesOf = v => {
         switch (v.type) {
-            case "nonvalue-flag":
-                return "checkbox"
-            case "parameter":
-            case "value":
-                return "text"
+            case valTypes.nonvalueFlag:
+                return ["checkbox"]
+            case valTypes.valueFlag:
+                return ["checkbox", "text"]
+            case valTypes.parameter:
+            case valTypes.value:
+                return ["text"]
             default:
                 console.error(
-                    "ERROR: found unsupported type in command template value"
+                    `ERROR: found unsupported type ${v.type} in command template value`
                 )
         }
     }
 
     const handleChange = event => {
         const { name, type, checked, value } = event.target
-        const combValue = type === "checkbox" ? checked : value
         const d = { ...formData } // shallow copy formData
-        d[name] = combValue
+        
+        switch (templateValue.type) {
+            case valTypes.nonvalueFlag:
+                d[name].triggered = checked
+                break
+            case valTypes.valueFlag:
+                type === "checkbox" ?
+                    d[name].triggered = checked :
+                    d[name].value = value
+                break
+            case valTypes.parameter:
+            case valTypes.value:
+                d[name].value = value
+                break
+            default:
+                console.error(
+                    `ERROR: found unsupported type ${templateValue.type} in command template value`
+                )
+        }
+
         setFormData(d)
     }
 
@@ -58,25 +80,33 @@ export default function CommandTemplateValueBox({
         return (
             <div>
                 <Tooltip tip={templateValue.hint}>
-                    <div className="p-2 border font-sans text-center">
+                    <div className="p-2 border rounded-t-lg font-sans text-center">
                         <label>{templateName}</label>
                     </div>
                 </Tooltip>
-                <div className="p-2 border text-center">
-                    <input
-                        className="text-center"
-                        type={inputTypeOf(templateValue)}
-                        onChange={handleChange}
-                        name={templateName}
-                        value={formData[templateName]}
-                        checked={formData[templateName]}
-                        // Resize the input tag dynamically (minimum size of 15 chars)
-                        size={
-                            formData[templateName].length > 15
-                                ? formData[templateName].length
-                                : 15
-                        }
-                    />
+                <div className="p-2 border rounded-b-lg text-center">
+                    {inputTypesOf(templateValue).map((e, index) => (
+                        <input 
+                            key={index}
+                            type={e}
+                            onChange={handleChange}
+                            name={templateName}
+                            value={
+                                e === "text" && formData[templateName].value
+                            }
+                            checked={
+                                e === "checkbox" && formData[templateName].triggered
+                            }
+                            className="text-center mx-1 p-1 rounded-lg"
+                            // Resize the input tag dynamically (minimum size of 15 chars)
+                            size={
+                                e === "text" && 
+                                    formData[templateName].value.length > 15
+                                        ? formData[templateName].value.length
+                                        : 15
+                            }
+                        />
+                    ))}
                 </div>
             </div>
         )
