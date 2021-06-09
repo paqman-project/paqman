@@ -23,7 +23,13 @@ export default function CommandTemplateForm({
 }) {
     const [formData, setFormData] = useState()
 
-    // populate formData with defaults, if any
+    /* 
+        populate formData with defaults, if any in this format:
+        {
+            triggered: "for checkboxes,
+            value: "for text inputs"
+        }
+    */ 
     useEffect(() => {
         let fd = {}
         Object.entries(templateValues).forEach(([n, v]) => {
@@ -56,7 +62,6 @@ export default function CommandTemplateForm({
                     )
             }
         })
-        console.log(fd)
         setFormData(fd)
     }, [templateValues])
 

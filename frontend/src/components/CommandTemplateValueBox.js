@@ -30,7 +30,9 @@ export default function CommandTemplateValueBox({
             case valTypes.nonvalueFlag:
                 return ["checkbox"]
             case valTypes.valueFlag:
-                return ["checkbox", "text"]
+                // "checkbox" for "activating" the flag
+                // and "text" to define the content
+                return ["checkbox", "text"] 
             case valTypes.parameter:
             case valTypes.value:
                 return ["text"]
@@ -44,7 +46,9 @@ export default function CommandTemplateValueBox({
     const handleChange = event => {
         const { name, type, checked, value } = event.target
         const d = { ...formData } // shallow copy formData
-        
+
+        // different command template value types have different
+        // formats on how they are stored in formData
         switch (templateValue.type) {
             case valTypes.nonvalueFlag:
                 d[name].triggered = checked
@@ -85,22 +89,22 @@ export default function CommandTemplateValueBox({
                     </div>
                 </Tooltip>
                 <div className="p-2 border rounded-b-lg text-center">
-                    {inputTypesOf(templateValue).map((e, index) => (
+                    {inputTypesOf(templateValue).map((inputType, index) => (
                         <input 
                             key={index}
-                            type={e}
+                            type={inputType}
                             onChange={handleChange}
                             name={templateName}
                             value={
-                                e === "text" && formData[templateName].value
+                                inputType === "text" && formData[templateName].value
                             }
                             checked={
-                                e === "checkbox" && formData[templateName].triggered
+                                inputType === "checkbox" && formData[templateName].triggered
                             }
                             className="text-center mx-1 p-1 rounded-lg"
                             // Resize the input tag dynamically (minimum size of 15 chars)
                             size={
-                                e === "text" && 
+                                inputType === "text" && 
                                     formData[templateName].value.length > 15
                                         ? formData[templateName].value.length
                                         : 15
