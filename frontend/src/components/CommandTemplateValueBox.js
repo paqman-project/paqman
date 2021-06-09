@@ -19,7 +19,6 @@ export default function CommandTemplateValueBox({
     formData,
     setFormData,
 }) {
-
     /**
      * Used to compute the HTML input types by template value
      * @param v Object containing the template value definition
@@ -32,7 +31,7 @@ export default function CommandTemplateValueBox({
             case valTypes.valueFlag:
                 // "checkbox" for "activating" the flag
                 // and "text" to define the content
-                return ["checkbox", "text"] 
+                return ["checkbox", "text"]
             case valTypes.parameter:
             case valTypes.value:
                 return ["text"]
@@ -54,9 +53,9 @@ export default function CommandTemplateValueBox({
                 d[name].triggered = checked
                 break
             case valTypes.valueFlag:
-                type === "checkbox" ?
-                    d[name].triggered = checked :
-                    d[name].value = value
+                type === "checkbox"
+                    ? (d[name].triggered = checked)
+                    : (d[name].value = value)
                 break
             case valTypes.parameter:
             case valTypes.value:
@@ -90,24 +89,26 @@ export default function CommandTemplateValueBox({
                 </Tooltip>
                 <div className="p-2 border rounded-b-lg text-center">
                     {inputTypesOf(templateValue).map((inputType, index) => (
-                        <input 
+                        <input
                             key={index}
                             type={inputType}
                             onChange={handleChange}
                             name={templateName}
                             value={
-                                inputType === "text" && formData[templateName].value
+                                inputType === "text" &&
+                                formData[templateName].value
                             }
                             checked={
-                                inputType === "checkbox" && formData[templateName].triggered
+                                inputType === "checkbox" &&
+                                formData[templateName].triggered
                             }
                             className="text-center mx-1 p-1 rounded-lg"
                             // Resize the input tag dynamically (minimum size of 15 chars)
                             size={
-                                inputType === "text" && 
-                                    formData[templateName].value.length > 15
-                                        ? formData[templateName].value.length
-                                        : 15
+                                inputType === "text" &&
+                                formData[templateName].value.length > 15
+                                    ? formData[templateName].value.length
+                                    : 15
                             }
                         />
                     ))}

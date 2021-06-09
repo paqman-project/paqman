@@ -8,7 +8,6 @@ import React, { useState } from "react"
  * @param props.children DO NOT SPECIFY EXPLICITLY! The nested children elements inside the component tags
  */
 export default function Tooltip({ tip, children }) {
-
     const [hovering, setHovering] = useState(false)
 
     return (
@@ -23,7 +22,7 @@ export default function Tooltip({ tip, children }) {
                     className={
                         "z-50 bottom-8 left-10 bg-white px-4 py-2 border rounded-xl opacity-95" +
                         " " +
-                        ((tip && hovering) ? "absolute w-60" : "hidden")
+                        (tip && hovering ? "absolute w-60" : "hidden")
                     }
                 >
                     <p className="font-sans text-sm text-center">{tip}</p>

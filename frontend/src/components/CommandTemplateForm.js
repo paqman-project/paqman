@@ -29,7 +29,7 @@ export default function CommandTemplateForm({
             triggered: "for checkboxes,
             value: "for text inputs"
         }
-    */ 
+    */
     useEffect(() => {
         let fd = {}
         Object.entries(templateValues).forEach(([n, v]) => {
@@ -42,18 +42,18 @@ export default function CommandTemplateForm({
                 case valTypes.valueFlag:
                     fd[n] = {
                         triggered: false,
-                        value: v.default || ""
+                        value: v.default || "",
                     }
                     break
                 case valTypes.value:
                     fd[n] = {
-                        value: v.default || ""
+                        value: v.default || "",
                     }
                     break
                 case valTypes.parameter:
                     // TODO this is temporary until #62 is resolved
                     fd[n] = {
-                        value: ""
+                        value: "",
                     }
                     break
                 default:
@@ -106,7 +106,10 @@ export default function CommandTemplateForm({
                         break
                     case valTypes.valueFlag:
                         if (formData[e].triggered) {
-                            fcs += templateValues[e].usage.replace("%", formData[e].value)
+                            fcs += templateValues[e].usage.replace(
+                                "%",
+                                formData[e].value
+                            )
                         }
                         break
                     case valTypes.value:
