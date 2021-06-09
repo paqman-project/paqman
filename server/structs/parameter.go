@@ -1,19 +1,19 @@
 package structs
 
 type Parameter struct {
-	Name           string                            `json:"name" bson:"name"`
-	Description    string                            `json:"description" bson:"description"`
-	Template       string                            `json:"template" bson:"template"`
-	TemplateValues map[string]ParameterTemplateValue `json:"template_values" bson:"template_values"`
-	Primitive      bool                              `json:"primitive" bson:"primitive"`
+	Name         string                      `json:"name" bson:"name"`
+	Description  string                      `json:"description" bson:"description"`
+	Type         string                      `json:"type" bson:"type"`
+	ReturnedFrom map[string]ReturnedFromData `json:"returned_from" bson:"returned_from"`
+	UsedIn       map[string]UsedInData       `json:"used_in" bson:"used_in"`
 }
 
-type ParameterTemplateValue struct {
-	Type         string         `json:"type" bson:"type"`
-	ReturnedFrom []ReturnedFrom `json:"returned_from,omitempty" bson:"returned_from,omitempty"`
+type ReturnedFromData struct {
+	At string `json:"at"`
 }
 
-type ReturnedFrom struct {
-	Plain     string `json:"plain,omitempty" bson:"plain,omitempty"`
-	CommandID string `json:"command_id,omitempty" bson:"command_id,omitempty"`
+type UsedInData struct {
+	At         string                 `json:"at"`
+	WithValues map[string]interface{} `json:"with_values" bson:"with_values"` // interface{} can be string or bool
+	ToCreate   string                 `json:"to_create" bson:"to_create"`
 }
