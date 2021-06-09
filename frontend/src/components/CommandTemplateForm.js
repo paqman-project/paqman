@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+// utils
 import Template from "../utils/Template"
+import { commandTemplateValueTypes as valTypes } from "../utils/enums"
+// JSX components
 import Button from "./Button"
 import CodeWrapper from "./CodeWrapper"
 import CommandTemplateValueBox from "./CommandTemplateValueBox"
@@ -20,20 +23,38 @@ export default function CommandTemplateForm({
 }) {
     const [formData, setFormData] = useState()
 
-    // populate formData with defaults, if any
+    /* 
+        populate formData with defaults, if any in this format:
+        {
+            triggered: "for checkboxes,
+            value: "for text inputs"
+        }
+    */
     useEffect(() => {
         let fd = {}
         Object.entries(templateValues).forEach(([n, v]) => {
             switch (v.type) {
-                case "nonvalue-flag":
-                    fd[n] = false
+                case valTypes.nonvalueFlag:
+                    fd[n] = {
+                        triggered: v.default_state || false,
+                    }
                     break
-                case "value":
-                    fd[n] = v.default || ""
+                case valTypes.valueFlag:
+                    fd[n] = {
+                        triggered: v.default_state || false,
+                        value: v.default || "",
+                    }
                     break
-                case "parameter":
+                case valTypes.value:
+                    fd[n] = {
+                        value: v.default || "",
+                    }
+                    break
+                case valTypes.parameter:
                     // TODO this is temporary until #62 is resolved
-                    fd[n] = ""
+                    fd[n] = {
+                        value: "",
+                    }
                     break
                 default:
                     console.log(
@@ -78,17 +99,25 @@ export default function CommandTemplateForm({
         marked.forEach(([type, e]) => {
             if (type === "template_value") {
                 switch (templateValues[e].type) {
-                    case "nonvalue-flag":
-                        if (formData[e] === true) {
+                    case valTypes.nonvalueFlag:
+                        if (formData[e].triggered) {
                             fcs += templateValues[e].value // TODO, check if existent?
                         }
                         break
-                    case "value":
-                        fcs += formData[e]
+                    case valTypes.valueFlag:
+                        if (formData[e].triggered) {
+                            fcs += templateValues[e].usage.replace(
+                                "%",
+                                formData[e].value
+                            )
+                        }
                         break
-                    case "parameter":
+                    case valTypes.value:
+                        fcs += formData[e].value
+                        break
+                    case valTypes.parameter:
                         // TODO this is temporary until #62 is resolved
-                        fcs += formData[e]
+                        fcs += formData[e].value
                         break
                     default:
                         console.log(
