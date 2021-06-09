@@ -119,13 +119,14 @@ const (
 
 // A CommandTemplateValue defines the format of a TemplateValue in a Command Template
 type CommandTemplateValue struct {
-	Type     TemplateValueType `json:"type" bson:"type"`
-	Hint     string            `json:"hint" bson:"hint"`
-	Value    string            `json:"value,omitempty" bson:"value,omitempty"`
-	Optional bool              `json:"optional,omitempty" bson:"optional,omitempty"`
-	Default  string            `json:"default,omitempty" bson:"default,omitempty"`
-	ParamId  string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
-	Usage    string            `json:"usage" bson:"usage"`
+	Type         TemplateValueType `json:"type" bson:"type"`
+	Hint         string            `json:"hint,omitempty" bson:"hint,omitempty"`
+	Value        string            `json:"value,omitempty" bson:"value,omitempty"`
+	Optional     bool              `json:"optional,omitempty" bson:"optional,omitempty"`
+	Default      string            `json:"default,omitempty" bson:"default,omitempty"`
+	DefaultState bool              `json:"default_state,omitempty" bson:"default_state,omitempty"`
+	ParamId      string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
+	Usage        string            `json:"usage,omitempty" bson:"usage,omitempty"`
 }
 
 // CheckTypeCompleteness checks for one template value type,

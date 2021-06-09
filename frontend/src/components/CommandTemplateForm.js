@@ -36,12 +36,12 @@ export default function CommandTemplateForm({
             switch (v.type) {
                 case valTypes.nonvalueFlag:
                     fd[n] = {
-                        triggered: false,
+                        triggered: v.default_state || false,
                     }
                     break
                 case valTypes.valueFlag:
                     fd[n] = {
-                        triggered: false,
+                        triggered: v.default_state || false,
                         value: v.default || "",
                     }
                     break
