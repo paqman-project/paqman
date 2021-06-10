@@ -92,13 +92,6 @@ func TestCheckTypeCompleteness(t *testing.T) {
 			},
 			Expected: []string{"usage"},
 		},
-		{
-			TestValue: CommandTemplateValue{
-				Type:  "value-flag",
-				Usage: "-o _", // does not contain exactly one "%""
-			},
-			ExpectError: true,
-		},
 		// value
 		{
 			TestValue: CommandTemplateValue{

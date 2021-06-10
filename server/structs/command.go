@@ -1,9 +1,7 @@
 package structs
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 )
 
 // Template -
@@ -138,8 +136,6 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 	case TemplateValueTypeValueFlag:
 		if c.Usage == "" {
 			missingFields = append(missingFields, "usage")
-		} else if strings.Count(c.Usage, "%") != 1 {
-			return nil, errors.New(`"usage" does not have exactly one "%" sign`)
 		}
 	case TemplateValueTypeValue:
 		// everything is optional
