@@ -15,7 +15,6 @@ type Command struct {
 	Instructions   string                          `json:"instructions" bson:"instructions"`
 	Template       Template                        `json:"template" bson:"template"`
 	TemplateValues map[string]CommandTemplateValue `json:"template_values" bson:"template_values"`
-	Returns        string                          `json:"returns" bson:"returns"`
 	RequiresRoot   bool                            `json:"requires_root" bson:"requires_root"`
 }
 
@@ -109,8 +108,6 @@ const (
 	TemplateValueTypeNonvalueFlag TemplateValueType = "nonvalue-flag"
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Value-flag
 	TemplateValueTypeValueFlag TemplateValueType = "value-flag"
-	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Parameter
-	TemplateValueTypeParameter TemplateValueType = "parameter"
 	// https://git.leon.wtf/paqman/paqman/-/wikis/Database/Command-Template-Value-Types/Value
 	TemplateValueTypeValue TemplateValueType = "value"
 	// not specified yet, see #65
@@ -122,10 +119,8 @@ type CommandTemplateValue struct {
 	Type         TemplateValueType `json:"type" bson:"type"`
 	Hint         string            `json:"hint,omitempty" bson:"hint,omitempty"`
 	Value        string            `json:"value,omitempty" bson:"value,omitempty"`
-	Optional     bool              `json:"optional,omitempty" bson:"optional,omitempty"`
 	Default      string            `json:"default,omitempty" bson:"default,omitempty"`
 	DefaultState bool              `json:"default_state,omitempty" bson:"default_state,omitempty"`
-	ParamId      string            `json:"parameter_id,omitempty" bson:"parameter_id,omitempty"` // foreign key in MongoDB research!
 	Usage        string            `json:"usage,omitempty" bson:"usage,omitempty"`
 }
 
@@ -139,13 +134,6 @@ func (c *CommandTemplateValue) CheckTypeCompleteness() ([]string, error) {
 			missingFields = append(missingFields, "value")
 		}
 	case TemplateValueTypeValueFlag:
-		if c.Usage == "" {
-			missingFields = append(missingFields, "usage")
-		}
-	case TemplateValueTypeParameter:
-		if c.ParamId == "" {
-			missingFields = append(missingFields, "parameter_id")
-		}
 		if c.Usage == "" {
 			missingFields = append(missingFields, "usage")
 		}

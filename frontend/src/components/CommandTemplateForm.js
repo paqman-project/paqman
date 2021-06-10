@@ -50,12 +50,6 @@ export default function CommandTemplateForm({
                         value: v.default || "",
                     }
                     break
-                case valTypes.parameter:
-                    // TODO this is temporary until #62 is resolved
-                    fd[n] = {
-                        value: "",
-                    }
-                    break
                 default:
                     console.log(
                         `ERROR: found unsupported type ${v.type} in command template value`
@@ -113,10 +107,6 @@ export default function CommandTemplateForm({
                         }
                         break
                     case valTypes.value:
-                        fcs += formData[e].value
-                        break
-                    case valTypes.parameter:
-                        // TODO this is temporary until #62 is resolved
                         fcs += formData[e].value
                         break
                     default:

@@ -32,7 +32,6 @@ export default function CommandTemplateValueBox({
                 // "checkbox" for "activating" the flag
                 // and "text" to define the content
                 return ["checkbox", "text"]
-            case valTypes.parameter:
             case valTypes.value:
                 return ["text"]
             default:
@@ -57,7 +56,6 @@ export default function CommandTemplateValueBox({
                     ? (d[name].triggered = checked)
                     : (d[name].value = value)
                 break
-            case valTypes.parameter:
             case valTypes.value:
                 d[name].value = value
                 break
