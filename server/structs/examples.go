@@ -17,16 +17,14 @@ var (
 				Default: "$(dislocker-find)",
 			},
 			"fvek": {
-				Type:     "parameter",
-				ParamId:  "1234",
-				Optional: true,
-				Usage:    "--fvek %",
+				Type:    "value",
+				Hint:    "Full volume encryption key (fvek). Must be obtained manually and dumped to a file.",
+				Default: "fvek.bin",
 			},
 			"vmk": {
-				Type:     "parameter",
-				ParamId:  "1235",
-				Optional: true,
-				Usage:    "--vmk %",
+				Type:    "value",
+				Hint:    "Volume master key (vmk). Must be obtained manually and dumped to a file.",
+				Default: "vmk.bin",
 			},
 			"mount-path": {
 				Type:    "value",
