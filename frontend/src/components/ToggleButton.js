@@ -13,11 +13,7 @@ export default function Button({ title, selected }) {
         <div>
             <button
                 className={`px-8 py-2 border-2 rounded text-xs items-center
-                ${
-                    selected
-                        ? "bg-paqred text-white"
-                        : "bg-paqgreen-200"
-                }`}
+                ${selected ? "bg-paqred text-white" : "bg-paqgreen-200"}`}
             >
                 {title}
             </button>
