@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import LinkButton from "../components/LinkButton"
 import LinkButtonGroup from "../components/LinkButtonGroup"
 
@@ -6,8 +6,18 @@ import LinkButtonGroup from "../components/LinkButtonGroup"
  * This is the sidebar displayed on the preperation page
  */
 export default function Sidebar() {
+    const [collapsed, setCollapsed] = useState(false)
+
+    const collapsedStyle =
+        "h-full w-60 shadow-2xl flex flex-col justify-betweeen"
+
     return (
-        <div className="h-full w-60 shadow-2xl flex flex-col justify-between font-raleway">
+        <div
+            className={
+                "h-full w-0 shadow-2xl flex flex-col justify-between font-raleway " +
+                (collapsed ? collapsedStyle : "")
+            }
+        >
             {/* upper buttons */}
 
             <div>
