@@ -14,7 +14,7 @@ export default function Sidebar() {
     return (
         <div
             className={
-                "h-full w-0 shadow-2xl flex flex-col justify-between font-raleway " +
+                "h-full w-60 shadow-2xl flex flex-col justify-between font-raleway " +
                 (collapsed ? collapsedStyle : "")
             }
         >
