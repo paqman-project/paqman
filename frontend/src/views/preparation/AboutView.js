@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "../../components/Button"
 import Card from "../../components/Card"
 import logo from "../../img/logo_v2.svg"
 
@@ -10,26 +11,29 @@ export default function AboutView() {
             */}
 
             {/* Logo */}
-            <div className="w-2/3 mx-auto max-w-md mt-20">
+            <div className="w-2/3 mx-auto max-w-md mt-12">
                 <img src={logo} alt="PAQMAN logo full" />
-            </div>
-
-            {/* Important infos (subtitle) */}
-            <div className="p-2 m-4 text-center text-lg">
-                <p>Version v0.1.0</p>
             </div>
 
             {/* Cards with information */}
             <div className="w-5/6 mx-auto mt-12">
-                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-10">
-                    <Card title="What is PAQMAN?">
+                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-10 mx-auto max-w-7xl">
+                    <Card title="What is it?">
                         <div className="text-center">
-                            Mehr Senf
-                            </div>
+                            <p>
+                                PAQMAN is a command line companion tool to improve your pentesting 
+                                experience. It provides you with copy-pastable commands depending on 
+                                the information you collect or already have to transform them into a 
+                                successfull attack.
+                            </p>
+                        </div>
                     </Card>
                     <Card title="How do you use it?">
                         <div>
-                            <p>Senf</p>
+                            <p>
+                                If you want to search for predefined Attacks, use the Attack List.
+                                TODO
+                            </p>
                         </div>
                     </Card>
                     <Card title="Terminology">
@@ -70,10 +74,32 @@ export default function AboutView() {
                         </div>
                     </Card>
                 </div>
-
-                <div className="h-20"></div>
-
             </div>
+
+            <hr className="my-10 w-11/12 mx-auto"/>
+
+            {/* Important infos (subtitle) */}
+            <div className="text-center text-lg">
+                <p>Version v0.1.0</p>
+                <div className="grid grid-cols-2 max-w-max mx-auto mt-4 gap-4">
+                    <a 
+                        href="https://git.leon.wtf/paqman/paqman" 
+                        target="_blank" 
+                        rel="noreferrer noopener"
+                    >
+                        <Button title="Gitlab" fullWidth important />
+                    </a>
+                    <a 
+                        href="https://github.com/paqman-project/paqman" 
+                        target="_blank" 
+                        rel="noreferrer noopener"
+                    >
+                        <Button title="Github" fullWidth />
+                    </a>
+                </div>
+            </div>
+
+            <div className="h-12"></div>
 
         </div>
     )

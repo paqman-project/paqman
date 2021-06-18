@@ -7,9 +7,10 @@ import React from "react"
  * @param {Function} props.onClick An onClick handler to be passed in
  * @param {string} props.title Title of the button (visible)
  * @param {boolean} props.important If the button should be filled (true) or only surrounded (false)
+ * @param {string} props.fullWidth Whether the button should expand to it's full parent width
  * @param {boolean} props.submit If this is a submit button (used inside a form)
  */
-export default function Button({ onClick, title, important, submit }) {
+export default function Button({ onClick, title, important, fullWidth, submit }) {
     return (
         <div>
             <button
@@ -18,6 +19,8 @@ export default function Button({ onClick, title, important, submit }) {
                     important
                         ? "border-transparent bg-paqteal-600 text-white"
                         : "border-paqteal-600"
+                } ${
+                    fullWidth && "w-full"
                 }`}
                 type={submit && "submit"}
             >
