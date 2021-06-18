@@ -41,7 +41,7 @@ export default class Template {
      *
      * @returns String
      */
-    get markedArray() {
+    markedArray() {
         let regex = /(%\{.*?\})/g // pattern to find template values ( %{ } )
         let templateCopy = this.raw
 

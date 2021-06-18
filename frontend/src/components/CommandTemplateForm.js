@@ -60,7 +60,7 @@ export default function CommandTemplateForm({
     }, [templateValues])
 
     const t = new Template(template)
-    const marked = t.markedArray // see javadoc for details on what this does
+    const marked = t.markedArray() // see javadoc for details on what this does
 
     const templateArray = () => {
         // reassamble the template to contain both plaintext and template values

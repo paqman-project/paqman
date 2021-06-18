@@ -3,6 +3,7 @@ import CommandTemplateForm from "../components/CommandTemplateForm"
 import ViewHeading from "../components/ViewHeading"
 import Loading from "../components/Loading"
 import Card from "../components/Card"
+import Button from "../components/Button"
 
 /**
  * This page is used to display more information about a
@@ -37,22 +38,36 @@ export default function CommandViewerPage({ match }) {
                                 {data.instructions ||
                                     "No instructions available"}
                             </p>
+                            {data.online_manpage && (
+                                <div className="my-4">
+                                    <a
+                                        href={data.online_manpage}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <Button title="Open manpage" />
+                                    </a>
+                                </div>
+                            )}
                         </Card>
                     </div>
                     <div className="flex-1">
                         <Card title="Command properties" fullHeight>
-                            <p>
-                                Requires root?<span> </span>
-                                {data.requires_root ? (
-                                    <span className="text-green-500 text-xl">
-                                        &#10003;
-                                    </span>
-                                ) : (
-                                    <span className="text-red-500 text-xl">
-                                        &#10005;
-                                    </span>
-                                )}
-                            </p>
+                            <div className="flex-col">
+                                <p>
+                                    Requires root?<span> </span>
+                                    {data.requires_root ? (
+                                        <span className="text-paqgreen-400 text-xl">
+                                            {/* paqgreen color needs adjustment */}
+                                            &#10003;
+                                        </span>
+                                    ) : (
+                                        <span className="text-paqred-400 text-xl">
+                                            &#10005;
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
                         </Card>
                     </div>
                 </div>

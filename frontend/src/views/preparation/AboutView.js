@@ -6,7 +6,7 @@ export default function AboutView() {
     return (
         <div>
             <ViewHeading title="Font Styles" />
-            <NotImplemented />
+            <NotImplemented plannedFor="v0.2.1" />
             <p className="mx-20 p-4 border-paqgreen-200 shadow-lg shadow-gray">
                 <p className="p-2">
                     font-sans: Lorem ipsum dolor sit amet, consetetur sadipscing

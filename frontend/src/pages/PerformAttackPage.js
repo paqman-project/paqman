@@ -10,5 +10,5 @@ import NotImplemented from "../components/NotImplemented"
  * requires its ID in the URL like "/perform/1337".
  */
 export default function PerformAttackPage({ match }) {
-    return <NotImplemented />
+    return <NotImplemented plannedFor="v0.3.0" />
 }

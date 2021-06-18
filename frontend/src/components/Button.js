@@ -14,10 +14,10 @@ export default function Button({ onClick, title, important, submit }) {
         <div>
             <button
                 onClick={onClick}
-                className={`px-4 py-2 border-2 rounded shadow-lg ${
+                className={`px-4 py-2 border-2 rounded shadow-lg bg-white focus:outline-none font-raleway ${
                     important
-                        ? "border-transparent bg-blue-500 text-white"
-                        : "border-blue-500"
+                        ? "border-transparent bg-paqteal-600 text-white"
+                        : "border-paqteal-600"
                 }`}
                 type={submit && "submit"}
             >
