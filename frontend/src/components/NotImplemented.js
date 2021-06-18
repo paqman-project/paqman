@@ -10,9 +10,7 @@ export default function NotImplemented({ plannedFor }) {
     return (
         <div className="mt-10 mx-auto text-center animate-bounce">
             <h1>Not implemented yet!</h1>
-            { plannedFor && (
-                <p className="text-sm">Planned for {plannedFor}</p>
-            )}
+            {plannedFor && <p className="text-sm">Planned for {plannedFor}</p>}
         </div>
     )
 }

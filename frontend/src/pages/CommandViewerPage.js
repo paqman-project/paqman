@@ -38,9 +38,13 @@ export default function CommandViewerPage({ match }) {
                                 {data.instructions ||
                                     "No instructions available"}
                             </p>
-                            { data.online_manpage && (
+                            {data.online_manpage && (
                                 <div className="my-4">
-                                    <a href={data.online_manpage} target="_blank" rel="noreferrer">
+                                    <a
+                                        href={data.online_manpage}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
                                         <Button title="Online manpage" />
                                     </a>
                                 </div>
