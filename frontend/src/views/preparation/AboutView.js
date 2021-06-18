@@ -1,5 +1,4 @@
 import React from "react"
-import ViewHeading from "../../components/ViewHeading"
 import Card from "../../components/Card"
 import logo from "../../img/logo_v2.svg"
 
@@ -22,55 +21,57 @@ export default function AboutView() {
 
             {/* Cards with information */}
             <div className="w-5/6 mx-auto mt-12">
-                <div className="space-y-10">
-                        <Card title="What is PAQMAN?">
-                            <div className="text-center">
-                                Mehr Senf
+                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-10">
+                    <Card title="What is PAQMAN?">
+                        <div className="text-center">
+                            Mehr Senf
                             </div>
-                        </Card>
-                        <Card title="Terminology">
-                            <table className="text-left">
-                                <tr>
-                                    <td className="font-bold">Command: </td>
-                                    <td className="p-2 pl-4">
-                                        Well, just a command. This can be a binary, shell or any 
-                                        other executable with flags, values, etc.
+                    </Card>
+                    <Card title="How do you use it?">
+                        <div>
+                            <p>Senf</p>
+                        </div>
+                    </Card>
+                    <Card title="Terminology">
+                        <table className="text-left">
+                            <tr>
+                                <td className="font-bold">Command: </td>
+                                <td className="p-2 pl-4">
+                                    Well, just a command. This can be a binary, shell or any
+                                    other executable with flags, values, etc.
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td className="font-bold">Attack: </td>
-                                    <td className="p-2 pl-4">
-                                        An Attack bundles Commands statically to form a predefined 
-                                        sequence of actions. The Commands are preconfigured and
-                                        ready to be executed.
+                            </tr>
+                            <tr>
+                                <td className="font-bold">Attack: </td>
+                                <td className="p-2 pl-4">
+                                    An Attack bundles Commands statically to form a predefined
+                                    sequence of actions. The Commands are preconfigured and
+                                    ready to be executed.
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td className="font-bold">Parameter: </td>
-                                    <td className="p-2 pl-4">
-                                        This is PAQMANs centerpiece. Parameters define abstract
-                                        subgoals while executing a chain of Commands (e.g. an Attack).
-                                        They provide context to usually stateless Commands.
+                            </tr>
+                            <tr>
+                                <td className="font-bold">Parameter: </td>
+                                <td className="p-2 pl-4">
+                                    This is PAQMANs centerpiece. Parameters define abstract
+                                    subgoals while executing a chain of Commands (e.g. an Attack).
+                                    They provide context to usually stateless Commands.
                                     </td>
-                                </tr>
-                            </table>
-                        </Card>
-                        <Card title="How do you use it?">
-                            <div>
-                                <p>Senf</p>
-                            </div>
-                        </Card>
-                        <Card title="Who made it?">
-                            <div className="text-center">
-                                <p>
-                                    PAQMAN was developed as a project work by
-                                    Nadine Weber, Nicola Jäger and Leon Schmidt
-                                    as part of a project work at the University
-                                    of Applied Siences Offenburg.
-                                </p>
-                            </div>
-                        </Card>
+                            </tr>
+                        </table>
+                    </Card>
+                    <Card title="Who made it?" className="place-self-start">
+                        <div>
+                            <p>
+                                PAQMAN was developed as a project work by
+                                Nadine Weber, Nicola Jäger and Leon Schmidt
+                                as part of a project work at the University
+                                of Applied Siences Offenburg.
+                            </p>
+                        </div>
+                    </Card>
                 </div>
+
+                <div className="h-20"></div>
 
             </div>
 
