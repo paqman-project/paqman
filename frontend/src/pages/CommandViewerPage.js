@@ -45,7 +45,7 @@ export default function CommandViewerPage({ match }) {
                                         target="_blank"
                                         rel="noreferrer"
                                     >
-                                        <Button title="Online manpage" />
+                                        <Button title="Open manpage" />
                                     </a>
                                 </div>
                             )}
@@ -57,11 +57,12 @@ export default function CommandViewerPage({ match }) {
                                 <p>
                                     Requires root?<span> </span>
                                     {data.requires_root ? (
-                                        <span className="text-green-500 text-xl">
+                                        <span className="text-paqgreen-400 text-xl">
+                                            {/* paqgreen color needs adjustment */}
                                             &#10003;
                                         </span>
                                     ) : (
-                                        <span className="text-red-500 text-xl">
+                                        <span className="text-paqred-400 text-xl">
                                             &#10005;
                                         </span>
                                     )}
