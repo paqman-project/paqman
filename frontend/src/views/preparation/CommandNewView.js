@@ -94,7 +94,7 @@ export default function CommandNewView() {
             <p className="text-center font-bold text-xl m-16">or</p>
             <div className="text-center">
                 <p>Add a command by importing a manpage</p>
-                <NotImplemented />
+                <NotImplemented plannedFor="v0.4.0" />
             </div>
         </div>
     )

@@ -10,7 +10,7 @@ export default function AttackByParameterView() {
     return (
         <div>
             <ViewHeading title="Search attacks by parameter" />
-            <NotImplemented />
+            <NotImplemented plannedFor="v0.3.2" />
         </div>
     )
 }

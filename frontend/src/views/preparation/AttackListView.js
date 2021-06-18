@@ -9,7 +9,7 @@ export default function AttackListView() {
     return (
         <div>
             <ViewHeading title="Attack list" />
-            <NotImplemented />
+            <NotImplemented plannedFor="v0.3.1" />
         </div>
     )
 }

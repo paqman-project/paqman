@@ -9,7 +9,7 @@ export default function AttackNewView() {
     return (
         <div>
             <ViewHeading title="Add a new attack" />
-            <NotImplemented />
+            <NotImplemented plannedFor="v0.4.0" />
         </div>
     )
 }

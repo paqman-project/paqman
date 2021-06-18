@@ -9,7 +9,7 @@ export default function CommandByParameterView() {
     return (
         <div>
             <ViewHeading title="Search commands by parameter" />
-            <NotImplemented />
+            <NotImplemented plannedFor="v0.2.1" />
         </div>
     )
 }

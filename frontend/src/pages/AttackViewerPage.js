@@ -8,5 +8,5 @@ import NotImplemented from "../components/NotImplemented"
  * viewer to inspect them further.
  */
 export default function AttackViewerPage({ match }) {
-    return <NotImplemented />
+    return <NotImplemented plannedFor="v0.3.0" />
 }
