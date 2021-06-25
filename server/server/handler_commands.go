@@ -18,10 +18,9 @@ import (
 // gets all Commands
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 
-	type smallCommand struct {
-		ID          primitive.ObjectID `bson:"_id" json:"_id"`
-		Name        string             `bson:"name" json:"name"`
-		Description string             `bson:"description" json:"description"`
+	type smallCommandWithID struct {
+		ID                   primitive.ObjectID `bson:"_id" json:"_id"`
+		structs.SmallCommand `bson:",inline" json:",inline"`
 	}
 
 	cursor, err := db.Client.ReadMany("commands", bson.M{})
@@ -30,10 +29,10 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var results []smallCommand
+	var results []smallCommandWithID
 
 	for cursor.Next(context.TODO()) {
-		var result smallCommand
+		var result smallCommandWithID
 		if err := cursor.Decode(&result); err != nil {
 			respondError(&w, err, 500)
 			return
@@ -49,6 +48,59 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(&w, response, 200)
 }
 
+func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
+
+	// parse request body
+	type requestBody struct {
+		Have []string `json:"have"`
+		Want string   `json:"want"`
+	}
+	var reqBody requestBody
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	// check if either "have" or "want" are provided
+	if reqBody.Have == nil && reqBody.Want == "" {
+		respondObject(&w, errorResponse{`Both "have" and "want" were not provided`}, 400)
+		return
+	}
+
+	// recursive response structs
+	type commandWithChildren struct {
+		CommandID            primitive.ObjectID `json:"command_id"`
+		structs.SmallCommand `json:",inline"`
+		Children             []*commandWithChildren `json:"_children"`
+	}
+
+	c := commandWithChildren{
+		primitive.NewObjectID(),
+		structs.SmallCommand{
+			Name:        "Senf",
+			Description: "Was geht ab",
+		},
+		[]*commandWithChildren{
+			{
+				primitive.NewObjectID(),
+				structs.SmallCommand{},
+				[]*commandWithChildren{
+					{
+						primitive.NewObjectID(),
+						structs.SmallCommand{
+							Name: "Very inner command",
+						},
+						nil,
+					},
+				},
+			},
+		},
+	}
+
+	respondObject(&w, c, 200)
+
+}
+
 // creates a new Command
 func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -59,19 +111,16 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if "name", "template" and "template_values are provided"
-	type missErr struct {
-		Error string `json:"error"`
-	}
 	if c.Name == "" {
-		respondObject(&w, missErr{`Missing "name" field`}, 400)
+		respondObject(&w, errorResponse{`Missing "name" field`}, 400)
 		return
 	}
 	if c.Template == "" {
-		respondObject(&w, missErr{`"template" field is empty`}, 400)
+		respondObject(&w, errorResponse{`"template" field is empty`}, 400)
 		return
 	}
 	if c.TemplateValues == nil {
-		respondObject(&w, missErr{`"template_values" field is empty`}, 400)
+		respondObject(&w, errorResponse{`"template_values" field is empty`}, 400)
 		return
 	}
 
