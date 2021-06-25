@@ -1,10 +1,8 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -14,7 +12,6 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // gets all Commands
@@ -25,21 +22,11 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 		structs.SmallCommand `bson:",inline" json:",inline"`
 	}
 
-	cursor, err := db.Client.ReadMany("commands", bson.M{})
-	if err != nil {
-		respondError(&w, err, 500)
-		return
-	}
-
 	var results []smallCommandWithID
 
-	for cursor.Next(context.TODO()) {
-		var result smallCommandWithID
-		if err := cursor.Decode(&result); err != nil {
-			respondError(&w, err, 500)
-			return
-		}
-		results = append(results, result)
+	if err := db.Client.ReadMany("commands", bson.M{}, &results); err != nil {
+		respondError(&w, err, 500)
+		return
 	}
 
 	response, err := json.Marshal(results)
@@ -99,43 +86,11 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}*/
 
-	paramsReturnedFrom := func(paramID string) (*mongo.Cursor, error) {
-		query := bson.M{fmt.Sprintf("returned_from.%s", paramID): bson.M{"$exists": true}}
-		if cursor, err := db.Client.ReadMany("parameters", query); err != nil {
-			return nil, err
-		} else {
-			return cursor, nil
-		}
+	// Mongo DB Query for getting previous parameters:
+	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
+	_ = func() {
+
 	}
-
-	paramsUsedIn := func(paramID string) (*mongo.Cursor, error) {
-		query := bson.M{fmt.Sprintf("used_in.%s", paramID): bson.M{"$exists": true}}
-		if cursor, err := db.Client.ReadMany("parameters", query); err != nil {
-			return nil, err
-		} else {
-			return cursor, nil
-		}
-	}
-
-	// TODO currently for testing, the closures
-
-	rf, _ := paramsReturnedFrom(reqBody.Want)
-	var rfA []interface{}
-	rf.All(context.TODO(), &rfA)
-	fmt.Println(rfA)
-
-	ui, _ := paramsUsedIn(reqBody.Want)
-	var uiA []interface{}
-	ui.All(context.TODO(), &uiA)
-	fmt.Println(uiA)
-
-	respondObject(&w, struct {
-		RF []interface{} `json:"returns"`
-		UI []interface{} `json:"uses"`
-	}{
-		RF: rfA,
-		UI: uiA,
-	}, 200)
 
 }
 

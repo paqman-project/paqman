@@ -1,19 +1,26 @@
 package structs
 
 type Parameter struct {
-	Name         string                      `json:"name" bson:"name"`
-	Description  string                      `json:"description" bson:"description"`
-	Type         string                      `json:"type" bson:"type"`
-	ReturnedFrom map[string]ReturnedFromData `json:"returned_from" bson:"returned_from"`
-	UsedIn       map[string]UsedInData       `json:"used_in" bson:"used_in"`
+	Name         string             `json:"name" bson:"name"`
+	Description  string             `json:"description" bson:"description"`
+	Type         string             `json:"type" bson:"type"`
+	ReturnedFrom []ReturnedFromData `json:"returned_from" bson:"returned_from"`
+	UsedIn       []UsedInData       `json:"used_in" bson:"used_in"`
 }
 
 type ReturnedFromData struct {
-	At string `json:"at"`
+	CommandID string `json:"command_id" bson:"command_id"`
+	At        string `json:"at" bson:"at"`
 }
 
 type UsedInData struct {
-	At         string                 `json:"at"`
-	WithValues map[string]interface{} `json:"with_values" bson:"with_values"` // interface{} can be string or bool
-	ToCreate   string                 `json:"to_create" bson:"to_create"`
+	CommandID  string       `json:"command_id" bson:"command_id"`
+	At         string       `json:"at" bson:"command_id"`
+	WithValues []WithValues `json:"with_values" bson:"with_values"`
+	ToCreate   string       `json:"to_create" bson:"to_create"`
+}
+
+type WithValues struct {
+	Name  string `json:"name" bson:"name"`
+	Value string `json:"value" bson:"value"`
 }
