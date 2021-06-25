@@ -15,10 +15,10 @@ export default function Button({ onClick, title, important, fullWidth, submit })
         <div>
             <button
                 onClick={onClick}
-                className={`px-4 py-2 border-2 rounded shadow-lg bg-white focus:outline-none font-raleway ${
+                className={`px-4 py-2 border-2 rounded bg-white focus:outline-none font-raleway ${
                     important
-                        ? "border-transparent bg-paqteal-600 text-white"
-                        : "border-paqteal-600"
+                        ? "border-transparent bg-paqteal-600 text-white shadow-lg"
+                        : "border-paqteal-600 shadow-md"
                 } ${
                     fullWidth && "w-full"
                 }`}

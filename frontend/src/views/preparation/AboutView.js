@@ -3,6 +3,8 @@ import Button from "../../components/Button"
 import Card from "../../components/Card"
 import logo from "../../img/logo_v2.svg"
 
+export const version = "v0.1.0"
+
 export default function AboutView() {
     return (
         <div className="font-raleway">
@@ -37,25 +39,25 @@ export default function AboutView() {
                         </div>
                     </Card>
                     <Card title="Terminology">
-                        <table className="text-left">
+                        <table className="text-left divide-y-8 divide-transparent">
                             <tr>
-                                <td className="font-bold">Command: </td>
-                                <td className="p-2 pl-4">
+                                <td className="font-bold align-top">Command </td>
+                                <td className="pl-4">
                                     Well, just a command. This can be a binary, shell or any
                                     other executable with flags, values, etc.
                                     </td>
                             </tr>
                             <tr>
-                                <td className="font-bold">Attack: </td>
-                                <td className="p-2 pl-4">
+                                <td className="font-bold align-top">Attack </td>
+                                <td className="pl-4">
                                     An Attack bundles Commands statically to form a predefined
                                     sequence of actions. The Commands are preconfigured and
                                     ready to be executed.
                                     </td>
                             </tr>
                             <tr>
-                                <td className="font-bold">Parameter: </td>
-                                <td className="p-2 pl-4">
+                                <td className="font-bold align-top">Parameter </td>
+                                <td className="pl-4">
                                     This is PAQMANs centerpiece. Parameters define abstract
                                     subgoals while executing a chain of Commands (e.g. an Attack).
                                     They provide context to usually stateless Commands.
@@ -69,7 +71,7 @@ export default function AboutView() {
                                 PAQMAN was developed as a project work by
                                 Nadine Weber, Nicola Jäger and Leon Schmidt
                                 as part of a project work at the University
-                                of Applied Siences Offenburg.
+                                of Applied Sciences Offenburg.
                             </p>
                         </div>
                     </Card>
@@ -80,7 +82,7 @@ export default function AboutView() {
 
             {/* Important infos (subtitle) */}
             <div className="text-center text-lg">
-                <p>Version v0.1.0</p>
+                <p>Version {version}</p>
                 <div className="grid grid-cols-2 max-w-max mx-auto mt-4 gap-4">
                     <a 
                         href="https://git.leon.wtf/paqman/paqman" 
