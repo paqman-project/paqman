@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -13,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // gets all Commands
@@ -67,14 +69,14 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// recursive response structs
+	// recursive response struct
 	type commandWithChildren struct {
 		CommandID            primitive.ObjectID `json:"command_id"`
 		structs.SmallCommand `json:",inline"`
 		Children             []*commandWithChildren `json:"_children"`
 	}
 
-	c := commandWithChildren{
+	/*c := commandWithChildren{
 		primitive.NewObjectID(),
 		structs.SmallCommand{
 			Name:        "Senf",
@@ -95,9 +97,45 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 				},
 			},
 		},
+	}*/
+
+	paramsReturnedFrom := func(paramID string) (*mongo.Cursor, error) {
+		query := bson.M{fmt.Sprintf("returned_from.%s", paramID): bson.M{"$exists": true}}
+		if cursor, err := db.Client.ReadMany("parameters", query); err != nil {
+			return nil, err
+		} else {
+			return cursor, nil
+		}
 	}
 
-	respondObject(&w, c, 200)
+	paramsUsedIn := func(paramID string) (*mongo.Cursor, error) {
+		query := bson.M{fmt.Sprintf("used_in.%s", paramID): bson.M{"$exists": true}}
+		if cursor, err := db.Client.ReadMany("parameters", query); err != nil {
+			return nil, err
+		} else {
+			return cursor, nil
+		}
+	}
+
+	// TODO currently for testing, the closures
+
+	rf, _ := paramsReturnedFrom(reqBody.Want)
+	var rfA []interface{}
+	rf.All(context.TODO(), &rfA)
+	fmt.Println(rfA)
+
+	ui, _ := paramsUsedIn(reqBody.Want)
+	var uiA []interface{}
+	ui.All(context.TODO(), &uiA)
+	fmt.Println(uiA)
+
+	respondObject(&w, struct {
+		RF []interface{} `json:"returns"`
+		UI []interface{} `json:"uses"`
+	}{
+		RF: rfA,
+		UI: uiA,
+	}, 200)
 
 }
 
