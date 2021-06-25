@@ -25,8 +25,8 @@ type MongoCRUD interface {
 	CreateOne(string, interface{}) (primitive.ObjectID, error)
 	// CreateMany is not defined as it is simpler to handle
 	// ObjectIDs when calling CreateOne multiple times
-	ReadOne(string, bson.M, interface{}) error
-	ReadMany(string, bson.M) (*mongo.Cursor, error)
+	ReadOne(string, bson.M, interface{}, ...*options.FindOneOptions) error
+	ReadMany(string, bson.M, interface{}, ...*options.FindOptions) error
 	// Update(string, bson.M, ...) // TODO
 	DeleteOne(string, bson.M) (*mongo.DeleteResult, error)
 	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
