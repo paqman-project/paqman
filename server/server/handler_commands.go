@@ -88,9 +88,29 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Mongo DB Query for getting previous parameters:
 	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
-	_ = func() {
-
+	findPreviousParameters := func(currentParameter structs.Parameter) []structs.Parameter {
+		query := bson.M{"used_in.to_create": currentParameter.ID.Hex()}
+		var params []structs.Parameter
+		if err := db.Client.ReadMany("parameters", query, &params); err != nil {
+			panic(err) // TODO this may never happen
+		}
+		return params
 	}
+
+	// get initial document (in "want")
+	id, err := primitive.ObjectIDFromHex(reqBody.Want)
+	if err != nil {
+		respondError(&w, err, 500)
+	}
+
+	var initParam structs.Parameter
+	if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &initParam); err != nil {
+		respondError(&w, err, 500)
+	}
+
+	prevParams := findPreviousParameters(initParam)
+
+	respondObject(&w, prevParams, 200)
 
 }
 

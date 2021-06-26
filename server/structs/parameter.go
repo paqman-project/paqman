@@ -1,6 +1,7 @@
 package structs
 
 type Parameter struct {
+	MongoModel   `json:",inline" bson:",inline"`
 	Name         string             `json:"name" bson:"name"`
 	Description  string             `json:"description" bson:"description"`
 	Type         string             `json:"type" bson:"type"`
@@ -15,7 +16,7 @@ type ReturnedFromData struct {
 
 type UsedInData struct {
 	CommandID  string       `json:"command_id" bson:"command_id"`
-	At         string       `json:"at" bson:"command_id"`
+	At         string       `json:"at" bson:"at"`
 	WithValues []WithValues `json:"with_values" bson:"with_values"`
 	ToCreate   string       `json:"to_create" bson:"to_create"`
 }

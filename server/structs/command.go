@@ -10,6 +10,7 @@ type Template string
 // A Command defines a template for a CLI Command and specifies
 // the format of the TemplateValues used in the Template.
 type Command struct {
+	MongoModel       `json:",inline" bson:",inline"`
 	Name             string                          `json:"name" bson:"name"`
 	Description      string                          `json:"description" bson:"description"`
 	Instructions     string                          `json:"instructions" bson:"instructions"`
@@ -20,6 +21,7 @@ type Command struct {
 }
 
 type SmallCommand struct {
+	MongoModel  `json:",inline" bson:",inline"`
 	Name        string `json:"name" bson:"name"`
 	Description string `json:"description" bson:"description"`
 }
