@@ -88,8 +88,10 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Mongo DB Query for getting previous parameters:
 	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
-	findPreviousParameters := func(currentParameter structs.Parameter) []structs.Parameter {
-		query := bson.M{"used_in.to_create": currentParameter.ID.Hex()}
+	findPreviousParameters := func(currentParameter *structs.Parameter) []structs.Parameter {
+		query := bson.M{
+			"used_in.to_create": currentParameter.ID.Hex(),
+		}
 		var params []structs.Parameter
 		if err := db.Client.ReadMany("parameters", query, &params); err != nil {
 			panic(err) // TODO this may never happen
@@ -97,20 +99,50 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		return params
 	}
 
-	// get initial document (in "want")
+	// Mongo DB Query for getting subsequent parameters:
+	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
+	findSubsequentParameters := func(currentParameter *structs.Parameter) []structs.Parameter {
+		possibleIds := []bson.M{}
+		for _, possibleId := range currentParameter.UsedIn {
+			possibleIds = append(possibleIds, bson.M{
+				"returned_from.command_id": possibleId.CommandID,
+			})
+		}
+		query := bson.M{
+			"$or": possibleIds,
+		}
+		var params []structs.Parameter
+		if err := db.Client.ReadMany("parameters", query, &params); err != nil {
+			panic(err) // TODO this may never happen
+		}
+		return params
+	}
+
+	// get initial document (in "have")
 	id, err := primitive.ObjectIDFromHex(reqBody.Want)
 	if err != nil {
 		respondError(&w, err, 500)
+		return
 	}
 
 	var initParam structs.Parameter
 	if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &initParam); err != nil {
 		respondError(&w, err, 500)
+		return
 	}
 
-	prevParams := findPreviousParameters(initParam)
+	prevParams := findPreviousParameters(&initParam)
+	subsParams := findSubsequentParameters(&initParam)
 
-	respondObject(&w, prevParams, 200)
+	respondObject(&w, struct {
+		Searched interface{} `json:"searched_for"`
+		Prev     interface{} `json:"previous_params"`
+		Subs     interface{} `json:"subsequent_params"`
+	}{
+		initParam.Name,
+		prevParams,
+		subsParams,
+	}, 200)
 
 }
 
