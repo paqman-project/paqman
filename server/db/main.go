@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -22,7 +23,7 @@ var Client *Mongo
 // paradigm, but with a more fitting relation to mongos
 // No-SQL approach
 type MongoCRUD interface {
-	CreateOne(string, interface{}) (primitive.ObjectID, error)
+	CreateOne(string, interface{}, ...*options.InsertOneOptions) (primitive.ObjectID, error)
 	// CreateMany is not defined as it is simpler to handle
 	// ObjectIDs when calling CreateOne multiple times
 	ReadOne(string, bson.M, interface{}, ...*options.FindOneOptions) error
@@ -37,8 +38,11 @@ type MongoCRUD interface {
 //
 // (implements MongoCRUD interface)
 type Mongo struct {
-	Mocked     bool
-	connection *mongo.Client
+	Mocked bool
+	// mockedExample is the object, that will be returned,
+	// if a mocked CRUD operation takes place
+	mockedExample interface{}
+	connection    *mongo.Client
 }
 
 // Interface guard for Mongo struct
@@ -50,45 +54,62 @@ var _ MongoCRUD = (*Mongo)(nil)
 // It uses the config.json file to retreive the
 // connection details so make sure config.LoadFrom(path)
 // is called before Connect().
-func Connect(mocked bool) error {
+func Connect() error {
 
 	var client *mongo.Client
 
-	if !mocked { // only establish a real connection, if the database should not be mocked
+	connectString := fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin",
+		config.Current.MongoDBUser,
+		config.Current.MongoDBPass,
+		config.Current.MongoDBAddress,
+	)
+	connectStringNoPass := fmt.Sprintf("mongodb://%s:***@%s/?authSource=admin",
+		config.Current.MongoDBUser,
+		config.Current.MongoDBAddress,
+	)
 
-		connectString := fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin",
-			config.Current.MongoDBUser,
-			config.Current.MongoDBPass,
-			config.Current.MongoDBAddress,
-		)
-		connectStringNoPass := fmt.Sprintf("mongodb://%s:***@%s/?authSource=admin",
-			config.Current.MongoDBUser,
-			config.Current.MongoDBAddress,
-		)
+	log.Printf("Connecting to MongoDB at %s\n", connectStringNoPass)
 
-		log.Printf("Connecting to MongoDB at %s\n", connectStringNoPass)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-
-		var err error
-		client, err = mongo.Connect(ctx, options.Client().ApplyURI(connectString))
-		if err != nil {
-			return err
-		}
-		if err := client.Ping(ctx, nil); err != nil {
-			return err
-		}
-
-		log.Println("Connected to MongoDB!")
-
+	var err error
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(connectString))
+	if err != nil {
+		return err
+	}
+	if err := client.Ping(ctx, nil); err != nil {
+		return err
 	}
 
+	log.Println("Connected to MongoDB!")
+
 	Client = &Mongo{
-		Mocked:     mocked,
 		connection: client,
 	}
 	return nil
+}
+
+// ConnectMocked creates a mocked database for testing
+// (no database conncetion will be established)
+//
+// Call `SetMockedExample` to provide an example object
+// that should be returned for CRUD operations
+func ConnectMocked() {
+	Client = &Mongo{
+		Mocked:     true,
+		connection: nil,
+	}
+}
+
+// SetMockedExample sets (overwriting the previous value) an
+// object, that will be returned in mocked CRUD operations
+func (m *Mongo) SetMockedExample(v interface{}) error {
+	if m.Mocked {
+		m.mockedExample = v
+		return nil
+	}
+	return errors.New("Database is not mocked!")
 }
 
 // CheckConnection pings the database to determine

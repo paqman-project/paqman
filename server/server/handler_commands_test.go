@@ -12,9 +12,7 @@ import (
 
 func TestNewCommandHandler(t *testing.T) {
 
-	if err := db.Connect(true); err != nil {
-		t.Fatal("Could not create the mocked database")
-	}
+	db.ConnectMocked()
 
 	// this is intended to always work!
 	j, _ := json.Marshal(structs.ExampleCommandDislocker)

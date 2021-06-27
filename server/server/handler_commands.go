@@ -86,38 +86,6 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}*/
 
-	// Mongo DB Query for getting previous parameters:
-	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
-	findPreviousParameters := func(currentParameter *structs.Parameter) []structs.Parameter {
-		query := bson.M{
-			"used_in.to_create": currentParameter.ID.Hex(),
-		}
-		var params []structs.Parameter
-		if err := db.Client.ReadMany("parameters", query, &params); err != nil {
-			panic(err) // TODO this may never happen
-		}
-		return params
-	}
-
-	// Mongo DB Query for getting subsequent parameters:
-	// db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
-	findSubsequentParameters := func(currentParameter *structs.Parameter) []structs.Parameter {
-		possibleIds := []bson.M{}
-		for _, possibleId := range currentParameter.UsedIn {
-			possibleIds = append(possibleIds, bson.M{
-				"returned_from.command_id": possibleId.CommandID,
-			})
-		}
-		query := bson.M{
-			"$or": possibleIds,
-		}
-		var params []structs.Parameter
-		if err := db.Client.ReadMany("parameters", query, &params); err != nil {
-			panic(err) // TODO this may never happen
-		}
-		return params
-	}
-
 	// get initial document (in "have")
 	id, err := primitive.ObjectIDFromHex(reqBody.Want)
 	if err != nil {
@@ -131,8 +99,8 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	prevParams := findPreviousParameters(&initParam)
-	subsParams := findSubsequentParameters(&initParam)
+	prevParams := initParam.FindPreviousParameters()
+	subsParams := initParam.FindSubsequentParameters()
 
 	respondObject(&w, struct {
 		Searched interface{} `json:"searched_for"`

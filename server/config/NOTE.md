@@ -1,0 +1,1 @@
+Keep in mind, that the `paqman-backend/config` package MUST NOT include any other subpackage of `paqman-backend`. Otherwise import cycles may occur.

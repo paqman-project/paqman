@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"paqman-backend/config"
-	"paqman-backend/structs"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -21,13 +20,13 @@ import (
 // while inserting the document.
 //
 // If mocked, it always returns a random, valid ObjectID and nil
-func (m *Mongo) CreateOne(collection string, v interface{}) (primitive.ObjectID, error) {
+func (m *Mongo) CreateOne(collection string, v interface{}, opts ...*options.InsertOneOptions) (primitive.ObjectID, error) {
 
 	if m.Mocked {
 		return primitive.NewObjectID(), nil
 	}
 
-	res, err := m.connection.Database(config.Current.MongoDBName).Collection(collection).InsertOne(context.TODO(), v)
+	res, err := m.connection.Database(config.Current.MongoDBName).Collection(collection).InsertOne(context.TODO(), v, opts...)
 	if err != nil {
 		return primitive.ObjectID{}, err
 	}
@@ -48,7 +47,7 @@ func (m *Mongo) CreateOne(collection string, v interface{}) (primitive.ObjectID,
 func (m *Mongo) ReadOne(collection string, filter bson.M, v interface{}, opts ...*options.FindOneOptions) error {
 
 	if m.Mocked {
-		b, _ := json.Marshal(structs.ExampleCommandDislocker)
+		b, _ := json.Marshal(m.mockedExample)
 		json.Unmarshal(b, v)
 		return nil
 	}
@@ -65,8 +64,8 @@ func (m *Mongo) ReadOne(collection string, filter bson.M, v interface{}, opts ..
 // as the only value into v an returns nil
 func (m *Mongo) ReadMany(collection string, filter bson.M, v interface{}, opts ...*options.FindOptions) error {
 
-	if m.Mocked { // TODO may not work for testing
-		commands := []structs.Command{structs.ExampleCommandDislocker}
+	if m.Mocked {
+		commands := []interface{}{m.mockedExample}
 		b, _ := json.Marshal(commands)
 		json.Unmarshal(b, v)
 		return nil
