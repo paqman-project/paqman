@@ -8,6 +8,7 @@ import (
 	"paqman-backend/structs"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -56,13 +57,46 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// recursive response struct
-	type commandWithChildren struct {
-		CommandID            primitive.ObjectID `json:"command_id"`
-		structs.SmallCommand `json:",inline"`
-		Children             []*commandWithChildren `json:"_children"`
+	// get "have" from database
+	var have []structs.Parameter
+	if reqBody.Have != nil {
+		// compute bson.M objects from the strings provided in "hex"
+		ids := make([]bson.M, 0)
+		for _, id := range reqBody.Have {
+			objId, err := primitive.ObjectIDFromHex(id)
+			if err != nil {
+				respondError(&w, err, 500)
+				return
+			}
+			ids = append(ids, bson.M{
+				"_id": objId,
+			})
+		}
+		// build filter to get all command with the ids in "have"
+		filter := bson.M{
+			"$or": ids,
+		}
+		if err := db.Client.ReadMany("parameters", filter, &have); err != nil {
+			respondError(&w, err, 404) // TODO oder 400?
+			return
+		}
 	}
 
+	// get "want" from database
+	var want *structs.Parameter // using a pointer here for nilability
+	if reqBody.Want != "" {
+		objId, err := primitive.ObjectIDFromHex(reqBody.Want)
+		if err != nil {
+			respondError(&w, err, 500)
+			return
+		}
+		if err = db.Client.ReadOne("parameters", bson.M{"_id": objId}, want); err != nil {
+			respondError(&w, err, 404) // TODO oder 400?
+			return
+		}
+	}
+
+	// example commandWithChildren
 	/*c := commandWithChildren{
 		primitive.NewObjectID(),
 		structs.SmallCommand{
@@ -86,31 +120,44 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}*/
 
-	// get initial document (in "have")
-	id, err := primitive.ObjectIDFromHex(reqBody.Want)
-	if err != nil {
-		respondError(&w, err, 500)
+	////////// RECURSION START //////////
+
+	commandChainChannel := make(chan []*commandWithChildren) // TODO size
+	errorChannel := make(chan error)
+
+	go func() {
+
+		var commandChain []*commandWithChildren
+
+		// select appropriate recursive function
+		if have != nil && want != nil { // both params provided
+			errorChannel <- errors.New("Not implemented") // TODO
+		} else if have != nil && want == nil { // only have is provided
+			recurseWithHaveOnly(have[0], &commandChain, 0)
+		} else if want != nil && have == nil { // only want is provided
+			errorChannel <- errors.New("Not implemented") // TODO
+		} else {
+			errorChannel <- errors.New("Unable to determine required recursive function")
+			return
+		}
+
+		commandChainChannel <- commandChain
+
+	}()
+
+	select {
+	case cc := <-commandChainChannel:
+		respondObject(&w, cc, 200)
+		return
+	case ec := <-errorChannel:
+		respondError(&w, ec, 500)
+		return
+	case <-time.After(time.Duration(10 * time.Second)):
+		respondError(&w, errors.New("Timeout while recursing"), 500)
 		return
 	}
 
-	var initParam structs.Parameter
-	if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &initParam); err != nil {
-		respondError(&w, err, 500)
-		return
-	}
-
-	prevParams := initParam.FindPreviousParameters()
-	subsParams := initParam.FindSubsequentParameters()
-
-	respondObject(&w, struct {
-		Searched interface{} `json:"searched_for"`
-		Prev     interface{} `json:"previous_params"`
-		Subs     interface{} `json:"subsequent_params"`
-	}{
-		initParam.Name,
-		prevParams,
-		subsParams,
-	}, 200)
+	////////// RECURSION END //////////
 
 }
 
