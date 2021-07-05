@@ -41,8 +41,8 @@ type Mongo struct {
 	Mocked bool
 	// mockedExample is the object, that will be returned,
 	// if a mocked CRUD operation takes place
-	mockedExample interface{}
-	connection    *mongo.Client
+	mockedExample   interface{}
+	InnerConnection *mongo.Client
 }
 
 // Interface guard for Mongo struct
@@ -85,7 +85,7 @@ func Connect() error {
 	log.Println("Connected to MongoDB!")
 
 	Client = &Mongo{
-		connection: client,
+		InnerConnection: client,
 	}
 	return nil
 }
@@ -97,8 +97,8 @@ func Connect() error {
 // that should be returned for CRUD operations
 func ConnectMocked() {
 	Client = &Mongo{
-		Mocked:     true,
-		connection: nil,
+		Mocked:          true,
+		InnerConnection: nil,
 	}
 }
 
@@ -120,7 +120,7 @@ func (m *Mongo) CheckConnection() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second) // TODO maybe this is not sufficient
 	defer cancel()
 
-	if err := m.connection.Ping(ctx, nil); err != nil {
+	if err := m.InnerConnection.Ping(ctx, nil); err != nil {
 		return err
 	}
 
@@ -142,7 +142,7 @@ func (m *Mongo) Disconnect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if err := m.connection.Disconnect(ctx); err != nil {
+	if err := m.InnerConnection.Disconnect(ctx); err != nil {
 		return err
 	}
 
