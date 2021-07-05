@@ -10,7 +10,13 @@ import React from "react"
  * @param {string} props.fullWidth Whether the button should expand to it's full parent width
  * @param {boolean} props.submit If this is a submit button (used inside a form)
  */
-export default function Button({ onClick, title, important, fullWidth, submit }) {
+export default function Button({
+    onClick,
+    title,
+    important,
+    fullWidth,
+    submit,
+}) {
     return (
         <div>
             <button
@@ -19,9 +25,7 @@ export default function Button({ onClick, title, important, fullWidth, submit })
                     important
                         ? "border-transparent bg-paqteal-600 text-white shadow-lg"
                         : "border-paqteal-600 shadow-md"
-                } ${
-                    fullWidth && "w-full"
-                }`}
+                } ${fullWidth && "w-full"}`}
                 type={submit && "submit"}
             >
                 {title}
