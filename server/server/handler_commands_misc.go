@@ -92,3 +92,41 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 	}
 
 }
+
+func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren, depth int, targetID string) {
+
+	// stop condition
+	if (current.UsedIn == nil || len(current.UsedIn) == 0) || current.ID.Hex() == targetID || depth >= 15 { // TODO depth may change
+		return
+	}
+
+	// create children array
+	*children = make([]*commandWithChildren, 0)
+
+	// iterate over every child of this parameter
+	for _, usedIn := range current.UsedIn {
+		// add used command to chain
+		usedCommand := &commandWithChildren{
+			CommandID: usedIn.CommandID,
+			Children:  nil,
+		}
+		*children = append(*children, usedCommand)
+
+		// get this next parameter from database
+		if usedIn.ToCreate == "" {
+			continue
+		}
+		id, err := primitive.ObjectIDFromHex(usedIn.ToCreate)
+		if err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+		var next structs.Parameter
+		if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &next); err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+
+		// continue recursion
+		recurseWithBoth(next, &usedCommand.Children, depth+1, targetID)
+	}
+
+}

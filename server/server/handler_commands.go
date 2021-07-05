@@ -102,7 +102,14 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 
 		// select appropriate recursive function
 		if have != nil && want != nil { // both params provided
-			errorChannel <- errors.New("Not implemented") // TODO
+			//errorChannel <- errors.New("Not implemented") // TODO
+			completeChain := make([]*commandWithChildren, 0)
+			for _, having := range have {
+				var localChain []*commandWithChildren
+				recurseWithBoth(having, &localChain, 0, want.ID.Hex())
+				completeChain = append(completeChain, localChain...)
+			}
+			commandChain = completeChain
 		} else if have != nil && want == nil { // only have is provided
 			completeChain := make([]*commandWithChildren, 0)
 			for _, having := range have {
@@ -112,7 +119,7 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			commandChain = completeChain
 		} else if want != nil && have == nil { // only want is provided
-			recurseWithWantOnly(*want, &commandChain, 0)
+			recurseWithWantOnly(*want, &commandChain, 0) // TODO very shitty
 		} else {
 			errorChannel <- errors.New("Unable to determine required recursive function")
 			return
