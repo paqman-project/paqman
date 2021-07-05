@@ -28,13 +28,20 @@ export default function AboutView() {
                                 the information you collect or already have to transform them into a 
                                 successfull attack.
                             </p>
+                            <p className="mt-4">
+                                PAQMAN is kept as simple as possible to allow you to fully focus on your work.
+                            </p>
                         </div>
                     </Card>
                     <Card title="How do you use it?">
                         <div>
                             <p>
-                                If you want to search for predefined Attacks, use the Attack List.
-                                TODO
+                                If you want to search for predefined Attacks, use the <span className="font-bold">Attack List</span>.
+                                <p>If you want to search for a single Command, use the <span className="font-bold">Command List</span>.</p>
+                                The search engine indexes the kontex of an entry (title and description) so you can search for either of these. 
+                                <p>For each of these you can also search by a specific parameter, use for this the 
+                                <span className="font-bold"> Attack by Parameter</span> or <span className="font-bold">Command by Parameter</span> search.</p>
+                                If you want to add a new Attack or Command, use the respective<span className="font-bold"> Add</span> button.
                             </p>
                         </div>
                     </Card>
@@ -65,13 +72,16 @@ export default function AboutView() {
                             </tr>
                         </table>
                     </Card>
-                    <Card title="Who made it?" className="place-self-start">
+                    <Card title="Who made it?">
                         <div>
                             <p>
                                 PAQMAN was developed as a project work by
                                 Nadine Weber, Nicola Jäger and Leon Schmidt
                                 as part of a project work at the University
                                 of Applied Sciences Offenburg.
+                            </p>
+                            <p className="mt-10">
+                                {"---> Insert GIF here <---"}
                             </p>
                         </div>
                     </Card>
