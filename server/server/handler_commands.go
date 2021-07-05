@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -133,7 +134,14 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		if have != nil && want != nil { // both params provided
 			errorChannel <- errors.New("Not implemented") // TODO
 		} else if have != nil && want == nil { // only have is provided
-			recurseWithHaveOnly(have[0], &commandChain, 0)
+			completeChain := make([]*commandWithChildren, 0)
+			for _, having := range have {
+				fmt.Println(have)
+				var localChain []*commandWithChildren
+				recurseWithHaveOnly(having, &localChain, 0)
+				completeChain = append(completeChain, localChain...)
+			}
+			commandChain = completeChain
 		} else if want != nil && have == nil { // only want is provided
 			errorChannel <- errors.New("Not implemented") // TODO
 		} else {
