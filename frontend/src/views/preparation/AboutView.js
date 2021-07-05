@@ -35,14 +35,11 @@ export default function AboutView() {
                     </Card>
                     <Card title="How do you use it?">
                         <div>
-                            <p>
-                                If you want to search for predefined Attacks, use the <span className="font-bold">Attack List</span>.
-                                <p>If you want to search for a single Command, use the <span className="font-bold">Command List</span>.</p>
-                                The search engine indexes the kontex of an entry (title and description) so you can search for either of these. 
-                                <p>For each of these you can also search by a specific parameter, use for this the 
-                                <span className="font-bold"> Attack by Parameter</span> or <span className="font-bold">Command by Parameter</span> search.</p>
-                                If you want to add a new Attack or Command, use the respective<span className="font-bold"> Add</span> button.
-                            </p>
+                            <p>If you want to search for predefined Attacks, use the <span className="font-bold">Attack List</span>.</p>
+                            <p>To list all Commands, use the <span className="font-bold">Command List</span>.</p>
+                            <p>You can search for both name and description in every view of PAQMAN.</p>
+                            <p>For already gathered or targeted parameters, use <span className="font-bold">Attack by Parameter</span> and <span className="font-bold">Command by Parameter</span> to search for actions matching your current situation.</p>
+                            <p>If you want to add a new Attack or Command, use the <span className="font-bold">Add</span> button, respectively.</p>
                         </div>
                     </Card>
                     <Card title="Terminology">
