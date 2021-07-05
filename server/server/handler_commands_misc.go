@@ -51,3 +51,44 @@ func recurseWithHaveOnly(current structs.Parameter, children *[]*commandWithChil
 	}
 
 }
+
+func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChildren, depth int) {
+
+	// stop condition
+	if (current.ReturnedFrom == nil || len(current.ReturnedFrom) == 0) || depth >= 15 { // TODO depth may change
+		return
+	}
+
+	// create children array
+	*children = make([]*commandWithChildren, 0)
+
+	// iterate over every parent of this parameter
+	for _, returnedFrom := range current.ReturnedFrom {
+		// add used command to chain
+		usedCommand := &commandWithChildren{
+			CommandID: returnedFrom.CommandID,
+			Children:  nil,
+		}
+		*children = append(*children, usedCommand)
+
+		// get this previous parameter from database
+		query := bson.M{
+			"used_in.command_id": returnedFrom.CommandID,
+		}
+		var prevParams []structs.Parameter
+		if err := db.Client.ReadMany("parameters", query, &prevParams); err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+
+		completePredecessors := make([]*commandWithChildren, 0)
+		for _, prevParam := range prevParams {
+			var loc []*commandWithChildren
+			//fmt.Println(prevParam.Name, "at", depth)
+			recurseWithWantOnly(prevParam, &loc, depth+1)
+			completePredecessors = append(completePredecessors, loc...)
+		}
+		children = &completePredecessors
+
+	}
+
+}

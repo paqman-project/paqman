@@ -3,7 +3,6 @@ package server
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"paqman-backend/db"
 	"paqman-backend/structs"
@@ -19,12 +18,7 @@ import (
 // gets all Commands
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 
-	type smallCommandWithID struct {
-		ID                   primitive.ObjectID `bson:"_id" json:"_id"`
-		structs.SmallCommand `bson:",inline" json:",inline"`
-	}
-
-	var results []smallCommandWithID
+	var results []structs.SmallCommand
 
 	if err := db.Client.ReadMany("commands", bson.M{}, &results); err != nil {
 		respondError(&w, err, 500)
@@ -91,35 +85,11 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 			respondError(&w, err, 500)
 			return
 		}
-		if err = db.Client.ReadOne("parameters", bson.M{"_id": objId}, want); err != nil {
+		if err = db.Client.ReadOne("parameters", bson.M{"_id": objId}, &want); err != nil {
 			respondError(&w, err, 404) // TODO oder 400?
 			return
 		}
 	}
-
-	// example commandWithChildren
-	/*c := commandWithChildren{
-		primitive.NewObjectID(),
-		structs.SmallCommand{
-			Name:        "Senf",
-			Description: "Was geht ab",
-		},
-		[]*commandWithChildren{
-			{
-				primitive.NewObjectID(),
-				structs.SmallCommand{},
-				[]*commandWithChildren{
-					{
-						primitive.NewObjectID(),
-						structs.SmallCommand{
-							Name: "Very inner command",
-						},
-						nil,
-					},
-				},
-			},
-		},
-	}*/
 
 	////////// RECURSION START //////////
 
@@ -136,14 +106,13 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		} else if have != nil && want == nil { // only have is provided
 			completeChain := make([]*commandWithChildren, 0)
 			for _, having := range have {
-				fmt.Println(have)
 				var localChain []*commandWithChildren
 				recurseWithHaveOnly(having, &localChain, 0)
 				completeChain = append(completeChain, localChain...)
 			}
 			commandChain = completeChain
 		} else if want != nil && have == nil { // only want is provided
-			errorChannel <- errors.New("Not implemented") // TODO
+			recurseWithWantOnly(*want, &commandChain, 0)
 		} else {
 			errorChannel <- errors.New("Unable to determine required recursive function")
 			return
