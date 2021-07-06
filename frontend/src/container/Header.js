@@ -6,20 +6,49 @@ import logo2 from "../img/logo_v2.svg"
 /**
  * This is PAQMANs header for all pages
  * @param props
+ * @param props.sidebarCollapsed State if sidebar is collapsed
  * @param props.setSidebarCollapsed State function to set if the sidebar should be collapsed
  */
-export default function Header({ setSidebarCollapsed }) {
+export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
     const [hovering, setHovering] = useState(false)
 
     return (
         <div className="fixed top-0 z-20 w-full h-16 bg-white shadow-lg">
             <div className="flex flex-row items-center h-full">
-                <button
-                    className="text-2xl ml-4 px-4 py-1 border-2 rounded-xl focus:outline-none"
-                    onClick={() => setSidebarCollapsed(old => !old)}
-                >
-                    =
-                </button>
+                {sidebarCollapsed ? (
+                    <svg
+                        className="block h-8 h-8 ml-2 md:ml-4"
+                        onClick={() => setSidebarCollapsed(old => !old)}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="grey"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        ></path>
+                    </svg>
+                ) : (
+                    <svg
+                        className="block h-8 h-8 ml-2 md:ml-4"
+                        onClick={() => setSidebarCollapsed(old => !old)}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="grey"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                    </svg>
+                )}
+
                 <Link to="/">
                     <div
                         onMouseOver={() => setHovering(true)}

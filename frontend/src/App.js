@@ -19,7 +19,10 @@ export default function App() {
 
     return (
         <Router>
-            <Header setSidebarCollapsed={setSidebarCollapsed} />
+            <Header
+                sidebarCollapsed={sidebarCollapsed}
+                setSidebarCollapsed={setSidebarCollapsed}
+            />
             <Sidebar collapsed={sidebarCollapsed} />
             <ViewContainer sidebarCollapsed={sidebarCollapsed}>
                 <Switch>
