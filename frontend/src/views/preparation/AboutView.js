@@ -3,7 +3,7 @@ import Button from "../../components/Button"
 import Card from "../../components/Card"
 import logo from "../../img/logo_v2.svg"
 
-export const version = "v0.1.0"
+export const version = "v0.2.0"
 
 export default function AboutView() {
     return (
