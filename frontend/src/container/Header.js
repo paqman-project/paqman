@@ -50,7 +50,7 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
                 )}
 
                 <Link to="/">
-                    <div 
+                    <div
                         className="select-none"
                         onMouseOver={() => setHovering(true)}
                         onMouseLeave={() => setHovering(false)}
