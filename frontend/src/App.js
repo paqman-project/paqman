@@ -19,8 +19,8 @@ export default function App() {
 
     return (
         <Router>
-            <Header setSidebarCollapsed={setSidebarCollapsed}/>
-            <Sidebar collapsed={sidebarCollapsed}/>
+            <Header setSidebarCollapsed={setSidebarCollapsed} />
+            <Sidebar collapsed={sidebarCollapsed} />
             <ViewContainer sidebarCollapsed={sidebarCollapsed}>
                 <Switch>
                     <Route path="/" exact>
@@ -41,7 +41,7 @@ export default function App() {
                     />
                     {/* Fallback (404 page) */}
                     <Route path="/" component={NotFound} />
-                </Switch>                
+                </Switch>
             </ViewContainer>
         </Router>
     )

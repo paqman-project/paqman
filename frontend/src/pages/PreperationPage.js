@@ -16,7 +16,6 @@ import CommandNewView from "../views/preparation/CommandNewView"
  * attacks and parameters reside here.
  */
 export default function PreperationPage() {
-
     const { path } = useRouteMatch()
 
     return (

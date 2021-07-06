@@ -16,9 +16,7 @@ export default function Header({ setSidebarCollapsed }) {
             <div className="flex flex-row items-center h-full">
                 <button
                     className="text-2xl ml-4 px-4 py-1 border-2 rounded-xl focus:outline-none"
-                    onClick={
-                        () => setSidebarCollapsed((old) => !old)
-                    }
+                    onClick={() => setSidebarCollapsed(old => !old)}
                 >
                     =
                 </button>
@@ -42,7 +40,7 @@ export default function Header({ setSidebarCollapsed }) {
                                 className="p-6"
                             />
                         )}
-                    </div>                        
+                    </div>
                 </Link>
             </div>
         </div>
