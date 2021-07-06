@@ -1,6 +1,5 @@
 import React from "react"
 import { useRouteMatch, Switch, Route, Redirect } from "react-router-dom"
-import Sidebar from "../container/Sidebar"
 import AttackListView from "../views/preparation/AttackListView"
 import AttackByParameterView from "../views/preparation/AttackByParameterView"
 import AttackNewView from "../views/preparation/AttackNewView"
@@ -21,7 +20,6 @@ export default function PreperationPage() {
 
     return (
         <div className="flex h-full">
-            <Sidebar />
             <div className="w-full h-full p-4">
                 <Switch>
                     <Route path={path} exact>
