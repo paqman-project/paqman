@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"paqman-backend/structs"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,27 +18,11 @@ import (
 // gets all Commands
 func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 
-	type smallCommand struct {
-		ID          primitive.ObjectID `bson:"_id" json:"_id"`
-		Name        string             `bson:"name" json:"name"`
-		Description string             `bson:"description" json:"description"`
-	}
+	var results []structs.SmallCommand
 
-	cursor, err := db.Client.ReadMany("commands", bson.M{})
-	if err != nil {
+	if err := db.Client.ReadMany("commands", bson.M{}, &results); err != nil {
 		respondError(&w, err, 500)
 		return
-	}
-
-	var results []smallCommand
-
-	for cursor.Next(context.TODO()) {
-		var result smallCommand
-		if err := cursor.Decode(&result); err != nil {
-			respondError(&w, err, 500)
-			return
-		}
-		results = append(results, result)
 	}
 
 	response, err := json.Marshal(results)
@@ -47,6 +31,118 @@ func getAllCommandsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondJSON(&w, response, 200)
+}
+
+func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
+
+	// parse request body
+	type requestBody struct {
+		Have []string `json:"have"`
+		Want string   `json:"want"`
+	}
+	var reqBody requestBody
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+		respondError(&w, err, 400)
+		return
+	}
+
+	// check if either "have" or "want" are provided
+	if reqBody.Have == nil && reqBody.Want == "" {
+		respondObject(&w, errorResponse{`Both "have" and "want" were not provided`}, 400)
+		return
+	}
+
+	// get "have" from database
+	var have []structs.Parameter
+	if reqBody.Have != nil {
+		// compute bson.M objects from the strings provided in "hex"
+		ids := make([]bson.M, 0)
+		for _, id := range reqBody.Have {
+			objId, err := primitive.ObjectIDFromHex(id)
+			if err != nil {
+				respondError(&w, err, 500)
+				return
+			}
+			ids = append(ids, bson.M{
+				"_id": objId,
+			})
+		}
+		// build filter to get all command with the ids in "have"
+		filter := bson.M{
+			"$or": ids,
+		}
+		if err := db.Client.ReadMany("parameters", filter, &have); err != nil {
+			respondError(&w, err, 404) // TODO oder 400?
+			return
+		}
+	}
+
+	// get "want" from database
+	var want *structs.Parameter // using a pointer here for nilability
+	if reqBody.Want != "" {
+		objId, err := primitive.ObjectIDFromHex(reqBody.Want)
+		if err != nil {
+			respondError(&w, err, 500)
+			return
+		}
+		if err = db.Client.ReadOne("parameters", bson.M{"_id": objId}, &want); err != nil {
+			respondError(&w, err, 404) // TODO oder 400?
+			return
+		}
+	}
+
+	////////// RECURSION START //////////
+
+	commandChainChannel := make(chan []*commandWithChildren) // TODO size
+	errorChannel := make(chan error)
+
+	go func() {
+
+		var commandChain []*commandWithChildren
+
+		// select appropriate recursive function
+		if have != nil && want != nil { // both params provided
+			//errorChannel <- errors.New("Not implemented") // TODO
+			completeChain := make([]*commandWithChildren, 0)
+			for _, having := range have {
+				var localChain []*commandWithChildren
+				recurseWithBoth(having, &localChain, 0, want.ID.Hex())
+				completeChain = append(completeChain, localChain...)
+			}
+			commandChain = completeChain
+		} else if have != nil && want == nil { // only have is provided
+			completeChain := make([]*commandWithChildren, 0)
+			for _, having := range have {
+				var localChain []*commandWithChildren
+				recurseWithHaveOnly(having, &localChain, 0)
+				completeChain = append(completeChain, localChain...)
+			}
+			commandChain = completeChain
+		} else if want != nil && have == nil { // only want is provided
+			recurseWithWantOnly(*want, &commandChain, 0) // TODO very shitty
+		} else {
+			errorChannel <- errors.New("Unable to determine required recursive function")
+			return
+		}
+
+		commandChainChannel <- commandChain
+
+	}()
+
+	select {
+	case cc := <-commandChainChannel:
+		respondObject(&w, cc, 200)
+		return
+	case ec := <-errorChannel:
+		respondError(&w, ec, 500)
+		return
+	case <-time.After(time.Duration(10 * time.Second)):
+		respondError(&w, errors.New("Timeout while recursing"), 500)
+		return
+	}
+
+	////////// RECURSION END //////////
+
 }
 
 // creates a new Command
@@ -59,19 +155,16 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if "name", "template" and "template_values are provided"
-	type missErr struct {
-		Error string `json:"error"`
-	}
 	if c.Name == "" {
-		respondObject(&w, missErr{`Missing "name" field`}, 400)
+		respondObject(&w, errorResponse{`Missing "name" field`}, 400)
 		return
 	}
 	if c.Template == "" {
-		respondObject(&w, missErr{`"template" field is empty`}, 400)
+		respondObject(&w, errorResponse{`"template" field is empty`}, 400)
 		return
 	}
 	if c.TemplateValues == nil {
-		respondObject(&w, missErr{`"template_values" field is empty`}, 400)
+		respondObject(&w, errorResponse{`"template_values" field is empty`}, 400)
 		return
 	}
 

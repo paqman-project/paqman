@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+type errorResponse struct {
+	Error string `json:"error"`
+}
+
 func respondString(w *http.ResponseWriter, s string, statusCode int) {
 	(*w).Header().Set("Content-Type", "text/plain")
 	(*w).WriteHeader(statusCode)

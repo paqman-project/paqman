@@ -10,6 +10,7 @@ type Template string
 // A Command defines a template for a CLI Command and specifies
 // the format of the TemplateValues used in the Template.
 type Command struct {
+	MongoModel       `json:",inline" bson:",inline"`
 	Name             string                          `json:"name" bson:"name"`
 	Description      string                          `json:"description" bson:"description"`
 	Instructions     string                          `json:"instructions" bson:"instructions"`
@@ -17,6 +18,12 @@ type Command struct {
 	TemplateValues   map[string]CommandTemplateValue `json:"template_values" bson:"template_values"`
 	RequiresRoot     bool                            `json:"requires_root" bson:"requires_root"`
 	OnlineManpageRef string                          `json:"online_manpage" bson:"online_manpage"`
+}
+
+type SmallCommand struct {
+	MongoModel  `json:",inline" bson:",inline"`
+	Name        string `json:"name" bson:"name"`
+	Description string `json:"description" bson:"description"`
 }
 
 // FillTemplate replaces the template values of a command

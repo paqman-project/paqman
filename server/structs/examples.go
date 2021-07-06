@@ -38,10 +38,11 @@ var (
 		Name:         "Full volume encryption key (fvek)",
 		Description:  "Master key for Bitlocker encrypted drives",
 		Type:         "string",
-		ReturnedFrom: make(map[string]ReturnedFromData),
-		UsedIn: map[string]UsedInData{
-			"60bfa34930f703581134bc4b": {
-				At: "fvek",
+		ReturnedFrom: make([]ReturnedFromData, 0),
+		UsedIn: []UsedInData{
+			{
+				CommandID: "60bfa34930f703581134bc4b",
+				At:        "fvek",
 			},
 		},
 	}
