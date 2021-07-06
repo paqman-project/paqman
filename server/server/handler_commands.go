@@ -48,7 +48,7 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// check if either "have" or "want" are provided
 	if reqBody.Have == nil && reqBody.Want == "" {
-		respondObject(&w, errorResponse{`Both "have" and "want" were not provided`}, 400)
+		respondObject(&w, errorResponse{`both "have" and "want" were not provided`}, 400)
 		return
 	}
 
@@ -121,7 +121,7 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		} else if want != nil && have == nil { // only want is provided
 			recurseWithWantOnly(*want, &commandChain, 0) // TODO very shitty
 		} else {
-			errorChannel <- errors.New("Unable to determine required recursive function")
+			errorChannel <- errors.New("unable to determine required recursive function")
 			return
 		}
 
@@ -137,7 +137,7 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 		respondError(&w, ec, 500)
 		return
 	case <-time.After(time.Duration(10 * time.Second)):
-		respondError(&w, errors.New("Timeout while recursing"), 500)
+		respondError(&w, errors.New("timeout while recursing"), 500)
 		return
 	}
 
@@ -156,7 +156,7 @@ func newCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	// check if "name", "template" and "template_values are provided"
 	if c.Name == "" {
-		respondObject(&w, errorResponse{`Missing "name" field`}, 400)
+		respondObject(&w, errorResponse{`missing "name" field`}, 400)
 		return
 	}
 	if c.Template == "" {
