@@ -9,10 +9,12 @@ import (
 )
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	
+
+	// get parameter values from GET request
 	forParam := r.URL.Query().Get("for")
 	termParam := r.URL.Query().Get("term")
 
+	// regex query for searching insensitivity only for name or description
 	query := bson.M{
 		"$or": []bson.M{
 			{"name": bson.M{"$regex": termParam, "$options": "i"}},
@@ -20,8 +22,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	// "for" URL parameter is optional, so can be empty
 	if forParam != "" {
 
+		// check if correct predefined collections are given
 		switch forParam {
 		case "attacks", "commands", "parameters":
 			break
@@ -32,6 +36,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		var results []structs.SmallModel
 
+		// search in only one specified collecion
 		err := db.Client.ReadMany(forParam, query, &results)
 		if err != nil {
 			respondError(&w, err, 404)
@@ -41,7 +46,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		respondObject(&w, results, 200)
 		return
 
-	} else {
+	} else { // "for" is not set, search in all three collections and store results in a map
 
 		results := make(map[string][]structs.SmallModel)
 
@@ -55,7 +60,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			results[collection] = tempResults
-
 		}
 
 		respondObject(&w, results, 200)
