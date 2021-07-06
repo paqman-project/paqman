@@ -20,11 +20,7 @@ type Command struct {
 	OnlineManpageRef string                          `json:"online_manpage" bson:"online_manpage"`
 }
 
-type SmallCommand struct {
-	MongoModel  `json:",inline" bson:",inline"`
-	Name        string `json:"name" bson:"name"`
-	Description string `json:"description" bson:"description"`
-}
+type SmallCommand SmallModel
 
 // FillTemplate replaces the template values of a command
 // with the specfic user defined values for a complete command
