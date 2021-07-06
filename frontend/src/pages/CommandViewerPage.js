@@ -33,7 +33,7 @@ export default function CommandViewerPage({ match }) {
             <div>
                 <div className="w-5/6 max-w-5xl mx-auto flex space-x-20 mb-10">
                     <div className="flex-1">
-                        <Card title="Instructions" fullHeight>
+                        <Card title="Instructions" className="h-full">
                             <p>
                                 {data.instructions ||
                                     "No instructions available"}
@@ -52,7 +52,7 @@ export default function CommandViewerPage({ match }) {
                         </Card>
                     </div>
                     <div className="flex-1">
-                        <Card title="Command properties" fullHeight>
+                        <Card title="Command properties" className="h-full">
                             <div className="flex-col">
                                 <p>
                                     Requires root?<span> </span>
