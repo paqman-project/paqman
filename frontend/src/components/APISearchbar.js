@@ -13,8 +13,10 @@ export default function APISearchbar({ searchFor, overlay }) {
     const [term, setTerm] = useState("")
     // timeout that triggers the fetch /api/search call, when the user stops typing 
     const [searchTimer, setSearchTimer] = useState(null)
-    // seach results (default null, because should be nullable)
-    const [results, setResults] = useState(null)
+    // if there are results available (may be empty)
+    const [haveResults, setHaveResults] = useState(false)
+    // search results from API
+    const [results, setResults] = useState()
 
     // TODO check searchFor?
 
@@ -30,7 +32,7 @@ export default function APISearchbar({ searchFor, overlay }) {
         let timeout = setTimeout(() => {
             // hide results panel, if search term is empty
             if (value === "") {
-                setResults(null)
+                setHaveResults(false)
                 return
             }
             // compose query string
@@ -42,32 +44,24 @@ export default function APISearchbar({ searchFor, overlay }) {
             // request and set results
             ////// TEMP START //////
             console.log(`Fetching /api/search?${p.toString()}`)
-            setResults({
-                "commands": [
-                    {
-                        "_id": "1337",
-                        "name": "dislocker",
-                        "description": "does cool dislocker stuff"
-                    },
-                    {
-                        "_id": "1338",
-                        "name": "ls",
-                        "description": "Lists files in a directory"
-                    }
-                ],
-                "parameters": [
-                    {
-                        "_id": "looool",
-                        "name": "geiler shit",
-                        "description": "nicht so geiler shit"
-                    }
-                ],
-                "attacks": null
-            })
+            setResults([
+                {
+                    "_id": "looool",
+                    "name": "Geiler Parameter",
+                    "description": "Riiichtig geil"
+                },
+                {
+                    "_id": "loool2",
+                    "name": "Nichts so geiler Parameter",
+                    "description": "Alla"
+                }
+            ])
+            setHaveResults(true)
             ////// TEMP END //////
             /*fetch(`/api/search?${p.toString()}`)
                 .then((r) => r.json())
                 .then((r) => setResults(r))
+                .then(() => setHaveResults(r))
                 .catch((e) => console.log(e))*/
         }, 500)
         setSearchTimer(timeout)
@@ -92,14 +86,13 @@ export default function APISearchbar({ searchFor, overlay }) {
                 placeholder={`Search for ${searchFor || "everything"}`}
                 className="relative w-full px-4 py-2 border rounded-lg shadow-lg z-20"
             />
-            {results && (
+            {(haveResults && overlay) && (
                 <div className="absolute w-full z-10">
                     <div className="-mt-4 mx-4 bg-white shadow-md border rounded-b-lg">
                         <div className="mt-4 p-4">
-                            {
-                                overlay
-                                    ? doOverlay()
-                                    : <p>No overlay function</p>
+                            {results
+                                ? doOverlay()
+                                : <p>No results</p>
                             }
                         </div>
                     </div>

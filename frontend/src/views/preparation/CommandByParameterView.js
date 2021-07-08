@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
@@ -7,73 +7,63 @@ import Button from "../../components/Button"
  * This view is used to search commands by parameters
  */
 export default function CommandByParameterView() {
+
+    const [have, setHave] = useState([])
+    const [want, setWant] = useState()
+
     return (
-        <div>
+        <div className="h-full">
             <ViewHeading title="Search commands by parameter" />
-            <div>
-                <APISearchbar 
-                    searchFor="commands" 
-                    overlay={(results) => (
+            <div className="grid grid-cols-3 h-full">
+                <div className="col-span-2">
+                    <div className="w-5/6 max-w-5xl mb-10 mx-auto">
+                        <APISearchbar 
+                            searchFor="parameters" 
+                            overlay={(results) => (
+                                <>
+                                    {results.map(c => (
+                                        <div className="border m-2 p-2 rounded-md" key={c._id}>
+                                            <div className="flex flex-row justify-between items-center">
+                                                <div>
+                                                    <p className="text-lg bg-gray-100 rounded px-2 py-1">
+                                                        {c.name}
+                                                    </p>
+                                                    <p className="p-2">
+                                                        {c.description}
+                                                    </p>
+                                                </div>
+                                                <div className="flex flex-row">
+                                                    <div className="m-2">
+                                                        <Button title="Add to entrypoints" />
+                                                    </div>
+                                                    <div className="m-2 mr-4">
+                                                        <Button title="Set target" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>
+                <div className="col-span-1">
+                    <div className="w-5/6 flex flex-col space-y-10">
                         <div>
-                            {results.commands && (
-                                <>
-                                    <div>
-                                        <h1 className="font-bold">Commands</h1>
-                                        {results.commands?.map(c => 
-                                            <div className="border m-2 p-2 rounded-md">
-                                                <div className="flex flex-row justify-between items-center">
-                                                    <div>
-                                                        <p>
-                                                            <span className="text-lg font-mono bg-gray-100 rounded px-2 py-1">
-                                                                {c.name}
-                                                            </span> {c.description}
-                                                        </p>
-                                                    </div>
-                                                    <div className="flex flex-row space-x-5">
-                                                        <div>
-                                                            <Button title="Add to entrypoints" />
-                                                        </div>
-                                                        <div>
-                                                            <Button title="Set target" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-                            {results.attacks && (
-                                <>
-                                    <hr className="mt-4 mb-2" />
-                                    <div>
-                                        <h1 className="font-bold">Attacks</h1>
-                                        {results.attacks.map(c => (
-                                            <div className="border m-2 p-2">
-                                                <h2>{c.name}</h2>
-                                                <p>{c.description}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
-                            {results.parameters && (
-                                <>
-                                    <hr className="mt-4 mb-2" />
-                                    <div>
-                                        <h1 className="font-bold">Parameters</h1>
-                                            {results.parameters?.map(c => (
-                                                <div className="border m-2 p-2">
-                                                    <h2>{c.name}</h2>
-                                                    <p>{c.description}</p>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </>
-                            )}
+                            <h1 className="text-center text-md mb-4">Entrypoints</h1>
+                            <div className="h-80 bg-white border rounded-xl shadow-lg">
+                                <p></p>
+                            </div>
                         </div>
-                    )}
-                />
+                        <div>
+                            <h1 className="text-center text-md mb-4">Target</h1>
+                            <div className="h-32 w-2/3 mx-auto bg-white border rounded-xl shadow-lg">
+                                <p>Senf</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
