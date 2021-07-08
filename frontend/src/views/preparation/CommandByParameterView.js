@@ -34,10 +34,27 @@ export default function CommandByParameterView() {
                                                 </div>
                                                 <div className="flex flex-row">
                                                     <div className="m-2">
-                                                        <Button title="Add to entrypoints" />
+                                                        <Button 
+                                                            title="Add to entrypoints" 
+                                                            onClick={() => {
+                                                                setHave(old => {
+                                                                    let temp = [...old]
+                                                                    if (!temp.includes(c.name)) {
+                                                                        temp.push(c.name)
+                                                                    }
+                                                                    return temp
+                                                                })
+                                                            }}
+                                                        />
                                                     </div>
                                                     <div className="m-2 mr-4">
-                                                        <Button title="Set target" />
+                                                        <Button 
+                                                            title="Set target" 
+                                                            onClick={() => {
+                                                                console.log("Clicked senf")
+                                                                setWant(c.name)
+                                                            }}
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -53,13 +70,13 @@ export default function CommandByParameterView() {
                         <div>
                             <h1 className="text-center text-md mb-4">Entrypoints</h1>
                             <div className="h-80 bg-white border rounded-xl shadow-lg">
-                                <p></p>
+                                <p>{JSON.stringify(have)}</p>
                             </div>
                         </div>
                         <div>
                             <h1 className="text-center text-md mb-4">Target</h1>
                             <div className="h-32 w-2/3 mx-auto bg-white border rounded-xl shadow-lg">
-                                <p>Senf</p>
+                                <p>{JSON.stringify(want)}</p>
                             </div>
                         </div>
                     </div>
