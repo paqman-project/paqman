@@ -10,6 +10,27 @@ export default function CommandByParameterView() {
 
     const [have, setHave] = useState([])
     const [want, setWant] = useState()
+    const [results, setResults] = useState()
+
+    const submit = () => {
+
+        let body = {}
+        if (have && have.length > 0) {
+            body.have = have.map(h => h._id)
+        }
+        if (want) {
+            body.want = want._id
+        }
+
+        fetch(`/api/commands/by-parameter`, {
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+            .then((r) => r.json())
+            .then((r) => setResults(r))
+            .catch((e) => console.error(e))
+
+    }
 
     return (
         <div className="h-full">
@@ -23,7 +44,7 @@ export default function CommandByParameterView() {
                                 <>
                                     {results.map(c => (
                                         <div className="border m-2 p-2 rounded-md" key={c._id}>
-                                            <div className="flex flex-row justify-between items-center">
+                                            <div className="flex justify-between items-center">
                                                 <div>
                                                     <p className="text-lg bg-gray-100 rounded px-2 py-1">
                                                         {c.name}
@@ -65,11 +86,11 @@ export default function CommandByParameterView() {
                     </div>
                 </div>
                 {/* Dumps for have and want parameters */}
-                <div className="col-span-1 w-full">
-                    <div className="w-5/6 mx-auto max-w-5xl flex flex-col space-y-10">
+                <div className="col-span-1 w-full border-l">
+                    <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <div className="mx-auto">
-                            <h1 className="text-center text-md mb-4">Entrypoints</h1>
+                        <div className="flex-1 p-4">
+                            <h1 className="text-center text-md font-bold mb-4">Entrypoints</h1>
                             <div>
                                 {(have && have.length > 0)
                                     ? (
@@ -96,8 +117,8 @@ export default function CommandByParameterView() {
                             </div>
                         </div>
                         {/* Dump for want parameter */}
-                        <div className="mx-auto">
-                            <h1 className="text-center text-md mb-4">Target</h1>
+                        <div className="flex-1 p-4">
+                            <h1 className="text-center text-md font-bold mb-4">Target</h1>
                             <div>
                                 {want
                                     ? (
@@ -126,9 +147,19 @@ export default function CommandByParameterView() {
                 </div>
             </div>
             {/* Submit button */}
-            <div className="text-center">
+            <div className="w-full border-t pt-10 text-center">
                 <div>
-                    <Button title="Start searching" important />
+                    <Button 
+                        title="Start searching" 
+                        important
+                        onClick={() => submit()}
+                    />
+                </div>
+                {/* Results */}
+                <div className="mx-auto text-center mt-6">
+                    {results && (
+                        <p>{JSON.stringify(results)}</p>
+                    )}
                 </div>
             </div>
         </div>
