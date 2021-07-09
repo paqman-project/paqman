@@ -37,11 +37,12 @@ export default function APISearchbar({ searchFor, overlay }) {
             }
             // compose query string
             let p = new URLSearchParams()
-            p.set("term", value)
             if (searchFor) {
-                p.set("searchFor", searchFor)
+                p.set("for", searchFor)
             }
+            p.set("term", value)
             // request and set results
+            
             ////// TEMP START //////
             console.log(`Fetching /api/search?${p.toString()}`)
             setResults([
@@ -54,14 +55,35 @@ export default function APISearchbar({ searchFor, overlay }) {
                     "_id": "loool2",
                     "name": "Nichts so geiler Parameter",
                     "description": "Alla"
-                }
+                },
+                {
+                    "_id": "Apfe",
+                    "name": "Geiler Parameter",
+                    "description": "Riiichtig geil"
+                },
+                {
+                    "_id": "senf",
+                    "name": "Nichts so geiler Parameter",
+                    "description": "Alla"
+                },
+                {
+                    "_id": "kind",
+                    "name": "Geiler Parameter",
+                    "description": "Riiichtig geil"
+                },
+                {
+                    "_id": "nicola",
+                    "name": "Nichts so geiler Parameter",
+                    "description": "Alla"
+                },
             ])
             setHaveResults(true)
             ////// TEMP END //////
+
             /*fetch(`/api/search?${p.toString()}`)
                 .then((r) => r.json())
                 .then((r) => setResults(r))
-                .then(() => setHaveResults(r))
+                .then(() => setHaveResults(true))
                 .catch((e) => console.log(e))*/
         }, 500)
         setSearchTimer(timeout)
@@ -89,7 +111,7 @@ export default function APISearchbar({ searchFor, overlay }) {
             {(haveResults && overlay) && (
                 <div className="absolute w-full z-10">
                     <div className="-mt-4 mx-4 bg-white shadow-md border rounded-b-lg">
-                        <div className="mt-4 p-4">
+                        <div className="mt-4 p-4 max-h-96 overflow-y-auto">
                             {results
                                 ? doOverlay()
                                 : <p>No results</p>

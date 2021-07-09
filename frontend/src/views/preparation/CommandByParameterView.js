@@ -15,8 +15,8 @@ export default function CommandByParameterView() {
         <div className="h-full">
             <ViewHeading title="Search commands by parameter" />
             <div className="grid grid-cols-3 h-full">
-                <div className="col-span-2">
-                    <div className="w-5/6 max-w-5xl mb-10 mx-auto">
+                <div className="col-span-2 w-full">
+                    <div className="w-5/6 mx-auto max-w-5xl">
                         <APISearchbar 
                             searchFor="parameters" 
                             overlay={(results) => (
@@ -39,8 +39,8 @@ export default function CommandByParameterView() {
                                                             onClick={() => {
                                                                 setHave(old => {
                                                                     let temp = [...old]
-                                                                    if (!temp.includes(c.name)) {
-                                                                        temp.push(c.name)
+                                                                    if (!temp.includes(c)) {
+                                                                        temp.push(c)
                                                                     }
                                                                     return temp
                                                                 })
@@ -51,8 +51,7 @@ export default function CommandByParameterView() {
                                                         <Button 
                                                             title="Set target" 
                                                             onClick={() => {
-                                                                console.log("Clicked senf")
-                                                                setWant(c.name)
+                                                                setWant(c)
                                                             }}
                                                         />
                                                     </div>
@@ -65,21 +64,71 @@ export default function CommandByParameterView() {
                         />
                     </div>
                 </div>
-                <div className="col-span-1">
-                    <div className="w-5/6 flex flex-col space-y-10">
-                        <div>
+                {/* Dumps for have and want parameters */}
+                <div className="col-span-1 w-full">
+                    <div className="w-5/6 mx-auto max-w-5xl flex flex-col space-y-10">
+                        {/* Dump for have parameters */}
+                        <div className="mx-auto">
                             <h1 className="text-center text-md mb-4">Entrypoints</h1>
-                            <div className="h-80 bg-white border rounded-xl shadow-lg">
-                                <p>{JSON.stringify(have)}</p>
+                            <div>
+                                {(have && have.length > 0)
+                                    ? (
+                                        have.map(h => (
+                                            <div className="border m-2 p-2 rounded-md">
+                                                <div>
+                                                    <p className="text-lg bg-gray-100 rounded px-2 py-1">
+                                                        {h.name}
+                                                    </p>
+                                                    <p className="p-2">
+                                                        {h.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="border m-2 p-2 rounded-md">
+                                            <p className="p-2">
+                                                No entrypoints added yet!
+                                            </p>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
-                        <div>
+                        {/* Dump for want parameter */}
+                        <div className="mx-auto">
                             <h1 className="text-center text-md mb-4">Target</h1>
-                            <div className="h-32 w-2/3 mx-auto bg-white border rounded-xl shadow-lg">
-                                <p>{JSON.stringify(want)}</p>
+                            <div>
+                                {want
+                                    ? (
+                                        <div className="border m-2 p-2 rounded-md">
+                                            <div>
+                                                <p className="text-lg bg-gray-100 rounded px-2 py-1">
+                                                    {want.name}
+                                                </p>
+                                                <p className="p-2">
+                                                    {want.description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="border m-2 p-2 rounded-md">
+                                            <p className="p-2">
+                                                No taget parameter defined yet!
+                                            </p>
+                                        </div>
+                                    )
+
+                                }
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            {/* Submit button */}
+            <div className="text-center">
+                <div>
+                    <Button title="Start searching" important />
                 </div>
             </div>
         </div>
