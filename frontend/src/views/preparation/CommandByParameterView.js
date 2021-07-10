@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
+import Card from "../../components/Card"
 
 /**
  * This view is used to search commands by parameters
@@ -33,14 +34,47 @@ export default function CommandByParameterView() {
     }
 
     /**
-     * Creates a block styled name, description pair
+     * Creates a block styled name, description pair (may be a command, parameter or attack)
      * @param {Object} namedObj The object that has name and description field 
      * @param {bool} withButtons If the buttons to add as entrypoint/target should be displayed
      * @returns 
      */
     const blockStyle = (namedObj, withButtons = false) => {
         return (
-            <div className="m-2 p-2 border rounded-md">
+            <Card title={namedObj.name} className="m-4">
+                <div className="flex justify-between items-center px-2">
+                    <div>
+                        {namedObj.description}
+                    </div>
+                    {withButtons && (
+                        <div className="flex flex-row space-x-5 my-1">
+                            <div>
+                                <Button 
+                                    title="Add to entrypoints" 
+                                    onClick={() => {
+                                        setHave(old => {
+                                            let temp = [...old]
+                                            if (!temp.includes(namedObj)) {
+                                                temp.push(namedObj)
+                                            }
+                                            return temp
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <Button 
+                                    title="Set target" 
+                                    onClick={() => {
+                                        setWant(namedObj)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </Card>
+            /*<div className="m-2 p-2 border rounded-md">
                 <div className="flex justify-between items-center">
                     <div>
                         <p className="text-lg bg-gray-100 rounded px-2 py-1">
@@ -77,7 +111,7 @@ export default function CommandByParameterView() {
                         </div>
                     )}
                 </div>
-            </div>
+            </div>*/
         )
     }
 
