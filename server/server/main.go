@@ -39,6 +39,8 @@ func Start() error {
 
 	apiRouter.HandleFunc("/ping", pingHandler).Methods("GET")
 
+	apiRouter.HandleFunc("/search", searchHandler).Methods("GET")
+
 	apiRouter.HandleFunc("/commands", getAllCommandsHandler).Methods("GET")
 	apiRouter.HandleFunc("/commands/by-parameter", getCommandsByParameterHandler).Methods("POST")
 	apiRouter.HandleFunc("/command", newCommandHandler).Methods("POST")

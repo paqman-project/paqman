@@ -1,15 +1,20 @@
 package structs
 
 import (
-	"reflect"
-
 	"errors"
+	"reflect"
 )
+
+type SmallModel struct {
+	MongoModel  `json:",inline" bson:",inline"`
+	Name        string `json:"name" bson:"name"`
+	Description string `json:"description" bson:"description"`
+}
 
 func GetFieldTag(v interface{}, fieldName string) (reflect.StructTag, error) {
 	field, ok := reflect.TypeOf(v).Elem().FieldByName(fieldName)
 	if !ok {
-		return "", errors.New("Field not found")
+		return "", errors.New("field not found")
 	}
 	return field.Tag, nil
 }
