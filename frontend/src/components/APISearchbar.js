@@ -18,7 +18,12 @@ export default function APISearchbar({ searchFor, overlay }) {
     // search results from API
     const [results, setResults] = useState()
 
-    // TODO check searchFor?
+    const handleDeleteTerm = event => {
+        setTerm("")
+        setHaveResults(false)
+        clearTimeout(searchTimer)
+        setSearchTimer(null)
+    }
 
     const handleChange = event => {
 
@@ -28,13 +33,14 @@ export default function APISearchbar({ searchFor, overlay }) {
         setSearchTimer(null) // this may cause errors!
         
         setTerm(value)
+
+        // hide results panel, if search term is empty
+        if (value === "") {
+            setHaveResults(false)
+            return
+        }
         
         let timeout = setTimeout(() => {
-            // hide results panel, if search term is empty
-            if (value === "") {
-                setHaveResults(false)
-                return
-            }
             // compose query string
             let p = new URLSearchParams()
             if (searchFor) {
@@ -101,13 +107,24 @@ export default function APISearchbar({ searchFor, overlay }) {
 
     return (
         <div className="relative w-full">
-            <input
-                type="text"
-                value={term}
-                onChange={handleChange}
-                placeholder={`Search for ${searchFor || "everything"}`}
-                className="relative w-full px-4 py-2 border rounded-lg shadow-lg z-20"
-            />
+            <div>
+                <input
+                    type="text"
+                    value={term}
+                    onChange={handleChange}
+                    placeholder={`Search for ${searchFor || "everything"}`}
+                    className="relative w-full px-4 py-2 border rounded-lg shadow-lg z-20"
+                />
+                {/* Delete term button */}
+                {(term && term !== "") && (
+                    <button 
+                        onClick={handleDeleteTerm}
+                        className="absolute top-2 right-4 z-30 text-xl text-gray-400 focus:outline-none"
+                    >
+                        &#215;
+                    </button>
+                )}
+            </div>
             {(haveResults && overlay) && (
                 <div className="absolute w-full z-10">
                     <div className="-mt-4 mx-4 bg-white shadow-md border rounded-b-lg">
