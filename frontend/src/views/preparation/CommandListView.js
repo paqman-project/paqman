@@ -28,9 +28,10 @@ export default function CommandListView() {
         setSearchTerm(term)
         setFiltered(
             data.filter(command => {
+                let sTerm = term.toLowerCase()
                 return (
-                    command.name.toLowerCase().includes(term.toLowerCase()) ||
-                    command.description.toLowerCase().includes(term.toLowerCase())
+                    command.name.toLowerCase().includes(sTerm) ||
+                    command.description.toLowerCase().includes(sTerm)
                 )
             })
         )
@@ -50,9 +51,9 @@ export default function CommandListView() {
                         className="px-4 py-2 w-full border rounded-lg shadow-lg"
                     />
                     {/* Delete term button */}
-                    {(searchTerm && searchTerm !== "") && (
-                        <button 
-                            onClick={(event) => {
+                    {searchTerm && searchTerm !== "" && (
+                        <button
+                            onClick={event => {
                                 setSearchTerm("")
                                 handleChange(event)
                             }}
