@@ -18,13 +18,6 @@ export default function APISearchbar({ searchFor, overlay }) {
     // search results from API
     const [results, setResults] = useState()
 
-    const handleDeleteTerm = event => {
-        setTerm("")
-        setHaveResults(false)
-        clearTimeout(searchTimer)
-        setSearchTimer(null)
-    }
-
     const handleChange = event => {
 
         let value = event.target.value
@@ -48,52 +41,21 @@ export default function APISearchbar({ searchFor, overlay }) {
             }
             p.set("term", value)
             // request and set results
-            
-            ////// TEMP START //////
-            console.log(`Fetching /api/search?${p.toString()}`)
-            setResults([
-                {
-                    "_id": "looool",
-                    "name": "Geiler Parameter",
-                    "description": "Riiichtig geil"
-                },
-                {
-                    "_id": "loool2",
-                    "name": "Nichts so geiler Parameter",
-                    "description": "Alla"
-                },
-                {
-                    "_id": "Apfe",
-                    "name": "Geiler Parameter",
-                    "description": "Riiichtig geil"
-                },
-                {
-                    "_id": "senf",
-                    "name": "Nichts so geiler Parameter",
-                    "description": "Alla"
-                },
-                {
-                    "_id": "kind",
-                    "name": "Geiler Parameter",
-                    "description": "Riiichtig geil"
-                },
-                {
-                    "_id": "nicola",
-                    "name": "Nichts so geiler Parameter",
-                    "description": "Alla"
-                },
-            ])
-            setHaveResults(true)
-            ////// TEMP END //////
-
-            /*fetch(`/api/search?${p.toString()}`)
+            fetch(`/api/search?${p.toString()}`)
                 .then((r) => r.json())
                 .then((r) => setResults(r))
                 .then(() => setHaveResults(true))
-                .catch((e) => console.log(e))*/
+                .catch((e) => console.log(e))
         }, 500)
         setSearchTimer(timeout)
 
+    }
+
+    const handleDeleteTerm = () => {
+        setTerm("")
+        setHaveResults(false)
+        clearTimeout(searchTimer)
+        setSearchTimer(null)
     }
 
     const doOverlay = () => {
