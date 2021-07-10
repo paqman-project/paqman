@@ -1,9 +1,8 @@
 package structs
 
 import (
-	"reflect"
-
 	"errors"
+	"reflect"
 )
 
 type SmallModel struct {
