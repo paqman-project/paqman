@@ -32,6 +32,55 @@ export default function CommandByParameterView() {
 
     }
 
+    /**
+     * Creates a block styled name, description pair
+     * @param {Object} namedObj The object that has name and description field 
+     * @param {bool} withButtons If the buttons to add as entrypoint/target should be displayed
+     * @returns 
+     */
+    const blockStyle = (namedObj, withButtons = false) => {
+        return (
+            <div className="m-2 p-2 border rounded-md">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <p className="text-lg bg-gray-100 rounded px-2 py-1">
+                            {namedObj.name}
+                        </p>
+                        <p className="p-2">
+                            {namedObj.description}
+                        </p>
+                    </div>
+                    {withButtons && (
+                        <div className="flex flex-row">
+                            <div className="m-2">
+                                <Button 
+                                    title="Add to entrypoints" 
+                                    onClick={() => {
+                                        setHave(old => {
+                                            let temp = [...old]
+                                            if (!temp.includes(namedObj)) {
+                                                temp.push(namedObj)
+                                            }
+                                            return temp
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div className="m-2 mr-4">
+                                <Button 
+                                    title="Set target" 
+                                    onClick={() => {
+                                        setWant(namedObj)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="h-full">
             <ViewHeading title="Search commands by parameter" />
@@ -43,41 +92,8 @@ export default function CommandByParameterView() {
                             overlay={(results) => (
                                 <>
                                     {results.map(c => (
-                                        <div className="border m-2 p-2 rounded-md" key={c._id}>
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <p className="text-lg bg-gray-100 rounded px-2 py-1">
-                                                        {c.name}
-                                                    </p>
-                                                    <p className="p-2">
-                                                        {c.description}
-                                                    </p>
-                                                </div>
-                                                <div className="flex flex-row">
-                                                    <div className="m-2">
-                                                        <Button 
-                                                            title="Add to entrypoints" 
-                                                            onClick={() => {
-                                                                setHave(old => {
-                                                                    let temp = [...old]
-                                                                    if (!temp.includes(c)) {
-                                                                        temp.push(c)
-                                                                    }
-                                                                    return temp
-                                                                })
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="m-2 mr-4">
-                                                        <Button 
-                                                            title="Set target" 
-                                                            onClick={() => {
-                                                                setWant(c)
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div key={c._id}>
+                                            { blockStyle(c, true) }
                                         </div>
                                     ))}
                                 </>
@@ -95,15 +111,8 @@ export default function CommandByParameterView() {
                                 {(have && have.length > 0)
                                     ? (
                                         have.map(h => (
-                                            <div className="border m-2 p-2 rounded-md">
-                                                <div>
-                                                    <p className="text-lg bg-gray-100 rounded px-2 py-1">
-                                                        {h.name}
-                                                    </p>
-                                                    <p className="p-2">
-                                                        {h.description}
-                                                    </p>
-                                                </div>
+                                            <div key={h._id}>
+                                                { blockStyle(h) }
                                             </div>
                                         ))
                                     ) : (
@@ -122,16 +131,7 @@ export default function CommandByParameterView() {
                             <div>
                                 {want
                                     ? (
-                                        <div className="border m-2 p-2 rounded-md">
-                                            <div>
-                                                <p className="text-lg bg-gray-100 rounded px-2 py-1">
-                                                    {want.name}
-                                                </p>
-                                                <p className="p-2">
-                                                    {want.description}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        blockStyle(want)
                                     ) : (
                                         <div className="border m-2 p-2 rounded-md">
                                             <p className="p-2">
@@ -139,7 +139,6 @@ export default function CommandByParameterView() {
                                             </p>
                                         </div>
                                     )
-
                                 }
                             </div>
                         </div>
