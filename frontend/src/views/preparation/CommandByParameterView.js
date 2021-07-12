@@ -38,11 +38,11 @@ export default function CommandByParameterView() {
      */
     const blockStyle = (namedObj, withButtons = false) => {
         return (
-            <Card title={namedObj.name} className="m-4">
+            <Card title={namedObj.name} className="mb-4" smallPadding>
                 <div className="flex justify-between items-center px-2">
                     <div>{namedObj.description}</div>
                     {withButtons && (
-                        <div className="flex flex-row space-x-5 my-1">
+                        <div className="flex flex-row space-x-5">
                             <div>
                                 <Button
                                     title="Add to entrypoints"
