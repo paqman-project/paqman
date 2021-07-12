@@ -8,9 +8,10 @@ import Card from "../../components/Card"
  * This view is used to search commands by parameters
  */
 export default function CommandByParameterView() {
-    const [have, setHave] = useState([])
-    const [want, setWant] = useState()
-    const [results, setResults] = useState()
+    const [have, setHave] = useState([]) // entrypoints
+    const [want, setWant] = useState() // target
+    const [results, setResults] = useState() // API results
+    const [viewingResults, setViewingResults] = useState(false)
 
     const submit = () => {
         let body = {}
@@ -68,44 +69,6 @@ export default function CommandByParameterView() {
                     )}
                 </div>
             </Card>
-            /*<div className="m-2 p-2 border rounded-md">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <p className="text-lg bg-gray-100 rounded px-2 py-1">
-                            {namedObj.name}
-                        </p>
-                        <p className="p-2">
-                            {namedObj.description}
-                        </p>
-                    </div>
-                    {withButtons && (
-                        <div className="flex flex-row">
-                            <div className="m-2">
-                                <Button 
-                                    title="Add to entrypoints" 
-                                    onClick={() => {
-                                        setHave(old => {
-                                            let temp = [...old]
-                                            if (!temp.includes(namedObj)) {
-                                                temp.push(namedObj)
-                                            }
-                                            return temp
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div className="m-2 mr-4">
-                                <Button 
-                                    title="Set target" 
-                                    onClick={() => {
-                                        setWant(namedObj)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>*/
         )
     }
 
@@ -114,28 +77,56 @@ export default function CommandByParameterView() {
             <ViewHeading title="Search commands by parameter" />
             <div className="grid grid-cols-3 h-full">
                 <div className="col-span-2 w-full">
-                    <div className="w-5/6 mx-auto max-w-5xl">
-                        <p className="text-center mb-4">Choose your entrypoint and target parameters</p>
-                        <APISearchbar
-                            searchFor="parameters"
-                            overlay={results => (
-                                <>
-                                    {results.map(c => (
-                                        <div key={c._id}>
-                                            {blockStyle(c, true)}
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                        />
-                    </div>
+                    {viewingResults && results ? (
+                        <div className="mx-6 mt-6 border p-4">
+                            {results && <pre>{JSON.stringify(results, null, 4)}</pre>}
+                        </div>
+                    ) : (
+                        <div className="w-5/6 mx-auto max-w-5xl">
+                            <p className="text-center mb-4">Choose your entrypoint and target parameters</p>
+                            <APISearchbar
+                                searchFor="parameters"
+                                overlay={results => (
+                                    <>
+                                        {results.map(c => (
+                                            <div key={c._id}>
+                                                {blockStyle(c, true)}
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+                            />
+                        </div>
+                    )}
                 </div>
                 {/* Dumps for have and want parameters */}
-                <div className="col-span-1 w-full border-l">
+                <div className="col-span-1 w-full">
+                    <div className="w-2/3 max-w-max mx-auto mb-4">
+                        {viewingResults ? (
+                            <Button
+                                title="Edit entrypoints or target parameters"
+                                //important
+                                fullWidth
+                                onClick={() => {
+                                    setViewingResults(false)
+                                }}
+                            />
+                        ) : (
+                            <Button
+                                title="Start searching for commands"
+                                important
+                                fullWidth
+                                onClick={() => {
+                                    submit()
+                                    setViewingResults(true)
+                                }}
+                            />
+                        )}
+                    </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
                         <div className="flex-1 p-4">
-                            <h1 className="text-center text-md font-bold mb-4">
+                            <h1 className="text-center text-md mb-4">
                                 Entrypoints
                             </h1>
                             <div>
@@ -144,46 +135,28 @@ export default function CommandByParameterView() {
                                         <div key={h._id}>{blockStyle(h)}</div>
                                     ))
                                 ) : (
-                                    <div className="border m-2 p-2 rounded-md">
-                                        <p className="p-2">
-                                            No entrypoints added yet!
-                                        </p>
-                                    </div>
+                                    <Card>
+                                        No entrypoints added yet!
+                                    </Card>
                                 )}
                             </div>
                         </div>
                         {/* Dump for want parameter */}
                         <div className="flex-1 p-4">
-                            <h1 className="text-center text-md font-bold mb-4">
+                            <h1 className="text-center text-md mb-4">
                                 Target
                             </h1>
                             <div>
                                 {want ? (
                                     blockStyle(want)
                                 ) : (
-                                    <div className="border m-2 p-2 rounded-md">
-                                        <p className="p-2">
-                                            No target parameter defined yet!
-                                        </p>
-                                    </div>
+                                    <Card>
+                                        No target parameter defined yet!
+                                    </Card>
                                 )}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            {/* Submit button */}
-            <div className="w-full border-t pt-10 text-center">
-                <div>
-                    <Button
-                        title="Start searching"
-                        important
-                        onClick={() => submit()}
-                    />
-                </div>
-                {/* Results */}
-                <div className="mx-auto text-center mt-6">
-                    {results && <p>{JSON.stringify(results)}</p>}
                 </div>
             </div>
         </div>
