@@ -115,6 +115,7 @@ export default function CommandByParameterView() {
             <div className="grid grid-cols-3 h-full">
                 <div className="col-span-2 w-full">
                     <div className="w-5/6 mx-auto max-w-5xl">
+                        <p className="text-center mb-4">Choose your entrypoint and target parameters</p>
                         <APISearchbar
                             searchFor="parameters"
                             overlay={results => (
@@ -162,7 +163,7 @@ export default function CommandByParameterView() {
                                 ) : (
                                     <div className="border m-2 p-2 rounded-md">
                                         <p className="p-2">
-                                            No taget parameter defined yet!
+                                            No target parameter defined yet!
                                         </p>
                                     </div>
                                 )}
