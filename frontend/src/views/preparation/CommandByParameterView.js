@@ -3,6 +3,7 @@ import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
+import Tree from "react-d3-tree"
 
 /**
  * This view is used to search commands by parameters
@@ -36,7 +37,7 @@ export default function CommandByParameterView() {
      * @param {Object} namedObj The object that has name and description field
      * @param {bool} withButtons If the buttons to add as entrypoint/target should be displayed
      */
-    const blockStyle = (namedObj, withButtons = false) => {
+    const cardStyle = (namedObj, withButtons = false) => {
         return (
             <Card title={namedObj.name} className="mb-4" smallPadding>
                 <div className="flex justify-between items-center px-2">
@@ -72,14 +73,36 @@ export default function CommandByParameterView() {
         )
     }
 
+    const treeData = {
+        name: "Was geht",
+        children: [
+            {
+                name: "Nix",
+                attributes: {
+                    "senf": "schmeckt"
+                }
+            },
+            {
+                name: "Sonst so?"
+            }
+        ]
+    }
+
     return (
-        <div className="h-full">
+        <div>
             <ViewHeading title="Search commands by parameter" />
-            <div className="grid grid-cols-3 h-full">
+            <div className="grid grid-cols-3">
                 <div className="col-span-2 w-full">
                     {viewingResults && results ? (
-                        <div className="mx-6 mt-6 border p-4">
-                            {results && <pre>{JSON.stringify(results, null, 4)}</pre>}
+                        <div>
+                            <div className="mx-4 border rounded h-96">
+                                <Tree 
+                                    data={treeData} 
+                                    orientation="vertical"
+                                    translate={{x: 300, y: 100}}
+                                />
+                            </div>
+                            <pre className="m-4">{JSON.stringify(results, null, 4)}</pre>
                         </div>
                     ) : (
                         <div className="w-5/6 mx-auto max-w-5xl">
@@ -90,7 +113,7 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                {blockStyle(c, true)}
+                                                {cardStyle(c, true)}
                                             </div>
                                         ))}
                                     </>
@@ -132,7 +155,7 @@ export default function CommandByParameterView() {
                             <div>
                                 {have && have.length > 0 ? (
                                     have.map(h => (
-                                        <div key={h._id}>{blockStyle(h)}</div>
+                                        <div key={h._id}>{cardStyle(h)}</div>
                                     ))
                                 ) : (
                                     <Card>
@@ -148,7 +171,7 @@ export default function CommandByParameterView() {
                             </h1>
                             <div>
                                 {want ? (
-                                    blockStyle(want)
+                                    cardStyle(want)
                                 ) : (
                                     <Card>
                                         No target parameter defined yet!

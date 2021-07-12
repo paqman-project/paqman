@@ -9,7 +9,7 @@ import React from "react"
 export default function ViewContainer({ sidebarCollapsed, children }) {
     return (
         <div
-            className={`mt-16 ${sidebarCollapsed ? "ml-0" : "md:ml-56 ml-40"}`}
+            className={`mt-16 ${sidebarCollapsed ? "ml-0" : "md:ml-56 ml-40"} h-full`}
         >
             {children}
         </div>
