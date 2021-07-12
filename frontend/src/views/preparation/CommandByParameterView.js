@@ -34,15 +34,14 @@ export default function CommandByParameterView() {
      * Creates a block styled name, description pair (may be a command, parameter or attack)
      * @param {Object} namedObj The object that has name and description field
      * @param {bool} withButtons If the buttons to add as entrypoint/target should be displayed
-     * @returns
      */
     const blockStyle = (namedObj, withButtons = false) => {
         return (
             <Card title={namedObj.name} className="mb-4" smallPadding>
                 <div className="flex justify-between items-center px-2">
-                    <div>{namedObj.description}</div>
+                    <div className="w-full">{namedObj.description}</div>
                     {withButtons && (
-                        <div className="flex flex-row space-x-5">
+                        <div className="ml-4 flex flex-row space-x-4">
                             <div>
                                 <Button
                                     title="Add to entrypoints"
