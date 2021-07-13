@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
@@ -73,21 +73,6 @@ export default function CommandByParameterView() {
         )
     }
 
-    const treeData = {
-        name: "Was geht",
-        children: [
-            {
-                name: "Nix",
-                attributes: {
-                    "senf": "schmeckt"
-                }
-            },
-            {
-                name: "Sonst so?"
-            }
-        ]
-    }
-
     return (
         <div>
             <ViewHeading title="Search commands by parameter" />
@@ -95,14 +80,32 @@ export default function CommandByParameterView() {
                 <div className="col-span-2 w-full">
                     {viewingResults && results ? (
                         <div>
-                            <div className="mx-4 border rounded h-96">
-                                <Tree 
-                                    data={treeData} 
-                                    orientation="vertical"
-                                    translate={{x: 300, y: 100}}
-                                />
-                            </div>
-                            <pre className="m-4">{JSON.stringify(results, null, 4)}</pre>
+                            {results && results.error ? (
+                                <p className="text-center text-red-500 mt-10">
+                                    Error: {results.error}
+                                </p>
+                            ) : (
+                                <div>
+                                    <p className="text-center mb-4">
+                                        Possible command path(s)
+                                        {!want || want === "" ? (
+                                            " for your entrypoints"
+                                        ) : (
+                                            " to reach your target"
+                                        )}
+                                    </p>
+                                    <div className="mx-4 rounded-xl border border-gray-100 shadow-xl h-96" >
+                                            <Tree
+                                                data={results}
+                                                orientation="vertical"
+                                                translate={{ x: 300, y: 100 }}
+                                            />
+                                    </div>
+                                </div>
+                            )}
+                            {/*
+                                <pre className="m-4">{JSON.stringify(results, null, 4)}</pre>
+                            */}
                         </div>
                     ) : (
                         <div className="w-5/6 mx-auto max-w-5xl">

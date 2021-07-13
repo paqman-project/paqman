@@ -10,8 +10,8 @@ import (
 
 // recursive response struct
 type commandWithChildren struct {
-	CommandID string                 `json:"command_id"`
-	Children  []*commandWithChildren `json:"_children"`
+	structs.SmallCommand `json:",inline"`
+	Children             []*commandWithChildren `json:"children"`
 }
 
 func recurseWithHaveOnly(current structs.Parameter, children *[]*commandWithChildren, depth int) {
@@ -26,10 +26,18 @@ func recurseWithHaveOnly(current structs.Parameter, children *[]*commandWithChil
 
 	// iterate over every child of this parameter
 	for _, usedIn := range current.UsedIn {
-		// add used command to chain
+		// get and add used command to chain
+		cid, err := primitive.ObjectIDFromHex(usedIn.CommandID)
+		if err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+		var c structs.SmallCommand
+		if err := db.Client.ReadOne("commands", bson.M{"_id": cid}, &c); err != nil {
+			panic(err) // TODO maybe this is bad
+		}
 		usedCommand := &commandWithChildren{
-			CommandID: usedIn.CommandID,
-			Children:  nil,
+			SmallCommand: c,
+			Children:     nil,
 		}
 		*children = append(*children, usedCommand)
 
@@ -64,10 +72,18 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 
 	// iterate over every parent of this parameter
 	for _, returnedFrom := range current.ReturnedFrom {
-		// add used command to chain
+		// get and add used command to chain
+		cid, err := primitive.ObjectIDFromHex(returnedFrom.CommandID)
+		if err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+		var c structs.SmallCommand
+		if err := db.Client.ReadOne("commands", bson.M{"_id": cid}, &c); err != nil {
+			panic(err) // TODO maybe this is bad
+		}
 		usedCommand := &commandWithChildren{
-			CommandID: returnedFrom.CommandID,
-			Children:  nil,
+			SmallCommand: c,
+			Children:     nil,
 		}
 		*children = append(*children, usedCommand)
 
@@ -105,10 +121,18 @@ func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren
 
 	// iterate over every child of this parameter
 	for _, usedIn := range current.UsedIn {
-		// add used command to chain
+		// get and add used command to chain
+		cid, err := primitive.ObjectIDFromHex(usedIn.CommandID)
+		if err != nil {
+			panic(err) // TODO maybe this is bad
+		}
+		var c structs.SmallCommand
+		if err := db.Client.ReadOne("commands", bson.M{"_id": cid}, &c); err != nil {
+			panic(err) // TODO maybe this is bad
+		}
 		usedCommand := &commandWithChildren{
-			CommandID: usedIn.CommandID,
-			Children:  nil,
+			SmallCommand: c,
+			Children:     nil,
 		}
 		*children = append(*children, usedCommand)
 

@@ -37,7 +37,6 @@ Wiki entry for Endpoint: https://git.leon.wtf/paqman/paqman/-/wikis/Backend/API-
 
 ```go
 type commandsWithChildren struct {
-    CommandID            primitive.ObjectID     `json:"command_id"`
     structs.SmallCommand                        `json:",inline"`
     Children             []*commandWithChildren `json:"_children"`
 }
