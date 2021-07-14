@@ -110,7 +110,7 @@ func (m *Mongo) SetMockedExample(v interface{}) error {
 		m.mockedExample = v
 		return nil
 	}
-	return errors.New("Database is not mocked!")
+	return errors.New("database is not mocked")
 }
 
 // CheckConnection pings the database to determine
