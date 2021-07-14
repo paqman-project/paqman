@@ -4,6 +4,7 @@ import (
 	"paqman-backend/db"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Parameter struct {
@@ -16,15 +17,15 @@ type Parameter struct {
 }
 
 type ReturnedFromData struct {
-	CommandID string `json:"command_id" bson:"command_id"`
-	At        string `json:"at" bson:"at"`
+	CommandID primitive.ObjectID `json:"command_id" bson:"command_id"`
+	At        string             `json:"at" bson:"at"`
 }
 
 type UsedInData struct {
-	CommandID  string       `json:"command_id" bson:"command_id"`
-	At         string       `json:"at" bson:"at"`
-	WithValues []WithValues `json:"with_values" bson:"with_values"`
-	ToCreate   string       `json:"to_create" bson:"to_create"`
+	CommandID  primitive.ObjectID `json:"command_id" bson:"command_id"`
+	At         string             `json:"at" bson:"at"`
+	WithValues []WithValues       `json:"with_values" bson:"with_values"`
+	ToCreate   primitive.ObjectID `json:"to_create" bson:"to_create"`
 }
 
 type WithValues struct {
@@ -39,7 +40,7 @@ type WithValues struct {
 // db.parameters.find({ "used_in.to_create": "60bfa496d1fa49424407f3b7" }, { "used_in.command_id": true })
 func (p *Parameter) FindPreviousParameters() []Parameter {
 	query := bson.M{
-		"used_in.to_create": p.ID.Hex(),
+		"used_in.to_create": p.ID,
 	}
 	var params []Parameter
 	if err := db.Client.ReadMany("parameters", query, &params); err != nil {

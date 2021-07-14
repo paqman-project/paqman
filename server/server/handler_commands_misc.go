@@ -10,7 +10,7 @@ import (
 
 // recursive response struct
 type commandWithChildren struct {
-	CommandID string                 `json:"command_id"`
+	CommandID primitive.ObjectID     `json:"command_id"`
 	Children  []*commandWithChildren `json:"_children"`
 }
 
@@ -34,15 +34,11 @@ func recurseWithHaveOnly(current structs.Parameter, children *[]*commandWithChil
 		*children = append(*children, usedCommand)
 
 		// get this next parameter from database
-		if usedIn.ToCreate == "" {
+		if usedIn.ToCreate == primitive.NilObjectID {
 			continue
 		}
-		id, err := primitive.ObjectIDFromHex(usedIn.ToCreate)
-		if err != nil {
-			panic(err) // TODO maybe this is bad
-		}
 		var next structs.Parameter
-		if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &next); err != nil {
+		if err := db.Client.ReadOne("parameters", bson.M{"_id": usedIn.ToCreate}, &next); err != nil {
 			panic(err) // TODO maybe this is bad
 		}
 
