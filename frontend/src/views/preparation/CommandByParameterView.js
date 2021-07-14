@@ -14,7 +14,9 @@ export default function CommandByParameterView() {
     const [results, setResults] = useState() // API results
     const [viewingResults, setViewingResults] = useState(false)
 
-    const submit = () => {
+    const submit = event => {
+        event.preventDefault()
+
         let body = {}
         if (have && have.length > 0) {
             body.have = have.map(h => h._id)
@@ -167,8 +169,8 @@ export default function CommandByParameterView() {
                                 title="Start searching for commands"
                                 important
                                 fullWidth
-                                onClick={() => {
-                                    submit()
+                                onClick={event => {
+                                    submit(event)
                                     setViewingResults(true)
                                 }}
                             />
@@ -214,7 +216,7 @@ export default function CommandByParameterView() {
                                     cardStyle(want, {
                                         withRemoveButton: true,
                                         removeButtonOnClickCallback: () => {
-                                            setWant()
+                                            setWant() // sets want to undefined (default state)
                                         }
                                     })
                                 ) : (
