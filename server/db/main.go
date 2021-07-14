@@ -31,6 +31,7 @@ type MongoCRUD interface {
 	// Update(string, bson.M, ...) // TODO
 	DeleteOne(string, bson.M) (*mongo.DeleteResult, error)
 	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
+	Aggregate(string, mongo.Pipeline, interface{}, ...*options.AggregateOptions) error
 }
 
 // Mongo is the wrapper around a MongoDB connection
