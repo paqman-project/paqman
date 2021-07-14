@@ -35,14 +35,36 @@ export default function CommandByParameterView() {
     /**
      * Creates a block styled name, description pair (may be a command, parameter or attack)
      * @param {Object} namedObj The object that has name and description field
-     * @param {bool} withButtons If the buttons to add as entrypoint/target should be displayed
+     * @param {bool} options.withAddButtons If the buttons to add as entrypoint/target should be displayed
+     * @param {bool} options.withRemoveButton If the button to remove the parameter should be displayed
+     * @param {Function} options.removeButtonOnClickCallback If options.withRemoveButton is true, provide a 
+     * function to define what happens, if the button is clicked. Signature: `function (idToDelete): void`
      */
-    const cardStyle = (namedObj, withButtons = false) => {
+    const cardStyle = (namedObj, { withAddButtons, withRemoveButton, removeButtonOnClickCallback }) => {
         return (
-            <Card title={namedObj.name} className="mb-4" smallPadding>
+            <Card 
+                title={withRemoveButton ? undefined : namedObj.name}
+                titleOverwrite={withRemoveButton ? (
+                    <div className="flex flex-row">
+                        <div className="mx-2 flex-grow">
+                            {namedObj.name}
+                        </div>
+                        <button 
+                            className="mx-2 text-gray-400 focus:outline-none"
+                            onClick={removeButtonOnClickCallback ? () => {
+                                removeButtonOnClickCallback(namedObj._id)
+                            } : undefined}
+                        >
+                            <p>&#215;</p>
+                        </button>
+                    </div>
+                ): undefined}
+                className="mb-4" 
+                smallPadding
+            >
                 <div className="flex justify-between items-center px-2">
                     <div className="w-full">{namedObj.description}</div>
-                    {withButtons && (
+                    {withAddButtons && (
                         <div className="ml-4 flex flex-row space-x-4">
                             <div>
                                 <Button
@@ -116,7 +138,9 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                {cardStyle(c, true)}
+                                                {cardStyle(c, {
+                                                    withAddButtons: true
+                                                })}
                                             </div>
                                         ))}
                                     </>
@@ -158,7 +182,19 @@ export default function CommandByParameterView() {
                             <div>
                                 {have && have.length > 0 ? (
                                     have.map(h => (
-                                        <div key={h._id}>{cardStyle(h)}</div>
+                                        <div key={h._id}>
+                                            {cardStyle(h, {
+                                                withRemoveButton: true,
+                                                removeButtonOnClickCallback: (idToRemove) => {
+                                                    setHave(old => {
+                                                        let temp = [...old]
+                                                        let i = temp.findIndex(i => i._id === idToRemove)
+                                                        temp.splice(i, 1);
+                                                        return temp
+                                                    })
+                                                }
+                                            })}
+                                        </div>
                                     ))
                                 ) : (
                                     <Card>
@@ -174,7 +210,12 @@ export default function CommandByParameterView() {
                             </h1>
                             <div>
                                 {want ? (
-                                    cardStyle(want)
+                                    cardStyle(want, {
+                                        withRemoveButton: true,
+                                        removeButtonOnClickCallback: () => {
+                                            setWant()
+                                        }
+                                    })
                                 ) : (
                                     <Card>
                                         No target parameter defined yet!
