@@ -40,33 +40,46 @@ export default function CommandByParameterView() {
      * @param {Object} namedObj The object that has name and description field
      * @param {bool} options.withAddButtons If the buttons to add as entrypoint/target should be displayed
      * @param {bool} options.withRemoveButton If the button to remove the parameter should be displayed
-     * @param {Function} options.removeButtonOnClickCallback If options.withRemoveButton is true, provide a 
+     * @param {Function} options.removeButtonOnClickCallback If options.withRemoveButton is true, provide a
      * function to define what happens, if the button is clicked. Signature: `function (idToDelete): void`
      */
-    const cardStyle = (namedObj, { withAddButtons, withRemoveButton, removeButtonOnClickCallback }) => {
+    const cardStyle = (
+        namedObj,
+        { withAddButtons, withRemoveButton, removeButtonOnClickCallback }
+    ) => {
         return (
-            <Card 
+            <Card
                 title={withRemoveButton ? undefined : namedObj.name}
-                titleOverwrite={withRemoveButton ? (
-                    <div className="flex flex-row">
-                        <div className="mx-2 flex-grow">
-                            {namedObj.name}
+                titleOverwrite={
+                    withRemoveButton ? (
+                        <div className="flex flex-row">
+                            <div className="mx-2 flex-grow">
+                                {namedObj.name}
+                            </div>
+                            <button
+                                className="mx-2 text-gray-400 focus:outline-none"
+                                onClick={
+                                    removeButtonOnClickCallback
+                                        ? () => {
+                                              removeButtonOnClickCallback(
+                                                  namedObj._id
+                                              )
+                                          }
+                                        : undefined
+                                }
+                            >
+                                <p>&#215;</p>
+                            </button>
                         </div>
-                        <button 
-                            className="mx-2 text-gray-400 focus:outline-none"
-                            onClick={removeButtonOnClickCallback ? () => {
-                                removeButtonOnClickCallback(namedObj._id)
-                            } : undefined}
-                        >
-                            <p>&#215;</p>
-                        </button>
-                    </div>
-                ): undefined}
-                className="mb-4" 
+                    ) : undefined
+                }
+                className="mb-4"
                 smallPadding
             >
                 <div className="flex justify-between items-center px-2">
-                    <div className="w-full">{namedObj.description || "No description provided"}</div>
+                    <div className="w-full">
+                        {namedObj.description || "No description provided"}
+                    </div>
                     {withAddButtons && (
                         <div className="ml-4 flex flex-row space-x-4">
                             <div>
@@ -75,7 +88,11 @@ export default function CommandByParameterView() {
                                     onClick={() => {
                                         setHave(old => {
                                             let temp = [...old]
-                                            if (!temp.map(e => e._id).includes(namedObj._id)) {
+                                            if (
+                                                !temp
+                                                    .map(e => e._id)
+                                                    .includes(namedObj._id)
+                                            ) {
                                                 temp.push(namedObj)
                                             }
                                             return temp
@@ -113,18 +130,16 @@ export default function CommandByParameterView() {
                                 <div>
                                     <p className="text-center mb-4">
                                         Possible command path(s)
-                                        {!want || want === "" ? (
-                                            " for your entrypoints"
-                                        ) : (
-                                            " to reach your target"
-                                        )}
+                                        {!want || want === ""
+                                            ? " for your entrypoints"
+                                            : " to reach your target"}
                                     </p>
-                                    <div className="mx-4 rounded-xl border border-gray-100 shadow-xl h-96" >
-                                            <Tree
-                                                data={results}
-                                                orientation="vertical"
-                                                translate={{ x: 300, y: 100 }}
-                                            />
+                                    <div className="mx-4 rounded-xl border border-gray-100 shadow-xl h-96">
+                                        <Tree
+                                            data={results}
+                                            orientation="vertical"
+                                            translate={{ x: 300, y: 100 }}
+                                        />
                                     </div>
                                 </div>
                             )}
@@ -134,7 +149,9 @@ export default function CommandByParameterView() {
                         </div>
                     ) : (
                         <div className="w-5/6 mx-auto max-w-5xl">
-                            <p className="text-center mb-4">Choose your entrypoint and target parameters</p>
+                            <p className="text-center mb-4">
+                                Choose your entrypoint and target parameters
+                            </p>
                             <APISearchbar
                                 searchFor="parameters"
                                 overlay={results => (
@@ -142,7 +159,7 @@ export default function CommandByParameterView() {
                                         {results.map(c => (
                                             <div key={c._id}>
                                                 {cardStyle(c, {
-                                                    withAddButtons: true
+                                                    withAddButtons: true,
                                                 })}
                                             </div>
                                         ))}
@@ -188,36 +205,38 @@ export default function CommandByParameterView() {
                                         <div key={h._id}>
                                             {cardStyle(h, {
                                                 withRemoveButton: true,
-                                                removeButtonOnClickCallback: (idToRemove) => {
-                                                    setHave(old => {
-                                                        let temp = [...old]
-                                                        let i = temp.findIndex(i => i._id === idToRemove)
-                                                        temp.splice(i, 1);
-                                                        return temp
-                                                    })
-                                                }
+                                                removeButtonOnClickCallback:
+                                                    idToRemove => {
+                                                        setHave(old => {
+                                                            let temp = [...old]
+                                                            let i =
+                                                                temp.findIndex(
+                                                                    i =>
+                                                                        i._id ===
+                                                                        idToRemove
+                                                                )
+                                                            temp.splice(i, 1)
+                                                            return temp
+                                                        })
+                                                    },
                                             })}
                                         </div>
                                     ))
                                 ) : (
-                                    <Card>
-                                        No entrypoints added yet!
-                                    </Card>
+                                    <Card>No entrypoints added yet!</Card>
                                 )}
                             </div>
                         </div>
                         {/* Dump for want parameter */}
                         <div className="flex-1 p-4">
-                            <h1 className="text-center text-md mb-4">
-                                Target
-                            </h1>
+                            <h1 className="text-center text-md mb-4">Target</h1>
                             <div>
                                 {want ? (
                                     cardStyle(want, {
                                         withRemoveButton: true,
                                         removeButtonOnClickCallback: () => {
                                             setWant() // sets want to undefined (default state)
-                                        }
+                                        },
                                     })
                                 ) : (
                                     <Card>

@@ -26,7 +26,7 @@ export default function APISearchbar({ searchFor, overlay }) {
     }, [])
 
     const handleOutsideClick = event => {
-        // this callback for the global click listener checks if 
+        // this callback for the global click listener checks if
         // the click target was outside the div referenced by `ref`
         event.preventDefault()
         if (ref.current && !ref.current.contains(event.target)) {
@@ -98,7 +98,7 @@ export default function APISearchbar({ searchFor, overlay }) {
                     onClick={() => {
                         // show the results panel after it has been hidden
                         if (results && !showingResults) {
-                            setShowingResults(true)     
+                            setShowingResults(true)
                         }
                     }}
                     placeholder={`Search for ${searchFor || "everything"}`}

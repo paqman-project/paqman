@@ -8,26 +8,29 @@ import React from "react"
  * @param props.smallPadding If the padding should be smaller (useful if used as some kind of entry)
  * @param props.className CSS classes to pass in the component
  */
-export default function Card({ title, titleOverwrite, smallPadding, className, children }) {
-
+export default function Card({
+    title,
+    titleOverwrite,
+    smallPadding,
+    className,
+    children,
+}) {
     const makeTitle = () => {
         if (!title && !titleOverwrite) {
             return null
         }
         return (
             <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
-                {title ? (
-                    title
-                ) : (
-                    titleOverwrite
-                )}
+                {title ? title : titleOverwrite}
             </p>
         )
     }
 
     return (
         <div
-            className={`text-center border border-gray-100 rounded-xl ${smallPadding ? "p-2" : "px-8 py-4"} shadow-lg font-raleway ${className}`}
+            className={`text-center border border-gray-100 rounded-xl shadow-lg font-raleway ${
+                smallPadding ? "p-2" : "px-8 py-4"
+            } ${className}`}
         >
             {makeTitle()}
             {children}
