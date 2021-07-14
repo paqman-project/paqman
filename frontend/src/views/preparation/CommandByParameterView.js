@@ -33,7 +33,8 @@ export default function CommandByParameterView() {
     }
 
     /**
-     * Creates a block styled name, description pair (may be a command, parameter or attack)
+     * Creates a block styled name, description pair (may be a command, parameter or attack). This is used as a
+     * makro to create the Cards holding search results, entrypoint parameters and the target parameter.
      * @param {Object} namedObj The object that has name and description field
      * @param {bool} options.withAddButtons If the buttons to add as entrypoint/target should be displayed
      * @param {bool} options.withRemoveButton If the button to remove the parameter should be displayed
@@ -63,7 +64,7 @@ export default function CommandByParameterView() {
                 smallPadding
             >
                 <div className="flex justify-between items-center px-2">
-                    <div className="w-full">{namedObj.description}</div>
+                    <div className="w-full">{namedObj.description || "No description provided"}</div>
                     {withAddButtons && (
                         <div className="ml-4 flex flex-row space-x-4">
                             <div>
