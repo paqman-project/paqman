@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useState } from "react"
 import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
@@ -50,7 +50,7 @@ export default function CommandByParameterView() {
                                     onClick={() => {
                                         setHave(old => {
                                             let temp = [...old]
-                                            if (!temp.includes(namedObj)) {
+                                            if (!temp.map(e => e._id).includes(namedObj._id)) {
                                                 temp.push(namedObj)
                                             }
                                             return temp
