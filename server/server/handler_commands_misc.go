@@ -89,10 +89,10 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 
 }
 
-func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren, depth int, targetID string) {
+func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren, depth int, targetID primitive.ObjectID) {
 
 	// stop condition
-	if (current.UsedIn == nil || len(current.UsedIn) == 0) || current.ID.Hex() == targetID || depth >= 15 { // TODO depth may change
+	if (current.UsedIn == nil || len(current.UsedIn) == 0) || current.ID.Hex() == targetID.Hex() || depth >= 15 { // TODO depth may change
 		return
 	}
 
@@ -109,15 +109,11 @@ func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren
 		*children = append(*children, usedCommand)
 
 		// get this next parameter from database
-		if usedIn.ToCreate == "" {
+		if usedIn.ToCreate == primitive.NilObjectID {
 			continue
 		}
-		id, err := primitive.ObjectIDFromHex(usedIn.ToCreate)
-		if err != nil {
-			panic(err) // TODO maybe this is bad
-		}
 		var next structs.Parameter
-		if err := db.Client.ReadOne("parameters", bson.M{"_id": id}, &next); err != nil {
+		if err := db.Client.ReadOne("parameters", bson.M{"_id": usedIn.ToCreate}, &next); err != nil {
 			panic(err) // TODO maybe this is bad
 		}
 
