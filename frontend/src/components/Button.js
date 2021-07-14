@@ -18,18 +18,16 @@ export default function Button({
     submit,
 }) {
     return (
-        <div>
-            <button
-                onClick={onClick}
-                className={`px-4 py-2 border-2 rounded bg-white focus:outline-none font-raleway ${
-                    important
-                        ? "border-transparent bg-paqteal-600 text-white shadow-lg"
-                        : "border-paqteal-600 shadow-md"
-                } ${fullWidth && "w-full"}`}
-                type={submit && "submit"}
-            >
-                {title}
-            </button>
-        </div>
+        <button
+            onClick={onClick}
+            className={`px-4 py-2 border-2 rounded bg-white focus:outline-none font-raleway whitespace-nowrap ${
+                important
+                    ? "border-transparent bg-paqteal-600 text-white shadow-lg"
+                    : "border-paqteal-600 shadow-md"
+            } ${fullWidth && "w-full"}`}
+            type={submit && "submit"}
+        >
+            {title}
+        </button>
     )
 }

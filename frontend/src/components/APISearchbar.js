@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 /**
  * Uses the /search enpoint to search for commands, parameters or attacks.
@@ -14,24 +14,42 @@ export default function APISearchbar({ searchFor, overlay }) {
     // timeout that triggers the fetch /api/search call, when the user stops typing
     const [searchTimer, setSearchTimer] = useState(null)
     // if there are results available (may be empty)
-    const [haveResults, setHaveResults] = useState(false)
+    const [showingResults, setShowingResults] = useState(false)
     // search results from API
     const [results, setResults] = useState()
+    // used to check for clicks outside the div
+    const ref = useRef()
+
+    // create the onclick listener on mount to the whole document
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick)
+    }, [])
+
+    const handleOutsideClick = event => {
+        // this callback for the global click listener checks if
+        // the click target was outside the div referenced by `ref`
+        event.preventDefault()
+        if (ref.current && !ref.current.contains(event.target)) {
+            setShowingResults(false)
+        }
+    }
 
     const handleChange = event => {
         let value = event.target.value
 
-        clearTimeout(searchTimer)
-        setSearchTimer(null) // this may cause errors!
+        clearTimeout(searchTimer) // stops the previous fetch search timeout if there is one
+        setSearchTimer(null) // deletes the fetch search timeout
 
         setTerm(value)
 
-        // hide results panel, if search term is empty
+        // reset reults, if search term is empty
         if (value === "") {
-            setHaveResults(false)
+            setShowingResults(false)
+            setResults()
             return
         }
 
+        // create a new fetch search timeout with callback
         let timeout = setTimeout(() => {
             // compose query string
             let p = new URLSearchParams()
@@ -43,20 +61,25 @@ export default function APISearchbar({ searchFor, overlay }) {
             fetch(`/api/search?${p.toString()}`)
                 .then(r => r.json())
                 .then(r => setResults(r))
-                .then(() => setHaveResults(true))
+                .then(() => setShowingResults(true))
                 .catch(e => console.log(e))
         }, 500)
         setSearchTimer(timeout)
     }
 
-    const handleDeleteTerm = () => {
+    const handleDeleteTerm = event => {
+        event.preventDefault()
+        // delete the search term and results
         setTerm("")
-        setHaveResults(false)
+        setShowingResults(false)
+        setResults()
+        // reset fetch search timeout
         clearTimeout(searchTimer)
         setSearchTimer(null)
     }
 
     const doOverlay = () => {
+        // tries to execute the overlay function
         try {
             return overlay(results)
         } catch (e) {
@@ -66,12 +89,18 @@ export default function APISearchbar({ searchFor, overlay }) {
     }
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-full" ref={ref}>
             <div>
                 <input
                     type="text"
                     value={term}
                     onChange={handleChange}
+                    onClick={() => {
+                        // show the results panel after it has been hidden
+                        if (results && !showingResults) {
+                            setShowingResults(true)
+                        }
+                    }}
                     placeholder={`Search for ${searchFor || "everything"}`}
                     className="relative w-full px-4 py-2 border rounded-lg shadow-lg z-20"
                 />
@@ -85,7 +114,8 @@ export default function APISearchbar({ searchFor, overlay }) {
                     </button>
                 )}
             </div>
-            {haveResults && overlay && (
+            {/* Results panel */}
+            {showingResults && overlay && (
                 <div className="absolute w-full z-10">
                     <div className="-mt-4 mx-4 bg-white shadow-md border rounded-b-lg">
                         <div className="mt-4 p-4 max-h-96 overflow-y-auto">
