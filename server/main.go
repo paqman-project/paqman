@@ -49,11 +49,18 @@ func main() {
 		panic(err)
 	}
 
-	if err := db.Connect(); err != nil {
+	connectString := fmt.Sprintf("mongodb://%s:%s@%s/%s?authSource=admin",
+		config.Current.MongoDBUser,
+		config.Current.MongoDBPass,
+		config.Current.MongoDBAddress,
+		config.Current.MongoDBName,
+	)
+
+	if err := db.Connect(connectString); err != nil {
 		panic(err)
 	}
 
 	// start the API and frontend server
-	panic(server.Start())
+	panic(server.Start(config.Current.BindAddress))
 
 }

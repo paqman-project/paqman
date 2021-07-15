@@ -3,16 +3,15 @@ package db
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
+	"strings"
 	"time"
-
-	"paqman-backend/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/connstring"
 )
 
 // Client holds a wrapper type instance of the MongoDB
@@ -43,6 +42,7 @@ type Mongo struct {
 	// if a mocked CRUD operation takes place
 	mockedExample   interface{}
 	InnerConnection *mongo.Client
+	DBName          string
 }
 
 // Interface guard for Mongo struct
@@ -54,27 +54,27 @@ var _ MongoCRUD = (*Mongo)(nil)
 // It uses the config.json file to retreive the
 // connection details so make sure config.LoadFrom(path)
 // is called before Connect().
-func Connect() error {
+func Connect(connectStringRaw string) error {
 
 	var client *mongo.Client
 
-	connectString := fmt.Sprintf("mongodb://%s:%s@%s/?authSource=admin",
-		config.Current.MongoDBUser,
-		config.Current.MongoDBPass,
-		config.Current.MongoDBAddress,
-	)
-	connectStringNoPass := fmt.Sprintf("mongodb://%s:***@%s/?authSource=admin",
-		config.Current.MongoDBUser,
-		config.Current.MongoDBAddress,
-	)
+	connectString, err := connstring.ParseAndValidate(connectStringRaw)
+	if err != nil {
+		return err
+	}
+	if !connectString.HasAuthParameters() {
+		return errors.New("missing auth parameters in conection strings")
+	}
+	databaseName := connectString.Database
+	connectStringFull := connectString.String()
+	connectStringNoPass := strings.ReplaceAll(connectStringFull, connectString.Password, "***")
 
 	log.Printf("Connecting to MongoDB at %s\n", connectStringNoPass)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var err error
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI(connectString))
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(connectStringFull))
 	if err != nil {
 		return err
 	}
@@ -86,6 +86,7 @@ func Connect() error {
 
 	Client = &Mongo{
 		InnerConnection: client,
+		DBName:          databaseName,
 	}
 	return nil
 }

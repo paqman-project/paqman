@@ -6,41 +6,31 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"paqman-backend/db"
-	"paqman-backend/structs"
 )
 
 func TestSearchHandler(t *testing.T) {
-
-	db.ConnectMocked()
 
 	// test server that uses the handler that will be tested
 	handler := http.HandlerFunc(searchHandler)
 
 	tests := []struct {
-		Query          string      // Query string for API URL
-		DBInit         interface{} // The object containing the mocked database state
+		Query          string // Query string for API URL
 		ExpectedStatus int
 		ExpectedName   string
 	}{
 		{
 			Query:          fmt.Sprintf("?for=%s&term=%s", "commands", "disl"),
-			DBInit:         structs.ExampleCommandDislocker,
 			ExpectedStatus: 200,
-			ExpectedName:   structs.ExampleCommandDislocker.Name,
+			ExpectedName:   "dislocker",
 		},
 		{
 			Query:          fmt.Sprintf("?for=%s&term=%s", "parameters", "fve"),
-			DBInit:         structs.ExampleParameterFVEK,
 			ExpectedStatus: 200,
-			ExpectedName:   structs.ExampleParameterFVEK.Name,
+			ExpectedName:   "fvek",
 		},
 	}
 
 	for _, test := range tests {
-
-		db.Client.SetMockedExample(test.DBInit)
 
 		// init request recorder
 		rec := httptest.NewRecorder()
@@ -63,9 +53,12 @@ func TestSearchHandler(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error while decoding the body: %s", err.Error())
 		}
-		if body[0].Name != test.ExpectedName {
-			t.Errorf("Handler responded with wrong command name: got %v want %v", body[0].Name, test.ExpectedName)
+		for _, b := range body {
+			if b.Name == test.ExpectedName {
+				return // success
+			}
 		}
+		t.Errorf("Handler responded with wrong command name: got %v want %v", body, test.ExpectedName)
 
 	}
 

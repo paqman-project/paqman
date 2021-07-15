@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 
-	"paqman-backend/config"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -26,7 +24,7 @@ func (m *Mongo) CreateOne(collection string, v interface{}, opts ...*options.Ins
 		return primitive.NewObjectID(), nil
 	}
 
-	res, err := m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).InsertOne(context.TODO(), v, opts...)
+	res, err := m.InnerConnection.Database(m.DBName).Collection(collection).InsertOne(context.TODO(), v, opts...)
 	if err != nil {
 		return primitive.ObjectID{}, err
 	}
@@ -52,7 +50,7 @@ func (m *Mongo) ReadOne(collection string, filter bson.M, v interface{}, opts ..
 		return nil
 	}
 
-	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).FindOne(context.TODO(), filter, opts...).Decode(v)
+	return m.InnerConnection.Database(m.DBName).Collection(collection).FindOne(context.TODO(), filter, opts...).Decode(v)
 }
 
 // ReadMany works just like ReadOne. v must be a pointer to a slice into
@@ -71,7 +69,7 @@ func (m *Mongo) ReadMany(collection string, filter bson.M, v interface{}, opts .
 		return nil
 	}
 
-	cursor, err := m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).Find(context.TODO(), filter, opts...)
+	cursor, err := m.InnerConnection.Database(m.DBName).Collection(collection).Find(context.TODO(), filter, opts...)
 	if err != nil {
 		return err
 	}
@@ -94,7 +92,7 @@ func (m *Mongo) DeleteOne(collection string, filter bson.M) (*mongo.DeleteResult
 		return &mongo.DeleteResult{}, nil
 	}
 
-	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteOne(context.TODO(), filter)
+	return m.InnerConnection.Database(m.DBName).Collection(collection).DeleteOne(context.TODO(), filter)
 }
 
 // DeleteMany finds all matches for filter in collection and deletes them.
@@ -107,5 +105,5 @@ func (m *Mongo) DeleteMany(collection string, filter bson.M) (*mongo.DeleteResul
 		return &mongo.DeleteResult{}, nil
 	}
 
-	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteMany(context.TODO(), filter)
+	return m.InnerConnection.Database(m.DBName).Collection(collection).DeleteMany(context.TODO(), filter)
 }
