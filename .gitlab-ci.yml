@@ -5,6 +5,10 @@ stages:
 
 variables:
   STAGING_SERVER: "staging.paqman.leon.wtf"
+  # config for prefilled-db image
+  MONGO_INITDB_ROOT_USERNAME: root
+  MONGO_INITDB_ROOT_PASSWORD: toor
+  MONGO_INITDB_DATABASE: PAQMAN
 
 code_quality:
   stage: test
