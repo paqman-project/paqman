@@ -11,25 +11,27 @@ import (
 
 // recursive response struct
 type commandWithChildren struct {
-	Command  structs.Command        `json:"command"`
-	Creates  structs.Parameter      `json:"creates"`
-	Children []*commandWithChildren `json:"children"`
+	structs.SmallCommand `json:",inline"`
+	Creates              structs.Parameter      `json:"creates"`
+	Children             []*commandWithChildren `json:"children"`
 }
 
-func recurseWithHaveOnly(currentParamID primitive.ObjectID, children *[]*commandWithChildren, depth int) {
+type aggregatedParameter struct {
+	structs.Parameter    `json:",inline" bson:",inline"`
+	ReturnedFromLookup   []structs.SmallCommand `json:"returned_from_lookup" bson:"returned_from_lookup"`
+	UsedInLookup         []structs.SmallCommand `json:"used_in_lookup" bson:"used_in_lookup"`
+	UsedInToCreateLookup []structs.Parameter    `json:"used_in_to_create_lookup" bson:"used_in_to_create_lookup"`
+}
 
-	var currentParamLookedUp []struct {
-		structs.Parameter    `json:",inline" bson:",inline"`
-		ReturedFromLookup    []structs.Command   `json:"returned_from_lookup" bson:"returned_from_lookup"`
-		UsedInLookup         []structs.Command   `json:"used_in_lookup" bson:"used_in_lookup"`
-		UsedInToCreateLookup []structs.Parameter `json:"used_in_to_create_lookup" bson:"used_in_to_create_lookup"`
-	}
+func getAggregatedParameter(id primitive.ObjectID) aggregatedParameter {
+
+	var v []aggregatedParameter
 
 	// get the current parameter
 	aggPipeline := mongo.Pipeline{
 		{{
 			Key:   "$match",
-			Value: bson.M{"_id": currentParamID},
+			Value: bson.M{"_id": id},
 		}},
 		{{ // lookup returned_from commands
 			Key: "$lookup",
@@ -59,12 +61,20 @@ func recurseWithHaveOnly(currentParamID primitive.ObjectID, children *[]*command
 			},
 		}},
 	}
-	if err := db.Client.Aggregate("parameters", aggPipeline, &currentParamLookedUp); err != nil {
+	if err := db.Client.Aggregate("parameters", aggPipeline, &v); err != nil {
 		panic(err)
 	}
 
+	return v[0] // this special aggreate function always returns one result only
+
+}
+
+func recurseWithHaveOnly(currentParamID primitive.ObjectID, children *[]*commandWithChildren, depth int) {
+
+	currentParam := getAggregatedParameter(currentParamID)
+
 	// stop condition
-	if (currentParamLookedUp[0].UsedIn == nil || len(currentParamLookedUp[0].UsedIn) == 0) || depth >= 5 { // TODO depth may change
+	if (currentParam.UsedIn == nil || len(currentParam.UsedIn) == 0) || depth >= 5 { // TODO depth may change
 		return
 	}
 
@@ -72,25 +82,27 @@ func recurseWithHaveOnly(currentParamID primitive.ObjectID, children *[]*command
 	*children = make([]*commandWithChildren, 0)
 
 	// iterate over every child of this parameter
-	for i := range currentParamLookedUp[0].UsedIn {
+	for i := range currentParam.UsedIn {
 		// add used command to chain
 		usedCommand := &commandWithChildren{
-			Command:  currentParamLookedUp[0].UsedInLookup[i],
-			Creates:  currentParamLookedUp[0].UsedInToCreateLookup[i],
-			Children: nil,
+			SmallCommand: currentParam.UsedInLookup[i],
+			Creates:      currentParam.UsedInToCreateLookup[i],
+			Children:     nil,
 		}
 		*children = append(*children, usedCommand)
 
 		// recurse with the next parameter
-		recurseWithHaveOnly(currentParamLookedUp[0].UsedInToCreateLookup[i].ID, &usedCommand.Children, depth+1)
+		recurseWithHaveOnly(currentParam.UsedInToCreateLookup[i].ID, &usedCommand.Children, depth+1)
 	}
 
 }
 
-func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChildren, depth int) {
+func recurseWithWantOnly(currentParamID primitive.ObjectID, children *[]*commandWithChildren, depth int) {
+
+	currentParam := getAggregatedParameter(currentParamID)
 
 	// stop condition
-	if (current.ReturnedFrom == nil || len(current.ReturnedFrom) == 0) || depth >= 15 { // TODO depth may change
+	if (currentParam.ReturnedFrom == nil || len(currentParam.ReturnedFrom) == 0) || depth >= 15 { // TODO depth may change
 		return
 	}
 
@@ -98,12 +110,8 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 	*children = make([]*commandWithChildren, 0)
 
 	// iterate over every parent of this parameter
-	for _, returnedFrom := range current.ReturnedFrom {
-		// get and add used command to chain
-		var c structs.SmallCommand
-		if err := db.Client.ReadOne("commands", bson.M{"_id": returnedFrom.CommandID}, &c); err != nil {
-			panic(err) // TODO maybe this is bad
-		}
+	for _, returnedFrom := range currentParam.ReturnedFrom {
+		// add used command to chain
 		usedCommand := &commandWithChildren{
 			Children: nil,
 		}
@@ -122,7 +130,7 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 		for _, prevParam := range prevParams {
 			var loc []*commandWithChildren
 			//fmt.Println(prevParam.Name, "at", depth)
-			recurseWithWantOnly(prevParam, &loc, depth+1)
+			recurseWithWantOnly(prevParam.ID, &loc, depth+1)
 			completePredecessors = append(completePredecessors, loc...)
 		}
 		children = &completePredecessors
@@ -131,10 +139,12 @@ func recurseWithWantOnly(current structs.Parameter, children *[]*commandWithChil
 
 }
 
-func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren, depth int, targetID primitive.ObjectID) {
+func recurseWithBoth(currentParamID primitive.ObjectID, children *[]*commandWithChildren, depth int, targetID primitive.ObjectID) {
+
+	currentParam := getAggregatedParameter(currentParamID)
 
 	// stop condition
-	if (current.UsedIn == nil || len(current.UsedIn) == 0) || current.ID.Hex() == targetID.Hex() || depth >= 15 { // TODO depth may change
+	if (currentParam.UsedIn == nil || len(currentParam.UsedIn) == 0) || currentParam.ID.Hex() == targetID.Hex() || depth >= 15 { // TODO depth may change
 		return
 	}
 
@@ -142,28 +152,17 @@ func recurseWithBoth(current structs.Parameter, children *[]*commandWithChildren
 	*children = make([]*commandWithChildren, 0)
 
 	// iterate over every child of this parameter
-	for _, usedIn := range current.UsedIn {
-		// get and add used command to chain
-		var c structs.SmallCommand
-		if err := db.Client.ReadOne("commands", bson.M{"_id": usedIn.CommandID}, &c); err != nil {
-			panic(err) // TODO maybe this is bad
-		}
+	for i := range currentParam.UsedIn {
+		// add used command to chain
 		usedCommand := &commandWithChildren{
-			Children: nil,
+			SmallCommand: currentParam.UsedInLookup[i],
+			Creates:      currentParam.UsedInToCreateLookup[i],
+			Children:     nil,
 		}
 		*children = append(*children, usedCommand)
 
-		// get this next parameter from database
-		if usedIn.ToCreate == primitive.NilObjectID {
-			continue
-		}
-		var next structs.Parameter
-		if err := db.Client.ReadOne("parameters", bson.M{"_id": usedIn.ToCreate}, &next); err != nil {
-			panic(err) // TODO maybe this is bad
-		}
-
-		// continue recursion
-		recurseWithBoth(next, &usedCommand.Children, depth+1, targetID)
+		// recurse with the next parameter
+		recurseWithHaveOnly(currentParam.UsedInToCreateLookup[i].ID, &usedCommand.Children, depth+1)
 	}
 
 }

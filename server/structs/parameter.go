@@ -33,6 +33,8 @@ type WithValues struct {
 	Value string `json:"value" bson:"value"`
 }
 
+type SmallParameter SmallModel
+
 // FindPreviousParameters searches for parameters that are used by
 // commands that produce this parameter
 //
