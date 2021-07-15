@@ -12,14 +12,32 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: toor
 
+  # Use the prefilled database instead
+  # This requires a docker login with a valid access token!
+  #mongo:
+  #  image: registry.git.leon.wtf/paqman/database-presets/prefilled-db:full
+  #  container_name: mongo
+  #  ports:
+  #    - 27017:27017
+  #  environment:
+  #    MONGO_INITDB_ROOT_USERNAME: root
+  #    MONGO_INITDB_ROOT_PASSWORD: toor
+  #    MONGO_INITDB_DATABASE: PAQMAN
+
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
     ports:
       - 8081:8081
     environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: toor
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    # cannot use on-failure here as mongo-express
+    # returns status code 0 on failure
 
 volumes: 
   paqman-dev-db:
