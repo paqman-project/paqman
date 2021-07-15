@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"paqman-backend/db"
-	"paqman-backend/structs"
 	"testing"
+
+	"paqman-backend/structs"
 )
 
 func TestNewCommandHandler(t *testing.T) {
-
-	db.ConnectMocked()
 
 	// this is intended to always work!
 	j, _ := json.Marshal(structs.ExampleCommandDislocker)
@@ -31,7 +29,7 @@ func TestNewCommandHandler(t *testing.T) {
 	// check status code
 	expectedSC := 201
 	if sc := rec.Code; sc != expectedSC {
-		t.Errorf("Handler returned wrong status code: got %v want %v", sc, expectedSC)
+		t.Fatalf("Handler returned wrong status code: got %v want %v (Body: %v)", sc, expectedSC, rec.Body)
 	}
 
 	// check if body contains a new ObjectID

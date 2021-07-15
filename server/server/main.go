@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"paqman-backend/config"
-
 	"github.com/gorilla/mux"
 )
 
@@ -21,7 +19,7 @@ var frontendRoutes = []string{
 
 // Start starts the API and frontend server.
 // This function is blocking.
-func Start() error {
+func Start(bindAddr string) error {
 
 	// router
 	router := mux.NewRouter()
@@ -66,7 +64,7 @@ func Start() error {
 
 	// start server
 	server := &http.Server{
-		Addr:    config.Current.BindAddress,
+		Addr:    bindAddr,
 		Handler: router,
 	}
 	log.Println("Started API and frontend server, ready to handle connections")

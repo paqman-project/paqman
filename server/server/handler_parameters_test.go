@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"paqman-backend/db"
-	"paqman-backend/structs"
 	"testing"
+
+	"paqman-backend/structs"
 )
 
 func TestNewParameterHandler(t *testing.T) {
-
-	db.ConnectMocked()
 
 	// this is intended to always work!
 	j, _ := json.Marshal(structs.ExampleParameterFVEK)

@@ -21,8 +21,13 @@ code_quality:
 backend_tests:
   stage: test
   image: golang:1.16
+  services:
+    - name: registry.git.leon.wtf/paqman/database-presets/prefilled-db:full
+      alias: mongo
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd server/ && go test -v ./...
+    - cd server/ && CI=true go test -v ./...
 
 build_and_push_image:
   stage: docker-build
