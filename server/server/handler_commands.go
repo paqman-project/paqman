@@ -114,7 +114,7 @@ func getCommandsByParameterHandler(w http.ResponseWriter, r *http.Request) {
 			completeChain := make([]*commandWithChildren, 0)
 			for _, having := range have {
 				var localChain []*commandWithChildren
-				recurseWithHaveOnly(having, &localChain, 0)
+				recurseWithHaveOnly(having.ID, &localChain, 0)
 				completeChain = append(completeChain, localChain...)
 			}
 			commandChain = completeChain
