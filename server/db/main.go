@@ -24,14 +24,16 @@ var Client *Mongo
 // No-SQL approach
 type MongoCRUD interface {
 	CreateOne(string, interface{}, ...*options.InsertOneOptions) (primitive.ObjectID, error)
-	// CreateMany is not defined as it is simpler to handle
-	// ObjectIDs when calling CreateOne multiple times
+	// TODO CreateMany
+
 	ReadOne(string, bson.M, interface{}, ...*options.FindOneOptions) error
 	ReadMany(string, bson.M, interface{}, ...*options.FindOptions) error
-	// Update(string, bson.M, ...) // TODO
+	Aggregate(string, mongo.Pipeline, interface{}, ...*options.AggregateOptions) error
+
+	// TODO Update(string, bson.M, ...)
+
 	DeleteOne(string, bson.M) (*mongo.DeleteResult, error)
 	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
-	Aggregate(string, mongo.Pipeline, interface{}, ...*options.AggregateOptions) error
 }
 
 // Mongo is the wrapper around a MongoDB connection

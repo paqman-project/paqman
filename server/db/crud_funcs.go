@@ -84,32 +84,6 @@ func (m *Mongo) ReadMany(collection string, filter bson.M, v interface{}, opts .
 	return nil
 }
 
-// DeleteOne finds the first match for filter in collection and deletes it.
-// It returns a *mongo.DeleteResult and an error type.
-//
-// If mocked, it returns an empty DeleteResult and nil (MAY NOT WORK YET)
-func (m *Mongo) DeleteOne(collection string, filter bson.M) (*mongo.DeleteResult, error) {
-
-	if m.Mocked { // TODO may not work for testing
-		return &mongo.DeleteResult{}, nil
-	}
-
-	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteOne(context.TODO(), filter)
-}
-
-// DeleteMany finds all matches for filter in collection and deletes them.
-// It returns a *mongo.DeleteResult and an error type.
-//
-// If mocked, it returns an empty DeleteResult and nil (MAY NOT WORK YET)
-func (m *Mongo) DeleteMany(collection string, filter bson.M) (*mongo.DeleteResult, error) {
-
-	if m.Mocked { // TODO may not work for testing
-		return &mongo.DeleteResult{}, nil
-	}
-
-	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteMany(context.TODO(), filter)
-}
-
 // Aggregate groups data from multiple documents into one combined result.
 // Returns an error if the cursor could not be decoded into v.
 //
@@ -135,4 +109,30 @@ func (m *Mongo) Aggregate(collection string, pipeline mongo.Pipeline, v interfac
 
 	return nil
 
+}
+
+// DeleteOne finds the first match for filter in collection and deletes it.
+// It returns a *mongo.DeleteResult and an error type.
+//
+// If mocked, it returns an empty DeleteResult and nil (MAY NOT WORK YET)
+func (m *Mongo) DeleteOne(collection string, filter bson.M) (*mongo.DeleteResult, error) {
+
+	if m.Mocked { // TODO may not work for testing
+		return &mongo.DeleteResult{}, nil
+	}
+
+	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteOne(context.TODO(), filter)
+}
+
+// DeleteMany finds all matches for filter in collection and deletes them.
+// It returns a *mongo.DeleteResult and an error type.
+//
+// If mocked, it returns an empty DeleteResult and nil (MAY NOT WORK YET)
+func (m *Mongo) DeleteMany(collection string, filter bson.M) (*mongo.DeleteResult, error) {
+
+	if m.Mocked { // TODO may not work for testing
+		return &mongo.DeleteResult{}, nil
+	}
+
+	return m.InnerConnection.Database(config.Current.MongoDBName).Collection(collection).DeleteMany(context.TODO(), filter)
 }

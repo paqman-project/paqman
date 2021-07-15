@@ -8,6 +8,7 @@ var (
 )
 
 func init() {
+
 	ExampleCommandDislocker = Command{
 		Name:        "dislocker",
 		Description: "Decrypts Bitlocker partitions",
@@ -44,7 +45,6 @@ func init() {
 	ExampleCommandDislocker.ID = primitive.NewObjectID()
 
 	ExampleParameterFVEK = Parameter{
-
 		Name:         "Full volume encryption key (fvek)",
 		Description:  "Master key for Bitlocker encrypted drives",
 		Type:         "string",
@@ -56,4 +56,6 @@ func init() {
 			},
 		},
 	}
+	ExampleParameterFVEK.ID = primitive.NewObjectID()
+
 }
