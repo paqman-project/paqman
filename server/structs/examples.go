@@ -1,6 +1,14 @@
 package structs
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 var (
+	ExampleCommandDislocker Command
+	ExampleParameterFVEK    Parameter
+)
+
+func init() {
+
 	ExampleCommandDislocker = Command{
 		Name:        "dislocker",
 		Description: "Decrypts Bitlocker partitions",
@@ -34,6 +42,8 @@ var (
 		},
 		RequiresRoot: true,
 	}
+	ExampleCommandDislocker.ID = primitive.NewObjectID()
+
 	ExampleParameterFVEK = Parameter{
 		Name:         "Full volume encryption key (fvek)",
 		Description:  "Master key for Bitlocker encrypted drives",
@@ -41,9 +51,11 @@ var (
 		ReturnedFrom: make([]ReturnedFromData, 0),
 		UsedIn: []UsedInData{
 			{
-				CommandID: "60bfa34930f703581134bc4b",
+				CommandID: ExampleCommandDislocker.ID,
 				At:        "fvek",
 			},
 		},
 	}
-)
+	ExampleParameterFVEK.ID = primitive.NewObjectID()
+
+}

@@ -23,11 +23,14 @@ var Client *Mongo
 // No-SQL approach
 type MongoCRUD interface {
 	CreateOne(string, interface{}, ...*options.InsertOneOptions) (primitive.ObjectID, error)
-	// CreateMany is not defined as it is simpler to handle
-	// ObjectIDs when calling CreateOne multiple times
+	// TODO CreateMany
+
 	ReadOne(string, bson.M, interface{}, ...*options.FindOneOptions) error
 	ReadMany(string, bson.M, interface{}, ...*options.FindOptions) error
-	// Update(string, bson.M, ...) // TODO
+	Aggregate(string, mongo.Pipeline, interface{}, ...*options.AggregateOptions) error
+
+	// TODO Update(string, bson.M, ...)
+
 	DeleteOne(string, bson.M) (*mongo.DeleteResult, error)
 	DeleteMany(string, bson.M) (*mongo.DeleteResult, error)
 }
@@ -110,7 +113,7 @@ func (m *Mongo) SetMockedExample(v interface{}) error {
 		m.mockedExample = v
 		return nil
 	}
-	return errors.New("Database is not mocked!")
+	return errors.New("database is not mocked")
 }
 
 // CheckConnection pings the database to determine

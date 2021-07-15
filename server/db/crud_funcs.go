@@ -82,6 +82,33 @@ func (m *Mongo) ReadMany(collection string, filter bson.M, v interface{}, opts .
 	return nil
 }
 
+// Aggregate groups data from multiple documents into one combined result.
+// Returns an error if the cursor could not be decoded into v.
+//
+// If mocked, it unmarshalls the dislocker example command (structs/examples.go)
+// as the only value into v an returns nil
+func (m *Mongo) Aggregate(collection string, pipeline mongo.Pipeline, v interface{}, opts ...*options.AggregateOptions) error {
+
+	if m.Mocked {
+		commands := []interface{}{m.mockedExample}
+		b, _ := json.Marshal(commands)
+		json.Unmarshal(b, v)
+		return nil
+	}
+
+	cursor, err := m.InnerConnection.Database(m.DBName).Collection(collection).Aggregate(context.TODO(), pipeline, opts...)
+	if err != nil {
+		return err
+	}
+
+	if err := cursor.All(context.TODO(), v); err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
 // DeleteOne finds the first match for filter in collection and deletes it.
 // It returns a *mongo.DeleteResult and an error type.
 //
