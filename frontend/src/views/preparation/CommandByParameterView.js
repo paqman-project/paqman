@@ -82,24 +82,31 @@ export default function CommandByParameterView() {
     ) => {
         return (
             <Card
+                // set the normal title only, wenn the cards should not be removed
+                // set titleOverwrite to add the grid interface for the remove button
                 title={withRemoveButton ? undefined : namedObj.name}
                 titleOverwrite={
                     withRemoveButton ? (
-                        <div className="flex flex-row">
-                            <div className="mx-2 flex-grow">
+                        <div className="grid grid-cols-8">
+                            <div className="col-span-1">
+
+                            </div>
+                            <div className="col-span-6">
                                 {namedObj.name}
                             </div>
                             <button
-                                className="mx-2 text-gray-400 focus:outline-none"
+                                className="col-span-1 text-gray-400 focus:outline-none"
                                 onClick={
                                     removeButtonOnClickCallback
                                         ? () => {
-                                              removeButtonOnClickCallback(
-                                                  namedObj._id
-                                              )
-                                          }
+                                            removeButtonOnClickCallback(
+                                                namedObj._id
+                                            )
+                                        }
                                         : undefined
                                 }
+                                // when in d3 viewing mode, hide the remove cross
+                                hidden={viewingResults === true}
                             >
                                 <p>&#215;</p>
                             </button>
@@ -122,8 +129,8 @@ export default function CommandByParameterView() {
     return (
         <div>
             <ViewHeading title="Search commands by parameter" />
-            <div className="grid grid-cols-3">
-                <div className="col-span-2 w-full">
+            <div className="grid grid-cols-5">
+                <div className="col-span-3 w-full">
                     {viewingResults && results ? (
                         <div>
                             {results && results.error ? (
@@ -142,7 +149,8 @@ export default function CommandByParameterView() {
                                         <Tree
                                             data={results}
                                             orientation="vertical"
-                                            translate={{ x: 300, y: 100 }}
+                                            // TODO automatic x-translate for centering
+                                            translate={{ x: 300, y: 100 }} 
                                         />
                                     </div>
                                 </div>
@@ -172,8 +180,8 @@ export default function CommandByParameterView() {
                     )}
                 </div>
                 {/* Dumps for have and want parameters */}
-                <div className="col-span-1 w-full">
-                    <div className="w-2/3 max-w-max mx-auto mb-4">
+                <div className="col-span-2 w-full">
+                    <div className="max-w-max mx-auto mb-4">
                         {viewingResults ? (
                             <Button
                                 title="Edit entrypoints or target parameters"
@@ -197,7 +205,10 @@ export default function CommandByParameterView() {
                     </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <div className={`flex-1 p-4  ${canDropHave && "bg-red-500"}`} ref={dropRefHave}>
+                        <div 
+                            className={`flex-1 p-4 m-2 border-2 rounded-lg border-transparent ${canDropHave && "border-paqteal-500"}`} 
+                            ref={dropRefHave}
+                        >
                             <h1 className="text-center text-md mb-4">
                                 Entrypoints
                             </h1>
@@ -230,7 +241,10 @@ export default function CommandByParameterView() {
                             </div>
                         </div>
                         {/* Dump for want parameter */}
-                        <div className={`flex-1 p-4  ${canDropWant && "bg-red-500"}`} ref={dropRefWant}>
+                        <div 
+                            className={`flex-1 p-4 m-2 border-2 rounded-lg border-transparent ${canDropWant && "border-paqteal-500"}`} 
+                            ref={dropRefWant}
+                        >
                             <h1 className="text-center text-md mb-4">Target</h1>
                             <div>
                                 {want ? (
