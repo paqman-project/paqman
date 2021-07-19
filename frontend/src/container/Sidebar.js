@@ -10,7 +10,7 @@ import LinkButtonGroup from "../components/LinkButtonGroup"
 export default function Sidebar({ collapsed }) {
     return (
         <div
-            className={`fixed top-0 bottom-0 overflow-y-auto z-10 h-full bg-white shadow-xl ${
+            className={`fixed top-0 bottom-0 overflow-y-auto z-40 h-full bg-white shadow-xl ${
                 collapsed ? "w-0" : "md:w-56 w-40"
             }`}
         >

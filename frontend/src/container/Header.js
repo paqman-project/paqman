@@ -12,7 +12,7 @@ export default function Header({ setSidebarCollapsed }) {
     const [hovering, setHovering] = useState(false)
 
     return (
-        <div className="fixed top-0 z-20 w-full h-16 bg-white shadow-lg">
+        <div className="fixed top-0 z-50 w-full h-16 bg-white shadow-lg">
             <div className="flex flex-row items-center h-full">
                 <button
                     className="text-2xl ml-4 px-4 py-1 border-2 rounded-xl focus:outline-none"
