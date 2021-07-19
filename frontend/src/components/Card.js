@@ -21,9 +21,7 @@ export default function Card({
                 smallPadding ? "p-2" : "px-8 py-4"
             } ${className}`}
         >
-            {!title && !titleOverwrite ? (
-                null
-            ) : (
+            {!title && !titleOverwrite ? null : (
                 <div className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
                     {title ? <p>{title}</p> : titleOverwrite}
                 </div>

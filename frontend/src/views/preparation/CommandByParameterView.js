@@ -57,18 +57,16 @@ export default function CommandByParameterView() {
                     withRemoveButton ? (
                         <div className="grid grid-cols-8">
                             <div className="col-span-1"></div>
-                            <div className="col-span-6">
-                                {namedObj.name}
-                            </div>
+                            <div className="col-span-6">{namedObj.name}</div>
                             <button
                                 className="col-span-1 text-gray-400 focus:outline-none"
                                 onClick={
                                     removeButtonOnClickCallback
                                         ? () => {
-                                            removeButtonOnClickCallback(
-                                                namedObj._id
-                                            )
-                                        }
+                                              removeButtonOnClickCallback(
+                                                  namedObj._id
+                                              )
+                                          }
                                         : undefined
                                 }
                                 // when in d3 viewing mode, hide the remove cross
@@ -115,7 +113,7 @@ export default function CommandByParameterView() {
                                             data={results}
                                             orientation="vertical"
                                             // TODO automatic x-translate for centering
-                                            translate={{ x: 300, y: 100 }} 
+                                            translate={{ x: 300, y: 100 }}
                                         />
                                     </div>
                                 </div>
@@ -135,7 +133,10 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                <Draggable itemType="card" itemObject={c} >
+                                                <Draggable
+                                                    itemType="card"
+                                                    itemObject={c}
+                                                >
                                                     {cardStyle(c)}
                                                 </Draggable>
                                             </div>
@@ -173,15 +174,13 @@ export default function CommandByParameterView() {
                     </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <Droppable 
+                        <Droppable
                             acceptItemTypes="card"
                             dropFunc={item => {
                                 setHave(old => {
                                     let temp = [...old]
                                     if (
-                                        !temp
-                                            .map(e => e._id)
-                                            .includes(item._id)
+                                        !temp.map(e => e._id).includes(item._id)
                                     ) {
                                         temp.push(item)
                                     }
@@ -219,14 +218,14 @@ export default function CommandByParameterView() {
                                     ))
                                 ) : (
                                     <Card>
-                                        No entrypoints added yet!
-                                        Drag the search results here!
+                                        No entrypoints added yet! Drag the
+                                        search results here!
                                     </Card>
                                 )}
                             </div>
                         </Droppable>
                         {/* Dump for want parameter */}
-                        <Droppable 
+                        <Droppable
                             acceptItemTypes="card"
                             dropFunc={item => {
                                 setWant(item)
@@ -245,8 +244,8 @@ export default function CommandByParameterView() {
                                     })
                                 ) : (
                                     <Card>
-                                        No target parameter defined yet!
-                                        Drag a search result here!
+                                        No target parameter defined yet! Drag a
+                                        search result here!
                                     </Card>
                                 )}
                             </div>

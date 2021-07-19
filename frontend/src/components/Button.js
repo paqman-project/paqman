@@ -28,9 +28,7 @@ export default function Button({
                 important
                     ? "border-transparent bg-paqteal-600 text-white shadow-lg"
                     : "border-paqteal-600 shadow-md"
-            } ${
-                fullWidth && "w-full"
-            }`}
+            } ${fullWidth && "w-full"}`}
             type={submit && "submit"}
         >
             {title}
