@@ -13,6 +13,8 @@ import PerformAttackPage from "./pages/PerformAttackPage"
 import NotFound from "./components/NotFound"
 import Sidebar from "./container/Sidebar"
 import ViewContainer from "./container/ViewContainer"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { DndProvider } from "react-dnd"
 
 export default function App() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -21,28 +23,30 @@ export default function App() {
         <Router>
             <Header setSidebarCollapsed={setSidebarCollapsed} />
             <Sidebar collapsed={sidebarCollapsed} />
-            <ViewContainer sidebarCollapsed={sidebarCollapsed}>
-                <Switch>
-                    <Route path="/" exact>
-                        <Redirect to="/prepare/" />
-                    </Route>
-                    <Route path="/prepare" component={PreperationPage} />
-                    <Route
-                        path="/perform/:attackID"
-                        component={PerformAttackPage}
-                    />
-                    <Route
-                        path="/attack/:attackID"
-                        component={AttackViewerPage}
-                    />
-                    <Route
-                        path="/command/:commandID"
-                        component={CommandViewerPage}
-                    />
-                    {/* Fallback (404 page) */}
-                    <Route path="/" component={NotFound} />
-                </Switch>
-            </ViewContainer>
+            <DndProvider backend={HTML5Backend}>
+                <ViewContainer sidebarCollapsed={sidebarCollapsed}>
+                    <Switch>
+                        <Route path="/" exact>
+                            <Redirect to="/prepare/" />
+                        </Route>
+                        <Route path="/prepare" component={PreperationPage} />
+                        <Route
+                            path="/perform/:attackID"
+                            component={PerformAttackPage}
+                        />
+                        <Route
+                            path="/attack/:attackID"
+                            component={AttackViewerPage}
+                        />
+                        <Route
+                            path="/command/:commandID"
+                            component={CommandViewerPage}
+                        />
+                        {/* Fallback (404 page) */}
+                        <Route path="/" component={NotFound} />
+                    </Switch>
+                </ViewContainer>
+            </DndProvider>
         </Router>
     )
 }

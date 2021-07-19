@@ -1,4 +1,5 @@
 import React from "react"
+import { useDrag } from "react-dnd"
 
 /**
  * A styled card with a gray-highlighted title
@@ -13,26 +14,34 @@ export default function Card({
     titleOverwrite,
     smallPadding,
     className,
+    dropObject,
     children,
 }) {
-    const makeTitle = () => {
-        if (!title && !titleOverwrite) {
-            return null
-        }
-        return (
-            <p className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
-                {title ? title : titleOverwrite}
-            </p>
-        )
-    }
+    const [{ opacity }, dragRef] = useDrag(
+        () => ({
+            type: dropObject ? "card" : "INVALID_TYPE",
+            item: dropObject || "INVALID_TYPE",
+            collect: monitor => ({
+                opacity: monitor.isDragging() ? 0.5 : 1
+            })
+        })
+    )
 
     return (
         <div
             className={`text-center border border-gray-100 rounded-xl shadow-lg font-raleway ${
                 smallPadding ? "p-2" : "px-8 py-4"
             } ${className}`}
+            ref={dragRef}
+            style={{ opacity }}
         >
-            {makeTitle()}
+            {!title && !titleOverwrite ? (
+                null
+            ) : (
+                <div className="font-semibold mb-2 bg-gray-100 rounded-lg p-1">
+                    {title ? <p>{title}</p> : titleOverwrite}
+                </div>
+            )}
             {children}
         </div>
     )

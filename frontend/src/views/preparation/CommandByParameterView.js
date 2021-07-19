@@ -4,6 +4,7 @@ import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
 import Tree from "react-d3-tree"
+import { useDrop } from "react-dnd"
 
 /**
  * This view is used to search commands by parameters
@@ -34,18 +35,50 @@ export default function CommandByParameterView() {
             .catch(e => console.error(e))
     }
 
+    const [{ canDropHave, isOverHave }, dropRefHave] = useDrop(() => ({
+        accept: "card",
+        collect: monitor => ({
+            canDropHave: monitor.canDrop(),
+            isOverHave: monitor.isOver()
+        }),
+        drop: item => {
+            console.log("added", item)
+            setHave(old => {
+                let temp = [...old]
+                if (
+                    !temp
+                        .map(e => e._id)
+                        .includes(item._id)
+                ) {
+                    temp.push(item)
+                }
+                return temp
+            })
+        },
+    }))
+
+    const [{ canDropWant, isOverWant }, dropRefWant] = useDrop(() => ({
+        accept: "card",
+        collect: monitor => ({
+            canDropWant: monitor.canDrop(),
+            isOverWant: monitor.isOver()
+        }),
+        drop: item => {
+            setWant(item)
+        },
+    }))
+
     /**
      * Creates a block styled name, description pair (may be a command, parameter or attack). This is used as a
      * makro to create the Cards holding search results, entrypoint parameters and the target parameter.
      * @param {Object} namedObj The object that has name and description field
-     * @param {bool} options.withAddButtons If the buttons to add as entrypoint/target should be displayed
      * @param {bool} options.withRemoveButton If the button to remove the parameter should be displayed
      * @param {Function} options.removeButtonOnClickCallback If options.withRemoveButton is true, provide a
      * function to define what happens, if the button is clicked. Signature: `function (idToDelete): void`
      */
     const cardStyle = (
         namedObj,
-        { withAddButtons, withRemoveButton, removeButtonOnClickCallback }
+        { withRemoveButton, removeButtonOnClickCallback }
     ) => {
         return (
             <Card
@@ -74,42 +107,13 @@ export default function CommandByParameterView() {
                     ) : undefined
                 }
                 className="mb-4"
+                dropObject={namedObj}
                 smallPadding
             >
                 <div className="flex justify-between items-center px-2">
                     <div className="w-full">
                         {namedObj.description || "No description provided"}
                     </div>
-                    {withAddButtons && (
-                        <div className="ml-4 flex flex-row space-x-4">
-                            <div>
-                                <Button
-                                    title="Add to entrypoints"
-                                    onClick={() => {
-                                        setHave(old => {
-                                            let temp = [...old]
-                                            if (
-                                                !temp
-                                                    .map(e => e._id)
-                                                    .includes(namedObj._id)
-                                            ) {
-                                                temp.push(namedObj)
-                                            }
-                                            return temp
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <Button
-                                    title="Set target"
-                                    onClick={() => {
-                                        setWant(namedObj)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    )}
                 </div>
             </Card>
         )
@@ -158,9 +162,7 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                {cardStyle(c, {
-                                                    withAddButtons: true,
-                                                })}
+                                                {cardStyle(c, {})}
                                             </div>
                                         ))}
                                     </>
@@ -195,7 +197,7 @@ export default function CommandByParameterView() {
                     </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <div className="flex-1 p-4">
+                        <div className={`flex-1 p-4  ${canDropHave && "bg-red-500"}`} ref={dropRefHave}>
                             <h1 className="text-center text-md mb-4">
                                 Entrypoints
                             </h1>
@@ -228,7 +230,7 @@ export default function CommandByParameterView() {
                             </div>
                         </div>
                         {/* Dump for want parameter */}
-                        <div className="flex-1 p-4">
+                        <div className={`flex-1 p-4  ${canDropWant && "bg-red-500"}`} ref={dropRefWant}>
                             <h1 className="text-center text-md mb-4">Target</h1>
                             <div>
                                 {want ? (
