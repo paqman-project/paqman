@@ -3,8 +3,9 @@ import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
+import Draggable from "../../components/Draggable"
+import Droppable from "../../components/Droppable"
 import Tree from "react-d3-tree"
-import { useDrop } from "react-dnd"
 
 /**
  * This view is used to search commands by parameters
@@ -35,39 +36,6 @@ export default function CommandByParameterView() {
             .catch(e => console.error(e))
     }
 
-    const [{ canDropHave, isOverHave }, dropRefHave] = useDrop(() => ({
-        accept: "card",
-        collect: monitor => ({
-            canDropHave: monitor.canDrop(),
-            isOverHave: monitor.isOver()
-        }),
-        drop: item => {
-            console.log("added", item)
-            setHave(old => {
-                let temp = [...old]
-                if (
-                    !temp
-                        .map(e => e._id)
-                        .includes(item._id)
-                ) {
-                    temp.push(item)
-                }
-                return temp
-            })
-        },
-    }))
-
-    const [{ canDropWant, isOverWant }, dropRefWant] = useDrop(() => ({
-        accept: "card",
-        collect: monitor => ({
-            canDropWant: monitor.canDrop(),
-            isOverWant: monitor.isOver()
-        }),
-        drop: item => {
-            setWant(item)
-        },
-    }))
-
     /**
      * Creates a block styled name, description pair (may be a command, parameter or attack). This is used as a
      * makro to create the Cards holding search results, entrypoint parameters and the target parameter.
@@ -78,7 +46,7 @@ export default function CommandByParameterView() {
      */
     const cardStyle = (
         namedObj,
-        { withRemoveButton, removeButtonOnClickCallback }
+        { withRemoveButton, removeButtonOnClickCallback } = {}
     ) => {
         return (
             <Card
@@ -88,9 +56,7 @@ export default function CommandByParameterView() {
                 titleOverwrite={
                     withRemoveButton ? (
                         <div className="grid grid-cols-8">
-                            <div className="col-span-1">
-
-                            </div>
+                            <div className="col-span-1"></div>
                             <div className="col-span-6">
                                 {namedObj.name}
                             </div>
@@ -114,7 +80,6 @@ export default function CommandByParameterView() {
                     ) : undefined
                 }
                 className="mb-4"
-                dropObject={namedObj}
                 smallPadding
             >
                 <div className="flex justify-between items-center px-2">
@@ -170,7 +135,9 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                {cardStyle(c, {})}
+                                                <Draggable itemType="card" itemObject={c} >
+                                                    {cardStyle(c)}
+                                                </Draggable>
                                             </div>
                                         ))}
                                     </>
@@ -179,8 +146,9 @@ export default function CommandByParameterView() {
                         </div>
                     )}
                 </div>
-                {/* Dumps for have and want parameters */}
+                {/* Main button and dumps for have and want parameters */}
                 <div className="col-span-2 w-full">
+                    {/* Main button */}
                     <div className="max-w-max mx-auto mb-4">
                         {viewingResults ? (
                             <Button
@@ -205,9 +173,23 @@ export default function CommandByParameterView() {
                     </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <div 
-                            className={`flex-1 p-4 m-2 border-2 rounded-lg border-transparent ${canDropHave && "border-paqteal-500"}`} 
-                            ref={dropRefHave}
+                        <Droppable 
+                            acceptItemTypes="card"
+                            dropFunc={item => {
+                                setHave(old => {
+                                    let temp = [...old]
+                                    if (
+                                        !temp
+                                            .map(e => e._id)
+                                            .includes(item._id)
+                                    ) {
+                                        temp.push(item)
+                                    }
+                                    return temp
+                                })
+                            }}
+                            className="flex-1 p-4 m-2 border-2 rounded-lg border-transparent"
+                            canDropClassName="border-paqteal-500"
                         >
                             <h1 className="text-center text-md mb-4">
                                 Entrypoints
@@ -236,14 +218,21 @@ export default function CommandByParameterView() {
                                         </div>
                                     ))
                                 ) : (
-                                    <Card>No entrypoints added yet!</Card>
+                                    <Card>
+                                        No entrypoints added yet!
+                                        Drag the search results here!
+                                    </Card>
                                 )}
                             </div>
-                        </div>
+                        </Droppable>
                         {/* Dump for want parameter */}
-                        <div 
-                            className={`flex-1 p-4 m-2 border-2 rounded-lg border-transparent ${canDropWant && "border-paqteal-500"}`} 
-                            ref={dropRefWant}
+                        <Droppable 
+                            acceptItemTypes="card"
+                            dropFunc={item => {
+                                setWant(item)
+                            }}
+                            className="flex-1 p-4 m-2 border-2 rounded-lg border-transparent"
+                            canDropClassName="border-paqteal-500"
                         >
                             <h1 className="text-center text-md mb-4">Target</h1>
                             <div>
@@ -257,10 +246,11 @@ export default function CommandByParameterView() {
                                 ) : (
                                     <Card>
                                         No target parameter defined yet!
+                                        Drag a search result here!
                                     </Card>
                                 )}
                             </div>
-                        </div>
+                        </Droppable>
                     </div>
                 </div>
             </div>
