@@ -72,8 +72,8 @@ export default function AboutView() {
                                 </td>
                                 <td className="pl-4">
                                     Well, just a command. This can be a binary,
-                                    shell script or any other executable with flags,
-                                    values, etc.
+                                    shell script or any other executable with
+                                    flags, values, etc.
                                 </td>
                             </tr>
                             <tr>
@@ -108,18 +108,9 @@ export default function AboutView() {
                                 Sciences Offenburg.
                             </p>
                             <p className="mt-10 grid grid-cols-3 gap-8 w-5/6 mx-auto">
-                                <img 
-                                    src={imgNicola}
-                                    alt="Nicola Jäger"
-                                />
-                                <img 
-                                    src={imgLeon} 
-                                    alt="Leon Schmidt"
-                                />
-                                <img 
-                                    src={imgNadine}
-                                    alt="Nadine Weber"
-                                />
+                                <img src={imgNicola} alt="Nicola Jäger" />
+                                <img src={imgLeon} alt="Leon Schmidt" />
+                                <img src={imgNadine} alt="Nadine Weber" />
                             </p>
                         </div>
                     </Card>
