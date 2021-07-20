@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react"
 
 /**
  * Uses the /search enpoint to search for commands, parameters or attacks.
- * THIS IS CURRENTLY UNUSED AND DOES NOT WORK
  * @param props
  * @param props.searchFor Can be one of ("command", "parameter", "attack"). If not set, a global search is performed
  * @param props.overlay A function with signature `function (results): React.Component`. It receives the results
