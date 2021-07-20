@@ -72,18 +72,20 @@ export default function AboutView() {
                                         Command{" "}
                                     </td>
                                     <td className="pl-4">
-                                        Well, just a command. This can be a binary,
-                                        shell script or any other executable with
-                                        flags, values, etc.
+                                        Well, just a command. This can be a
+                                        binary, shell script or any other
+                                        executable with flags, values, etc.
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="font-bold align-top">Attack </td>
+                                    <td className="font-bold align-top">
+                                        Attack{" "}
+                                    </td>
                                     <td className="pl-4">
                                         An Attack bundles Commands statically to
-                                        form a predefined sequence of actions. The
-                                        Commands are preconfigured and ready to be
-                                        executed.
+                                        form a predefined sequence of actions.
+                                        The Commands are preconfigured and ready
+                                        to be executed.
                                     </td>
                                 </tr>
                                 <tr>
@@ -92,10 +94,10 @@ export default function AboutView() {
                                     </td>
                                     <td className="pl-4">
                                         This is PAQMANs centerpiece. Parameters
-                                        define abstract subgoals while executing a
-                                        chain of Commands (e.g. an Attack). They
-                                        provide context to usually stateless
-                                        Commands.
+                                        define abstract subgoals while executing
+                                        a chain of Commands (e.g. an Attack).
+                                        They provide context to usually
+                                        stateless Commands.
                                     </td>
                                 </tr>
                             </tbody>
