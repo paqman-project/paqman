@@ -1,7 +1,7 @@
 import React from "react"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
-import logo from "../../img/logo_v2.svg"
+import logoFull from "../../img/logo_full.svg"
 import imgLeon from "../../img/werkschau_leonschmidt.png"
 import imgNicola from "../../img/werkschau_nicolajaeger.png"
 import imgNadine from "../../img/werkschau_nadineweber.png"
@@ -13,7 +13,7 @@ export default function AboutView() {
         <div className="font-raleway">
             {/* Logo */}
             <div className="w-2/3 mx-auto max-w-md mt-12">
-                <img src={logo} alt="PAQMAN logo full" />
+                <img src={logoFull} alt="PAQMAN logo full" />
             </div>
 
             {/* Cards with information */}
