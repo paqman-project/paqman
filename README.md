@@ -1,12 +1,21 @@
 ![PAQMAN Logo](assets/logo_full.svg)
 
+<br/>
+
 ## What is PAQMAN?
 PAQMAN is a command line companion tool to improve your pentesting experience. 
 It provides you with copy-pastable commands depending on the information you collect or already have to transform them into a successfull attack.
 
-PAQMAN comes without a database as it is intended to be filled by the user to be as flexible as possible.
+<br/>
 
 ![PAQMAN by-parameter search example](assets/by-parameter_search_example.png)
+
+<br/>
+
+PAQMAN comes without a database as it is intended to be filled by the user to be as flexible as possible.
+
+You can **test PAQMAN** by yourself in our staging environment at https://staging.paqman.leon.wtf. This instance follows PAQMANs master branch, so be advised that there may occure some errors.
+
 ## Dev team
 Paqman is being developed as part of a project at the Offenburg University of Applied Sciences by Nadine Weber (MI7), Nicola Jäger (UN6) and Leon Schmidt (UN6).
 
