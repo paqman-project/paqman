@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import logo from "../img/logo.svg"
-import logo2 from "../img/logo_v2.svg"
+import logoFull from "../img/logo_full.svg"
 
 /**
  * This is PAQMANs header for all pages
@@ -27,7 +27,7 @@ export default function Header({ setSidebarCollapsed }) {
                     >
                         {hovering ? (
                             <img
-                                src={logo2}
+                                src={logoFull}
                                 width="300px"
                                 alt="PAQMAN Logo"
                                 className="p-6"
