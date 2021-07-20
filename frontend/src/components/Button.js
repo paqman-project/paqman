@@ -8,6 +8,7 @@ import React from "react"
  * @param {string} props.title Title of the button (visible)
  * @param {boolean} props.important If the button should be filled (true) or only surrounded (false)
  * @param {string} props.fullWidth Whether the button should expand to it's full parent width
+ * @param {string} props.noWrap If the text wrapping should be prohibited if the buttons width is too small
  * @param {boolean} props.submit If this is a submit button (used inside a form)
  */
 export default function Button({
@@ -15,12 +16,15 @@ export default function Button({
     title,
     important,
     fullWidth,
+    noWrap,
     submit,
 }) {
     return (
         <button
             onClick={onClick}
-            className={`px-4 py-2 border-2 rounded bg-white focus:outline-none font-raleway whitespace-nowrap ${
+            className={`px-4 py-2 border-2 rounded bg-white focus:outline-none font-raleway ${
+                noWrap && "whitespace-nowrap overflow-hidden"
+            } ${
                 important
                     ? "border-transparent bg-paqteal-600 text-white shadow-lg"
                     : "border-paqteal-600 shadow-md"

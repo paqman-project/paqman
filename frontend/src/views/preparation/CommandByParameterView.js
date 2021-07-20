@@ -3,6 +3,8 @@ import APISearchbar from "../../components/APISearchbar"
 import ViewHeading from "../../components/ViewHeading"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
+import Draggable from "../../components/Draggable"
+import Droppable from "../../components/Droppable"
 import Tree from "react-d3-tree"
 
 /**
@@ -38,26 +40,26 @@ export default function CommandByParameterView() {
      * Creates a block styled name, description pair (may be a command, parameter or attack). This is used as a
      * makro to create the Cards holding search results, entrypoint parameters and the target parameter.
      * @param {Object} namedObj The object that has name and description field
-     * @param {bool} options.withAddButtons If the buttons to add as entrypoint/target should be displayed
      * @param {bool} options.withRemoveButton If the button to remove the parameter should be displayed
      * @param {Function} options.removeButtonOnClickCallback If options.withRemoveButton is true, provide a
      * function to define what happens, if the button is clicked. Signature: `function (idToDelete): void`
      */
     const cardStyle = (
         namedObj,
-        { withAddButtons, withRemoveButton, removeButtonOnClickCallback }
+        { withRemoveButton, removeButtonOnClickCallback } = {}
     ) => {
         return (
             <Card
+                // set the normal title only, wenn the cards should not be removed
+                // set titleOverwrite to add the grid interface for the remove button
                 title={withRemoveButton ? undefined : namedObj.name}
                 titleOverwrite={
                     withRemoveButton ? (
-                        <div className="flex flex-row">
-                            <div className="mx-2 flex-grow">
-                                {namedObj.name}
-                            </div>
+                        <div className="grid grid-cols-8">
+                            <div className="col-span-1"></div>
+                            <div className="col-span-6">{namedObj.name}</div>
                             <button
-                                className="mx-2 text-gray-400 focus:outline-none"
+                                className="col-span-1 text-gray-400 focus:outline-none"
                                 onClick={
                                     removeButtonOnClickCallback
                                         ? () => {
@@ -67,6 +69,8 @@ export default function CommandByParameterView() {
                                           }
                                         : undefined
                                 }
+                                // when in d3 viewing mode, hide the remove cross
+                                hidden={viewingResults === true}
                             >
                                 <p>&#215;</p>
                             </button>
@@ -80,36 +84,6 @@ export default function CommandByParameterView() {
                     <div className="w-full">
                         {namedObj.description || "No description provided"}
                     </div>
-                    {withAddButtons && (
-                        <div className="ml-4 flex flex-row space-x-4">
-                            <div>
-                                <Button
-                                    title="Add to entrypoints"
-                                    onClick={() => {
-                                        setHave(old => {
-                                            let temp = [...old]
-                                            if (
-                                                !temp
-                                                    .map(e => e._id)
-                                                    .includes(namedObj._id)
-                                            ) {
-                                                temp.push(namedObj)
-                                            }
-                                            return temp
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <Button
-                                    title="Set target"
-                                    onClick={() => {
-                                        setWant(namedObj)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    )}
                 </div>
             </Card>
         )
@@ -118,8 +92,8 @@ export default function CommandByParameterView() {
     return (
         <div>
             <ViewHeading title="Search commands by parameter" />
-            <div className="grid grid-cols-3">
-                <div className="col-span-2 w-full">
+            <div className="grid grid-cols-5">
+                <div className="col-span-3 w-full">
                     {viewingResults && results ? (
                         <div>
                             {results && results.error ? (
@@ -138,6 +112,7 @@ export default function CommandByParameterView() {
                                         <Tree
                                             data={results}
                                             orientation="vertical"
+                                            // TODO automatic x-translate for centering
                                             translate={{ x: 300, y: 100 }}
                                         />
                                     </div>
@@ -158,9 +133,12 @@ export default function CommandByParameterView() {
                                     <>
                                         {results.map(c => (
                                             <div key={c._id}>
-                                                {cardStyle(c, {
-                                                    withAddButtons: true,
-                                                })}
+                                                <Draggable
+                                                    itemType="card"
+                                                    itemObject={c}
+                                                >
+                                                    {cardStyle(c)}
+                                                </Draggable>
                                             </div>
                                         ))}
                                     </>
@@ -169,9 +147,10 @@ export default function CommandByParameterView() {
                         </div>
                     )}
                 </div>
-                {/* Dumps for have and want parameters */}
-                <div className="col-span-1 w-full">
-                    <div className="w-2/3 max-w-max mx-auto mb-4">
+                {/* Main button and dumps for have and want parameters */}
+                <div className="col-span-2 w-full">
+                    {/* Main button */}
+                    <div className="max-w-max mx-auto mb-4">
                         {viewingResults ? (
                             <Button
                                 title="Edit entrypoints or target parameters"
@@ -195,7 +174,22 @@ export default function CommandByParameterView() {
                     </div>
                     <div className="flex justify-evenly">
                         {/* Dump for have parameters */}
-                        <div className="flex-1 p-4">
+                        <Droppable
+                            acceptItemTypes="card"
+                            dropFunc={item => {
+                                setHave(old => {
+                                    let temp = [...old]
+                                    if (
+                                        !temp.map(e => e._id).includes(item._id)
+                                    ) {
+                                        temp.push(item)
+                                    }
+                                    return temp
+                                })
+                            }}
+                            className="flex-1 p-4 m-2 border-2 rounded-lg border-transparent"
+                            canDropClassName="border-paqteal-500"
+                        >
                             <h1 className="text-center text-md mb-4">
                                 Entrypoints
                             </h1>
@@ -223,12 +217,22 @@ export default function CommandByParameterView() {
                                         </div>
                                     ))
                                 ) : (
-                                    <Card>No entrypoints added yet!</Card>
+                                    <Card>
+                                        No entrypoints added yet! Drag the
+                                        search results here!
+                                    </Card>
                                 )}
                             </div>
-                        </div>
+                        </Droppable>
                         {/* Dump for want parameter */}
-                        <div className="flex-1 p-4">
+                        <Droppable
+                            acceptItemTypes="card"
+                            dropFunc={item => {
+                                setWant(item)
+                            }}
+                            className="flex-1 p-4 m-2 border-2 rounded-lg border-transparent"
+                            canDropClassName="border-paqteal-500"
+                        >
                             <h1 className="text-center text-md mb-4">Target</h1>
                             <div>
                                 {want ? (
@@ -240,11 +244,12 @@ export default function CommandByParameterView() {
                                     })
                                 ) : (
                                     <Card>
-                                        No target parameter defined yet!
+                                        No target parameter defined yet! Drag a
+                                        search result here!
                                     </Card>
                                 )}
                             </div>
-                        </div>
+                        </Droppable>
                     </div>
                 </div>
             </div>
