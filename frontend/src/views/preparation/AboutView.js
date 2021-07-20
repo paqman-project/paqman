@@ -6,7 +6,7 @@ import imgLeon from "../../img/werkschau_leonschmidt.png"
 import imgNicola from "../../img/werkschau_nicolajaeger.png"
 import imgNadine from "../../img/werkschau_nadineweber.png"
 
-export const version = "v0.2.0"
+export const version = "v0.2.1"
 
 export default function AboutView() {
     return (
