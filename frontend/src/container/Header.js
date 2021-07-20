@@ -57,11 +57,7 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
                         onMouseLeave={() => setHovering(false)}
                     >
                         {hovering ? (
-                            <img
-                                src={logo2}
-                                width="250px"
-                                alt="PAQMAN Logo"
-                            />
+                            <img src={logo2} width="250px" alt="PAQMAN Logo" />
                         ) : (
                             <img
                                 src={logo}
