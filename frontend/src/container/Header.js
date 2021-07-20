@@ -15,59 +15,58 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
     return (
         <div className="fixed top-0 z-20 w-full h-16 bg-white shadow-lg">
             <div className="flex flex-row items-center h-full">
-                {sidebarCollapsed ? (
-                    <svg
-                        className="block h-8 h-8 ml-2 md:ml-4"
-                        onClick={() => setSidebarCollapsed(old => !old)}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="grey"
-                        aria-hidden="true"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"
-                        ></path>
-                    </svg>
-                ) : (
-                    <svg
-                        className="block h-8 h-8 ml-2 md:ml-4"
-                        onClick={() => setSidebarCollapsed(old => !old)}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="grey"
-                        aria-hidden="true"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                        ></path>
-                    </svg>
-                )}
-
+                <div className="mx-4 cursor-pointer">
+                    {sidebarCollapsed ? (
+                        <svg
+                            className="block h-8"
+                            onClick={() => setSidebarCollapsed(old => !old)}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="grey"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            ></path>
+                        </svg>
+                    ) : (
+                        <svg
+                            className="block h-8"
+                            onClick={() => setSidebarCollapsed(old => !old)}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="grey"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            ></path>
+                        </svg>
+                    )}
+                </div>
                 <Link to="/">
                     <div
-                        className="select-none"
+                        className="select-none px-2" // the padding my be unnecessary
                         onMouseOver={() => setHovering(true)}
                         onMouseLeave={() => setHovering(false)}
                     >
                         {hovering ? (
                             <img
                                 src={logo2}
-                                width="300px"
+                                width="250px"
                                 alt="PAQMAN Logo"
-                                className="p-6"
                             />
                         ) : (
                             <img
                                 src={logo}
-                                width="300px"
+                                width="250px"
                                 alt="PAQMAN Logo with Slogan"
-                                className="p-6"
                             />
                         )}
                     </div>
