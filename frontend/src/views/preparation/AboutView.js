@@ -1,7 +1,10 @@
 import React from "react"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
-import logo from "../../img/logo_v2.svg"
+import logoFull from "../../img/logo_full.svg"
+import imgLeon from "../../img/werkschau_leonschmidt.png"
+import imgNicola from "../../img/werkschau_nicolajaeger.png"
+import imgNadine from "../../img/werkschau_nadineweber.png"
 
 export const version = "v0.2.0"
 
@@ -10,7 +13,7 @@ export default function AboutView() {
         <div className="font-raleway">
             {/* Logo */}
             <div className="w-2/3 mx-auto max-w-md mt-12">
-                <img src={logo} alt="PAQMAN logo full" />
+                <img src={logoFull} alt="PAQMAN logo full" />
             </div>
 
             {/* Cards with information */}
@@ -23,7 +26,7 @@ export default function AboutView() {
                                 improve your pentesting experience. It provides
                                 you with copy-pastable commands depending on the
                                 information you collect or already have to
-                                transform them into a successfull attack.
+                                transform them into a successful attack.
                             </p>
                             <p className="mt-2">
                                 PAQMAN is kept as simple as possible to allow
@@ -63,37 +66,39 @@ export default function AboutView() {
                     </Card>
                     <Card title="Terminology">
                         <table className="text-left divide-y-8 divide-transparent">
-                            <tr>
-                                <td className="font-bold align-top">
-                                    Command{" "}
-                                </td>
-                                <td className="pl-4">
-                                    Well, just a command. This can be a binary,
-                                    shell or any other executable with flags,
-                                    values, etc.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="font-bold align-top">Attack </td>
-                                <td className="pl-4">
-                                    An Attack bundles Commands statically to
-                                    form a predefined sequence of actions. The
-                                    Commands are preconfigured and ready to be
-                                    executed.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="font-bold align-top">
-                                    Parameter{" "}
-                                </td>
-                                <td className="pl-4">
-                                    This is PAQMANs centerpiece. Parameters
-                                    define abstract subgoals while executing a
-                                    chain of Commands (e.g. an Attack). They
-                                    provide context to usually stateless
-                                    Commands.
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td className="font-bold align-top">
+                                        Command{" "}
+                                    </td>
+                                    <td className="pl-4">
+                                        Well, just a command. This can be a binary,
+                                        shell script or any other executable with
+                                        flags, values, etc.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="font-bold align-top">Attack </td>
+                                    <td className="pl-4">
+                                        An Attack bundles Commands statically to
+                                        form a predefined sequence of actions. The
+                                        Commands are preconfigured and ready to be
+                                        executed.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="font-bold align-top">
+                                        Parameter{" "}
+                                    </td>
+                                    <td className="pl-4">
+                                        This is PAQMANs centerpiece. Parameters
+                                        define abstract subgoals while executing a
+                                        chain of Commands (e.g. an Attack). They
+                                        provide context to usually stateless
+                                        Commands.
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </Card>
                     <Card title="Who made it?">
@@ -104,8 +109,13 @@ export default function AboutView() {
                                 a project work at the University of Applied
                                 Sciences Offenburg.
                             </p>
-                            <p className="mt-10">
-                                {"---> Insert GIF here <---"}
+                            <p className="mt-2 grid grid-cols-3 gap-8 w-5/6 mx-auto">
+                                <img src={imgNicola} alt="Nicola Jäger" />
+                                <img src={imgLeon} alt="Leon Schmidt" />
+                                <img src={imgNadine} alt="Nadine Weber" />
+                            </p>
+                            <p className="text-gray-400 text-sm mt-2 italic">
+                                Images created by Ines Martinez Bischoff
                             </p>
                         </div>
                     </Card>

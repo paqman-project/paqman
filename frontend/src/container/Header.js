@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import logo from "../img/logo.svg"
-import logo2 from "../img/logo_v2.svg"
+import logoFull from "../img/logo_full.svg"
 
 /**
  * This is PAQMANs header for all pages
@@ -26,9 +26,9 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
                             aria-hidden="true"
                         >
                             <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M4 6h16M4 12h16M4 18h16"
                             ></path>
                         </svg>
@@ -42,9 +42,9 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
                             aria-hidden="true"
                         >
                             <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M6 18L18 6M6 6l12 12"
                             ></path>
                         </svg>
@@ -57,7 +57,11 @@ export default function Header({ sidebarCollapsed, setSidebarCollapsed }) {
                         onMouseLeave={() => setHovering(false)}
                     >
                         {hovering ? (
-                            <img src={logo2} width="250px" alt="PAQMAN Logo" />
+                            <img
+                                src={logoFull}
+                                width="250px"
+                                alt="PAQMAN Logo"
+                            />
                         ) : (
                             <img
                                 src={logo}
