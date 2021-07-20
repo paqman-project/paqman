@@ -54,4 +54,4 @@ _There is a pre-built docker image at `registry.git.leon.wtf/paqman/paqman:dev` 
 - Start the backend with `$ go run .` within `server/` &rarr; listens on `0.0.0.0:3002`
 - Start the frontend with `$ npm run start` within `frontend/` &rarr; available at http://localhost:3000 with hot-reloading
 
-_In production, the frontend is served by the Go backend, but it doesn't support Reacts hot-reloading feature as it only serves the `build/` folder. Therefore the frontend is served on it's own port in development._
+_In production, the frontend is served by the Go backend, but it doesn't support Reacts hot-reloading feature as it only serves the `build/` folder. Therefore the frontend is served on it's own port in development but can use the backend to do fetch calls. Adjust the `"proxy"` setting in `frontend/package.json` to point to the backend, if needed._
