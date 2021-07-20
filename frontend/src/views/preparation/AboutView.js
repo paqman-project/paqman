@@ -107,7 +107,7 @@ export default function AboutView() {
                                 a project work at the University of Applied
                                 Sciences Offenburg.
                             </p>
-                            <p className="mt-10 grid grid-cols-3 gap-8 w-5/6 mx-auto">
+                            <p className="mt-2 grid grid-cols-3 gap-8 w-5/6 mx-auto">
                                 <img src={imgNicola} alt="Nicola Jäger" />
                                 <img src={imgLeon} alt="Leon Schmidt" />
                                 <img src={imgNadine} alt="Nadine Weber" />
