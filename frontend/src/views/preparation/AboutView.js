@@ -2,6 +2,9 @@ import React from "react"
 import Button from "../../components/Button"
 import Card from "../../components/Card"
 import logo from "../../img/logo_v2.svg"
+import imgLeon from "../../img/werkschau_leonschmidt.png"
+import imgNicola from "../../img/werkschau_nicolajaeger.png"
+import imgNadine from "../../img/werkschau_nadineweber.png"
 
 export const version = "v0.2.0"
 
@@ -23,7 +26,7 @@ export default function AboutView() {
                                 improve your pentesting experience. It provides
                                 you with copy-pastable commands depending on the
                                 information you collect or already have to
-                                transform them into a successfull attack.
+                                transform them into a successful attack.
                             </p>
                             <p className="mt-2">
                                 PAQMAN is kept as simple as possible to allow
@@ -69,7 +72,7 @@ export default function AboutView() {
                                 </td>
                                 <td className="pl-4">
                                     Well, just a command. This can be a binary,
-                                    shell or any other executable with flags,
+                                    shell script or any other executable with flags,
                                     values, etc.
                                 </td>
                             </tr>
@@ -104,8 +107,19 @@ export default function AboutView() {
                                 a project work at the University of Applied
                                 Sciences Offenburg.
                             </p>
-                            <p className="mt-10">
-                                {"---> Insert GIF here <---"}
+                            <p className="mt-10 grid grid-cols-3 gap-8 w-5/6 mx-auto">
+                                <img 
+                                    src={imgNicola}
+                                    alt="Nicola Jäger"
+                                />
+                                <img 
+                                    src={imgLeon} 
+                                    alt="Leon Schmidt"
+                                />
+                                <img 
+                                    src={imgNadine}
+                                    alt="Nadine Weber"
+                                />
                             </p>
                         </div>
                     </Card>
