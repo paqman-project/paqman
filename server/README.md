@@ -3,8 +3,9 @@
 
 ## Run tests
 
-`go test -v ./...`
+`go test -v ./...` 
 
+This tries to connect to a database at `localhost:27017` and is intended to be used locally. If the tests should be performed by the CI/CD pipeline, append the envvar `CI=true` to the call (`CI=true go test -v ./...`). This connects to `mongo:27017` as defined in the `.gitlab-ci.yml` file.
 
 ## Mux endpoint testing example
 
