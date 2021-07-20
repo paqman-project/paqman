@@ -9,8 +9,10 @@ import goPAQMAN from "../img/preloader_1.svg"
 export default function NotImplemented({ plannedFor }) {
     return (
         <div className="mt-10 mx-auto text-center">
-            <h1>Not implemented yet!</h1>
-            {plannedFor && <p className="text-sm">Planned for {plannedFor}</p>}
+            <div className="animate-bounce">
+                <h1>Not implemented yet!</h1>
+                {plannedFor && <p className="text-sm">Planned for {plannedFor}</p>}
+            </div>
             <object
                 className="mx-auto mt-4 mb-4 h-16 object-center align-center"
                 type="image/svg+xml"
