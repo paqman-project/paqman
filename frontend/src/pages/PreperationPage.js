@@ -23,7 +23,7 @@ export default function PreperationPage() {
             <div className="w-full h-full p-4">
                 <Switch>
                     <Route path={path} exact>
-                        <Redirect to={`${path}/attack/list/`} />
+                        <Redirect to={`${path}/command/list/`} />
                     </Route>
                     <Route
                         path={`${path}/attack/list`}
