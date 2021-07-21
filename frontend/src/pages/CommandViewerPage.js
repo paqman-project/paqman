@@ -21,7 +21,7 @@ export default function CommandViewerPage({ match }) {
         fetch(`/api/command/${commandID}`)
             .then(r => r.json())
             .then(r => setData(r))
-            .catch(e => console.log(e))
+            .catch(e => console.error(e))
     }, [commandID])
 
     if (!data) return <Loading />

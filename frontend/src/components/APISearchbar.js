@@ -19,9 +19,13 @@ export default function APISearchbar({ searchFor, overlay }) {
     // used to check for clicks outside the div
     const ref = useRef()
 
-    // create the onclick listener on mount to the whole document
     useEffect(() => {
+        // create the onclick listener on mount to the whole document
         document.addEventListener("click", handleOutsideClick)
+        // remove event listener on unmount
+        return () => {
+            document.removeEventListener("click", handleOutsideClick)
+        }
     }, [])
 
     const handleOutsideClick = event => {
