@@ -14,7 +14,7 @@ It provides you with copy-pastable commands depending on the information you col
 
 PAQMAN comes without a database as it is intended to be filled by the user to be as flexible as possible.
 
-You can **test PAQMAN** by yourself in our staging environment at https://staging.paqman.leon.wtf. This instance follows PAQMANs master branch, so be advised that there may occure some errors.
+You can **test PAQMAN** by yourself in our staging environment at https://staging.paqman.leon.wtf. This instance follows PAQMANs main branch, so be advised that there may occure some errors.
 
 ## Dev team
 Paqman is being developed as part of a project at the Offenburg University of Applied Sciences by Nadine Weber (MI7), Nicola Jäger (UN6) and Leon Schmidt (UN6).

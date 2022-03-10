@@ -34,7 +34,7 @@ backend_tests:
 build_and_push_image:
   stage: docker-build
   only:
-    - master
+    - main
   image: docker:dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -45,7 +45,7 @@ build_and_push_image:
 stage_on_webserver:
   stage: staging
   only:
-    - master
+    - main
   environment:
     name: Staging
     url: https://staging.paqman.leon.wtf
