@@ -3,9 +3,7 @@ FROM golang:1.16 AS go-builder
 WORKDIR /go/src/app
 COPY server/ .
 RUN go get -d -v ./...
-RUN CGO_ENABLED=0 GOOS=linux go install -a \
-    -ldflags '-linkmode external -extldflags "-static"' \
-    -tags timetzdata .
+RUN CGO_ENABLED=0 go install -a -ldflags '-extldflags "-static"' .
 
 
 # Transpile React frontend to static files

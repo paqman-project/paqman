@@ -4,8 +4,8 @@ services:
   mongo:
     image: mongo:latest
     container_name: paqman-db
-    #volumes:
-    #  - ./data:/data/db
+    volumes:
+      - paqman-db-vol:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: toor
@@ -17,3 +17,6 @@ services:
       - 3002:3002
     #volumes:
     #  - ./config.json:/config.json:ro
+
+volumes:
+  paqman-db-vol:

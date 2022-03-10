@@ -61,6 +61,9 @@ func main() {
 	}
 
 	// start the API and frontend server
-	panic(server.Start(config.Current.BindAddress))
+	panic(server.Start(
+		config.Current.BindAddress,
+		config.Current.FrontendPath,
+	))
 
 }

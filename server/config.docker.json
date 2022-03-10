@@ -1,5 +1,6 @@
 {
     "bind_address": "0.0.0.0:3002",
+    "frontend_path": "frontend/build",
     "db_address": "mongo:27017",
     "db_name": "PAQMAN",
     "db_username": "root",

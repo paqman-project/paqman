@@ -10,9 +10,10 @@ import (
 // A Config is an instance of an unmarshalled
 // configuration file
 type Config struct {
-	BindAddress    string `json:"bind_address"` // Default 0.0.0.0:3002
-	MongoDBAddress string `json:"db_address"`   // Default 127.0.0.1:27017
-	MongoDBName    string `json:"db_name"`      // Default PAQMAN
+	BindAddress    string `json:"bind_address"`  // Default 0.0.0.0:3002
+	FrontendPath   string `json:"frontend_path"` // Default ../frontend/build
+	MongoDBAddress string `json:"db_address"`    // Default 127.0.0.1:27017
+	MongoDBName    string `json:"db_name"`       // Default PAQMAN
 	MongoDBUser    string `json:"db_username"`
 	MongoDBPass    string `json:"db_password"`
 }
@@ -23,6 +24,10 @@ func (c *Config) setDefaults() {
 	if c.BindAddress == "" {
 		log.Println(`"bind_address" not set, using default "0.0.0.0:3002"`)
 		c.BindAddress = "0.0.0.0:3002"
+	}
+	if c.FrontendPath == "" {
+		log.Println(`"frontend_path" not set, using default "../frontend/build"`)
+		c.FrontendPath = "../frontend/build"
 	}
 	if c.MongoDBAddress == "" {
 		log.Println(`"db_address" not set, using default "127.0.0.1:27017"`)

@@ -19,7 +19,7 @@ var frontendRoutes = []string{
 
 // Start starts the API and frontend server.
 // This function is blocking.
-func Start(bindAddr string) error {
+func Start(bindAddr, frontendPath string) error {
 
 	// router
 	router := mux.NewRouter()
@@ -55,11 +55,11 @@ func Start(bindAddr string) error {
 	// frontend routes
 	// add static routes from frontendRoutes to be redirected to the frontend
 	for _, route := range frontendRoutes {
-		router.PathPrefix(route).Handler(http.FileServer(http.Dir("../frontend/build")))
+		router.PathPrefix(route).Handler(http.FileServer(http.Dir(frontendPath)))
 	}
 	// catch-all router that always serves the build directory to make the react browser router work
 	router.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		http.ServeFile(rw, r, "../frontend/build")
+		http.ServeFile(rw, r, frontendPath)
 	})
 
 	// start server
