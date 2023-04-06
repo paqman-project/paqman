@@ -45,8 +45,8 @@ build_and_push_image:
 
 stage_on_webserver:
   stage: staging
-  only:
-    - main
+  #only:
+  #  - main
   environment:
     name: Staging
     url: https://staging.paqman.leon.wtf
