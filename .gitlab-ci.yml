@@ -49,7 +49,7 @@ stage_on_webserver:
   #  - main
   environment:
     name: Staging
-    url: https://staging.paqman.leon.wtf
+    url: https://paqman.leon.wtf
   image: docker:dind
   before_script:
     # import SSH private key from Gitlab variable
