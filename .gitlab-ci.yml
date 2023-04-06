@@ -4,7 +4,8 @@ stages:
   - staging
 
 variables:
-  STAGING_SERVER: "staging.paqman.leon.wtf"
+  STAGING_SERVER_SSH_HOST: "192.168.10.3"
+  STAGING_SERVER_SSH_PORT: "33"
   # config for prefilled-db image
   MONGO_INITDB_ROOT_USERNAME: root
   MONGO_INITDB_ROOT_PASSWORD: toor
@@ -57,10 +58,10 @@ stage_on_webserver:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     # scan target server and add keys to known_hosts
-    - ssh-keyscan $STAGING_SERVER >> ~/.ssh/known_hosts
+    - ssh-keyscan $STAGING_SERVER_SSH_HOST -p $STAGING_SERVER_SSH_PORT >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
     # push docker-compose.yml in repository root to server and execute it
-    - scp ./docker-compose.yml paqman@$STAGING_SERVER:~/docker-compose.yml
-    - ssh paqman@$STAGING_SERVER "docker-compose pull && docker-compose up -d && docker-compose ps"
+    - scp -P $STAGING_SERVER_SSH_PORT ./docker-compose.yml paqman@$STAGING_SERVER_SSH_HOST:~/docker-compose.yml
+    - ssh paqman@$STAGING_SERVER_SSH_HOST -p $STAGING_SERVER_SSH_PORT "docker compose pull && docker compose up -d && docker compose ps"
 
