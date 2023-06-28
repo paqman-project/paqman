@@ -4,6 +4,7 @@ services:
   mongo:
     image: mongo:latest
     container_name: paqman-db
+    restart: always
     volumes:
       - paqman-db-vol:/data/db
     environment:
@@ -13,6 +14,7 @@ services:
   paqman:
     image: registry.git.leon.wtf/paqman/paqman:dev
     container_name: paqman
+    restart: always
     ports:
       - 3002:3002
     #volumes:
